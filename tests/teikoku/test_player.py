@@ -4,10 +4,10 @@ from teikoku.player import Player
 
 class TestPlayer(unittest.TestCase):
 
-    def _make_player(self, user_id="123", name="Teste"):
+    def _make_player(self, user_id="123", name="Teste", username=None):
         """Cria e retorna uma instância de Player com valores padrão."""
 
-        return Player(user_id=user_id, name=name)
+        return Player(user_id=user_id, name=name, username=username)
 
     def test_user_id_int_converts_to_str(self):
         """Verifica se user_id do tipo int é convertido para str."""
@@ -85,9 +85,40 @@ class TestPlayer(unittest.TestCase):
         player = self._make_player()
         self.assertFalse(player == 1.5)
 
-    def test_telegram_text(self):
-        """Verifica se telegram_text retorna o texto formatado corretamente."""
+    def test_username_none_kept(self):
+        """Verifica se username igual a None é mantido sem alterações."""
+
+        player = self._make_player()
+        self.assertIsNone(player.username)
+
+    def test_username_valid(self):
+        """Verifica se username válido (começando com '@') é aceito."""
+
+        player = self._make_player(username="@jogador")
+        self.assertEqual(player.username, "@jogador")
+
+    def test_username_without_at_raises_value_error(self):
+        """Verifica se username sem '@' levanta ValueError."""
+
+        with self.assertRaises(ValueError):
+            self._make_player(username="jogador")
+
+    def test_username_invalid_type_raises_type_error(self):
+        """Verifica se username de tipo inválido levanta TypeError."""
+
+        with self.assertRaises(TypeError):
+            self._make_player(username=123)
+
+    def test_telegram_text_without_username(self):
+        """Verifica se telegram_text é formatado corretamente sem username."""
 
         player = self._make_player(user_id="123", name="Teste")
-        expected = "Name: Teste\nUser ID: 123\n"
+        expected = "Name: Teste\nUsername: \nUser ID: 123\n"
+        self.assertEqual(player.telegram_text, expected)
+
+    def test_telegram_text_with_username(self):
+        """Verifica se telegram_text é formatado corretamente com username."""
+
+        player = self._make_player(user_id="123", name="Teste", username="@jogador")
+        expected = "Name: Teste\nUsername: @jogador\nUser ID: 123\n"
         self.assertEqual(player.telegram_text, expected)

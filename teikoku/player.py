@@ -8,6 +8,7 @@ from repository.mongo.base import MongoBase
 class Player(MongoBase):
     user_id: Union[int, str]  # TELEGRAM ID
     name: str
+    username: str = None  # @ do usuário
 
     def __post_init__(self):
         super().__post_init__()
@@ -27,6 +28,18 @@ class Player(MongoBase):
         if self.name is not None:
             self.name = str(self.name)
 
+        # USERNAME
+        username = self.username
+        if not isinstance(username, (str, type(None))):
+            raise TypeError(
+                f"O username precisa ser do tipo str ({type(username)})."
+            )
+        elif isinstance(username, str) and not username.startswith("@"):
+            raise ValueError(
+                f"O username '{username}' não é válido "
+                "(precisa começar com '@')."
+            )
+
     def __eq__(self, value):
         result = False
         if isinstance(value, Player):
@@ -41,6 +54,7 @@ class Player(MongoBase):
     @property
     def telegram_text(self) -> str:
         text = f"Name: {self.name}\n"
+        text += f"Username: {self.username or ''}\n"
         text += f"User ID: {self.user_id}\n"
 
         return text
