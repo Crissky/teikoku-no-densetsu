@@ -1,6 +1,6 @@
 import logging
 
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 from typing import Union, Any, List
 
 from bson import ObjectId
@@ -13,7 +13,7 @@ from teikoku.player import Player  # noqa
 logger = logging.getLogger(__name__)
 
 
-class Model:
+class Model(ABC):
     """Classe Base usada para salvar Classes no Banco de Dados MongoDB"""
 
     _instance = None
@@ -254,7 +254,10 @@ class Model:
         return _class(**populate_result)
 
     database: Database = property(lambda self: Database.get_instance())
-    alternative_id: str = property(lambda self: "player_id")
+
+    @property
+    @abstractmethod
+    def alternative_id(self) -> str: ...
 
     @property
     @abstractmethod
