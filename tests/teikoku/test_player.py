@@ -1,0 +1,93 @@
+import unittest
+from teikoku.player import Player
+
+
+class TestPlayer(unittest.TestCase):
+
+    def _make_player(self, user_id="123", name="Teste"):
+        """Cria e retorna uma instância de Player com valores padrão."""
+
+        return Player(user_id=user_id, name=name)
+
+    def test_user_id_int_converts_to_str(self):
+        """Verifica se user_id do tipo int é convertido para str."""
+
+        player = self._make_player(user_id=123)
+        self.assertEqual(player.user_id, "123")
+
+    def test_user_id_str_kept(self):
+        """Verifica se user_id do tipo str é mantido sem alterações."""
+
+        player = self._make_player(user_id="456")
+        self.assertEqual(player.user_id, "456")
+
+    def test_user_id_empty_raises_value_error(self):
+        """Verifica se user_id vazio levanta ValueError."""
+
+        with self.assertRaises(ValueError):
+            self._make_player(user_id="")
+
+    def test_user_id_zero_raises_value_error(self):
+        """Verifica se user_id igual a zero levanta ValueError."""
+
+        with self.assertRaises(ValueError):
+            self._make_player(user_id=0)
+
+    def test_user_id_invalid_type_raises_type_error(self):
+        """Verifica se user_id de tipo inválido levanta TypeError."""
+
+        with self.assertRaises(TypeError):
+            self._make_player(user_id=["123"])
+
+    def test_name_converts_to_str(self):
+        """Verifica se name de tipo não-str é convertido para str."""
+
+        player = self._make_player(name=42)
+        self.assertEqual(player.name, "42")
+
+    def test_name_none_kept(self):
+        """Verifica se name igual a None é mantido sem alterações."""
+
+        player = self._make_player(name=None)
+        self.assertIsNone(player.name)
+
+    def test_eq_with_user(self):
+        """Verifica se dois Players com mesmo user_id são considerados
+        iguais."""
+
+        u1 = self._make_player(user_id="123")
+        u2 = self._make_player(user_id="123")
+        self.assertEqual(u1, u2)
+
+    def test_eq_with_str(self):
+        """Verifica se Player é igual a uma str com o mesmo user_id."""
+
+        player = self._make_player(user_id="123")
+        self.assertEqual(player, "123")
+
+    def test_eq_with_int(self):
+        """Verifica se Player é igual a um int com o mesmo user_id."""
+
+        player = self._make_player(user_id="123")
+        self.assertEqual(player, 123)
+
+    def test_eq_different_ids(self):
+        """Verifica se dois Players com user_ids diferentes são considerados
+        diferentes."""
+
+        u1 = self._make_player(user_id="123")
+        u2 = self._make_player(user_id="456")
+        self.assertNotEqual(u1, u2)
+
+    def test_eq_unsupported_type_returns_false(self):
+        """Verifica se a comparação com tipo não suportado retorna False."""
+
+        player = self._make_player()
+        self.assertFalse(player == 1.5)
+
+    def test_telegram_text(self):
+        """Verifica se telegram_text retorna o texto formatado corretamente."""
+
+        player = self._make_player(user_id="123", name="Teste")
+        expected = "Name: Teste\nUser ID: 123\n"
+        self.assertEqual(player.telegram_text, expected)
