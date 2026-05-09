@@ -6,11 +6,19 @@ from time import sleep
 from typing import Any, Callable, Union
 
 from bson import ObjectId
-from telegram import Message
-from telegram.constants import ChatType
+from telegram import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    Message,
+    ReplyParameters,
+    Update,
+)
+from telegram.constants import ChatType, ParseMode
 from telegram.error import BadRequest, RetryAfter, TimedOut
 from telegram.ext import ContextTypes, ConversationHandler
 
+from bot.constants.close import CALLBACK_CLOSE
+from general.enums.emojis import EmojiEnum
 
 logger = logging.getLogger(__name__)
 
@@ -19,13 +27,20 @@ HOURS_DELETE_MESSAGE_FROM_CONTEXT = 4
 BASE_JOB_KWARGS = {"misfire_grace_time": None}
 CHAT_TYPE_GROUPS = (ChatType.GROUP, ChatType.SUPERGROUP)
 
+# TEXTS
+REPLY_MARKUP_DEFAULT = 'DEFAULT'
+LEFT_CLOSE_BUTTON_TEXT = f'{EmojiEnum.CLOSE.value}Fechar'
+RIGHT_CLOSE_BUTTON_TEXT = f'Fechar{EmojiEnum.CLOSE.value}'
+REFRESH_BUTTON_TEXT = f'{EmojiEnum.REFRESH.value}Atualizar'
+DETAIL_BUTTON_TEXT = f'{EmojiEnum.DETAIL.value}Detalhar'
+
 
 # CALL TELEGRAM FUNCTIONs
 async def call_telegram_message_function(
     function_caller: str,
     function: Callable,
     context: ContextTypes.DEFAULT_TYPE,
-    need_response: bool = True,
+    need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
     **kwargs,
@@ -157,6 +172,86 @@ async def delete_message_from_context(
             logger.warning(f'\tError Message: "{e.message}" (Sem Permissão)')
         else:
             raise e
+
+
+async def reply_message(
+    function_caller: str,
+    text: str,
+    context: ContextTypes.DEFAULT_TYPE,
+    update: Update = None,
+    chat_id: int = None,
+    user_id: int = None,
+    message_id: int = None,
+    markdown: bool = False,
+    silent: bool = None,
+    reply_markup: InlineKeyboardMarkup = REPLY_MARKUP_DEFAULT,
+    allow_sending_without_reply: bool = True,
+    close_by_owner: bool = True,
+    need_response: bool = False,
+    skip_retry: bool = False,
+    auto_delete_message: Union[bool, int, timedelta] = True,
+) -> Message:
+    """Responde uma mensagem.
+
+    É obrigatório passar update ou message_id.
+
+    markdown for True, o parse_mode será igual a
+    ParseMode.MARKDOWN_V2, caso contrário, parse_mode será igual a None
+
+    silent for None, usará a configuração de notificação do chat em
+    disable_notification.
+
+    reply_markup não for passado, a mensagem terá um botão de fechar.
+
+    close_by_owner for True e não for passado reply_markup, a mensagem terá
+    um botão de fechar que somente o usuário responsável pelo envio da
+    mensagem que poderá fechá-la. Caso contrário,
+    qualquer jogador poderá fechar.
+    """
+
+    if update and not message_id:
+        message_id = update.effective_message.id
+
+    chat_id = chat_id if chat_id else context._chat_id
+    user_id = user_id if user_id else context._user_id
+    markdown = ParseMode.MARKDOWN_V2 if markdown is True else None
+    reply_parameters = ReplyParameters(
+        message_id=message_id,
+        allow_sending_without_reply=allow_sending_without_reply,
+    )
+    owner_id = user_id if close_by_owner is True else None
+    reply_markup = (
+        reply_markup
+        if reply_markup != REPLY_MARKUP_DEFAULT
+        else get_close_keyboard(user_id=owner_id)
+    )
+
+    # if silent is None:
+    #     if isinstance(chat_id, int):
+    #         silent = get_attribute_group_or_player(chat_id, "silent")
+    #     elif isinstance(user_id, int):
+    #         silent = get_player_attribute_by_id(user_id, "silent")
+
+    reply_text_kwargs = dict(
+        chat_id=chat_id,
+        text=text,
+        parse_mode=markdown,
+        disable_notification=silent,
+        reply_markup=reply_markup,
+        reply_parameters=reply_parameters,
+    )
+
+    response = await call_telegram_message_function(
+        function_caller=function_caller,
+        function=context.bot.send_message,
+        context=context,
+        need_response=need_response,
+        skip_retry=skip_retry,
+        auto_delete_message=auto_delete_message,
+        **reply_text_kwargs,
+    )
+
+    return response
 
 
 # JOB FUNCTIONs
@@ -301,3 +396,37 @@ def job_exists(context: ContextTypes.DEFAULT_TYPE, job_name: str) -> bool:
     current_jobs = context.job_queue.get_jobs_by_name(job_name)
 
     return bool(current_jobs)
+
+
+# BUTTONS FUNCTIONS
+def get_close_button(
+    user_id: int,
+    text: str = None,
+    right_icon: bool = False,
+) -> InlineKeyboardButton:
+    """Se user_id for None, qualquer um pode fechar a mensagem,
+    caso contrário, somente o usuário com o mesmo user_id poderar fechar
+    a mensagem.
+    """
+
+    if text is None:
+        text = LEFT_CLOSE_BUTTON_TEXT
+        if right_icon:
+            text = RIGHT_CLOSE_BUTTON_TEXT
+
+    return InlineKeyboardButton(
+        text=text,
+        callback_data=(
+            f'{{"command":"{CALLBACK_CLOSE}",' f'"user_id":{user_id}}}'
+        ),
+    )
+
+
+# KEYBOARDS FUNCTIONS
+def get_close_keyboard(user_id: int) -> InlineKeyboardMarkup:
+    """Se user_id for None, qualquer um pode fechar a mensagem,
+    caso contrário, somente o usuário com o mesmo user_id poderar fechar
+    a mensagem.
+    """
+
+    return InlineKeyboardMarkup([[get_close_button(user_id=user_id)]])

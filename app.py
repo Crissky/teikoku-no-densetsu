@@ -1,6 +1,8 @@
 import logging
 from decouple import config
 
+from bot import SIGNUP_HANDLERS
+
 from telegram.ext import Application
 
 TELEGRAM_TOKEN = config("TELEGRAM_TOKEN")
@@ -32,6 +34,13 @@ def main() -> None:
     """Run the bot."""
     # Create the Application and pass it your bot's token.
     application = Application.builder().token(TELEGRAM_TOKEN).build()
+
+    # Add Single Handler =====================================================
+    # application.add_handler()
+
+    # Add Multiple Handlers ==================================================
+    application.add_handlers(SIGNUP_HANDLERS)
+
 
     # Run the bot until the user presses Ctrl-C
     application.run_polling()
