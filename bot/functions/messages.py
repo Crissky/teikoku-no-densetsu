@@ -305,6 +305,42 @@ async def answer(query: CallbackQuery, text: str, **kwargs):
         logger.warning(f"  text: {text}")
 
 
+# CALLBACK FUNCTIONS
+def dict_to_callback_data(callback_dict: dict) -> str:
+    """Transforma um dicionário em uma string compactada usada no campo data
+    de um botão.
+    """
+
+    items = []
+    for key, value in callback_dict.items():
+        key_int = CALLBACK_KEY_LIST.index(key)
+        if isinstance(value, (str, ObjectId)):
+            items.append(f'{key_int}:"{value}"')
+        else:
+            items.append(f"{key_int}:{value}")
+    text = ",".join(items)
+    text = f"{text}"
+
+    return text
+
+
+def callback_data_to_dict(callback_data: str) -> dict:
+    """Transforma de volta uma string compactada usada no campo data
+    de um botão em um dicionário.
+    """
+
+    if not callback_data.startswith("{"):
+        callback_data = "{" + callback_data
+    if not callback_data.endswith("}"):
+        callback_data = callback_data + "}"
+
+    callback_data = eval(callback_data)
+    callback_data = {
+        CALLBACK_KEY_LIST[key]: value for key, value in callback_data.items()
+    }
+    return callback_data
+
+
 # JOB FUNCTIONs
 # Funções usandas no callback de agendamentos do context.job_queue
 async def job_call_telegram(context: ContextTypes.DEFAULT_TYPE):
@@ -490,11 +526,12 @@ def get_close_button(
         if right_icon:
             text = RIGHT_CLOSE_BUTTON_TEXT
 
+    callback_data = dict_to_callback_data(
+        {"command": CALLBACK_CLOSE, "user_id": user_id}
+    )
     return InlineKeyboardButton(
         text=text,
-        callback_data=(
-            f'{{"command":"{CALLBACK_CLOSE}",' f'"user_id":{user_id}}}'
-        ),
+        callback_data=(callback_data),
     )
 
 
@@ -506,3 +543,10 @@ def get_close_keyboard(user_id: int) -> InlineKeyboardMarkup:
     """
 
     return InlineKeyboardMarkup([[get_close_button(user_id=user_id)]])
+
+
+if __name__ == "__main__":
+    callback_dict = {"command": "test", "user_id": 123456789}
+    callback_data = dict_to_callback_data(callback_dict)
+    print(callback_data)
+    print(callback_data_to_dict(callback_data))
