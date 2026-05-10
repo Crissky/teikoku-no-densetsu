@@ -348,9 +348,3 @@ class Model(ABC):
         },
         """
         return {}
-
-
-if __name__ == "__main__":
-    model1 = Model()
-    model2 = Model()
-    print(model1 is model2)
