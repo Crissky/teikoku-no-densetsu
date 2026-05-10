@@ -262,6 +262,49 @@ async def reply_message(
     return response
 
 
+# QUERY FUNCTIONS
+async def delete_message_from_query(
+    function_caller: str,
+    context: ContextTypes.DEFAULT_TYPE,
+    query: CallbackQuery,
+):
+    """Deleta a mensagem usando query,
+    caso ocorra um erro BadRequest tenta deletar a mensagem usando o context.
+    """
+
+    message_id = query.message.message_id
+    try:
+        logger.info("DELETE_MESSAGE() TRYING QUERY.DELETE_MESSAGE")
+        await call_telegram_message_function(
+            function_caller=function_caller + " and DELETE_MESSAGE()",
+            function=query.delete_message,
+            context=context,
+            auto_delete_message=False,
+        )
+    except BadRequest as e:
+        logger.warning("DELETE_MESSAGE() BADREQUEST EXCEPT")
+        if "Query is too old" in e.message:
+            await delete_message_from_context(
+                function_caller=function_caller,
+                context=context,
+                message_id=message_id,
+            )
+        elif "Message to delete not found" in e.message:
+            logger.warning(f'\tError Message: "{e.message}"')
+        else:
+            raise e
+
+
+async def answer(query: CallbackQuery, text: str, **kwargs):
+    """Tenta enviar um answer, caso ocorra um erro, print o erro e o text"""
+
+    try:
+        await query.answer(text=text, **kwargs)
+    except BadRequest:
+        logger.warning("ANSWER() BADREQUEST EXCEPT.")
+        logger.warning(f"  text: {text}")
+
+
 # JOB FUNCTIONs
 # Funções usandas no callback de agendamentos do context.job_queue
 async def job_call_telegram(context: ContextTypes.DEFAULT_TYPE):
