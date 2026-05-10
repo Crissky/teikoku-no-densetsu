@@ -490,12 +490,12 @@ def remove_job_by_name(
     """Remove o job pelo nome."""
 
     current_jobs = context.job_queue.get_jobs_by_name(job_name)
-    logger.info("CURRENT_JOBS:", current_jobs)
+    logger.info(f"CURRENT_JOBS: {current_jobs}")
     if not current_jobs:
         return False
     for job in current_jobs:
-        logger.info("JOB REMOVIDO:", job.name)
         job.schedule_removal()
+        logger.info(f"JOB REMOVIDO: {job.name}")
 
     return True
 

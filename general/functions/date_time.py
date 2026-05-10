@@ -84,7 +84,7 @@ def adjust_season_datetime(input_datetime: datetime) -> datetime:
     Caso contrário, retorna o mesmo datetime sem alterações.
     """
 
-    logger.debug("START ADJUST_DATETIME:", input_datetime)
+    logger.debug(f"START ADJUST_DATETIME: {input_datetime}")
     now = get_brazil_time_now()
     if replace_tzinfo(input_datetime) <= now:
         try:
@@ -97,7 +97,7 @@ def adjust_season_datetime(input_datetime: datetime) -> datetime:
             # Trata datas como 29 de fevereiro em anos não bissextos
             input_datetime = input_datetime + timedelta(days=366)
             input_datetime = adjust_season_datetime(input_datetime)
-    logger.debug("END ADJUST_DATETIME:", input_datetime)
+    logger.debug(f"END ADJUST_DATETIME: {input_datetime}")
 
     return input_datetime
 
