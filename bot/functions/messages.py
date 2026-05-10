@@ -233,6 +233,7 @@ async def reply_message(
         else get_close_keyboard(user_id=owner_id)
     )
 
+    # TODO implementar atributo `silence` em Player e na class que for representar o grupo
     # if silent is None:
     #     if isinstance(chat_id, int):
     #         silent = get_attribute_group_or_player(chat_id, "silent")
