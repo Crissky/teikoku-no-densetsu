@@ -162,6 +162,7 @@ async def delete_message_from_context(
             function=context.bot.delete_message,
             context=context,
             need_response=False,
+            auto_delete_message=False,
             **delete_message_kwargs,
         )
     except BadRequest as e:
