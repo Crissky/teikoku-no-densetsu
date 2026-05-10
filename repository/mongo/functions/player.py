@@ -13,13 +13,13 @@ def save_player(player: Player) -> Player:
 
     player_model = PlayerModel()
     player_model.save(player)
-    saved_player = get_player_by_user_id(player.user_id)
+    retrieved_player = get_player_by_user_id(player.user_id)
     logger.info(
-        f"Player '{saved_player.name}' salvo com "
-        f"USER ID '{saved_player.user_id}'"
+        f"Player '{retrieved_player.name}' salvo com "
+        f"USER ID '{retrieved_player.user_id}'"
     )
 
-    return saved_player
+    return retrieved_player
 
 
 def get_player_by_user_id(user_id: int) -> Player:
