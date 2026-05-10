@@ -1,5 +1,5 @@
 import unittest
-from teikoku.player import Player
+from teikoku.register.player import Player
 
 
 class TestPlayer(unittest.TestCase):

@@ -1,7 +1,7 @@
 import logging
 
 from repository.mongo.models.player import PlayerModel
-from teikoku.player import Player
+from teikoku.register.player import Player
 
 
 logger = logging.getLogger(__name__)

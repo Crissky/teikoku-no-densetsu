@@ -8,7 +8,7 @@ from bot.functions.messages import reply_message
 from bot.functions.user import get_username
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.player import exists_player, save_player
-from teikoku.player import Player
+from teikoku.register.player import Player
 
 
 async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
