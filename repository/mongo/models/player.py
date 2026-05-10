@@ -23,9 +23,9 @@ if __name__ == "__main__":
 
     print("\nSAVING PLAYER...")
     player_model.save(player)
-    saved_player = player_model.get("123456789")
 
     print("\nGETTING SAVED PLAYER...")
+    saved_player = player_model.get(123456789)
     print("\nSAVED PLAYER:")
     print(saved_player)
     print("\nEQUALS:", player == saved_player)
