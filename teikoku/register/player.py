@@ -8,6 +8,7 @@ class Player(MongoBase):
     user_id: int  # TELEGRAM ID
     name: str
     username: str = None  # @ do usuário
+    silent: bool = False
 
     def __post_init__(self):
         super().__post_init__()
@@ -16,9 +17,8 @@ class Player(MongoBase):
         if not self.user_id:
             raise ValueError(f"O user_id '{self.user_id}' não é válido.")
         if not isinstance(self.user_id, int):
-            raise TypeError(
-                f"O user_id precisa ser do tipo int ({type(self.user_id)})."
-            )
+            e = f"O user_id precisa ser do tipo int ({type(self.user_id)})."
+            raise TypeError(e)
 
         # NAME
         if self.name is not None:
@@ -27,14 +27,17 @@ class Player(MongoBase):
         # USERNAME
         username = self.username
         if not isinstance(username, (str, type(None))):
-            raise TypeError(
-                f"O username precisa ser do tipo str ({type(username)})."
-            )
+            e = f"O username precisa ser do tipo str ({type(username)})."
+            raise TypeError(e)
         elif isinstance(username, str) and not username.startswith("@"):
             raise ValueError(
                 f"O username '{username}' não é válido "
                 "(precisa começar com '@')."
             )
+
+        if not isinstance(self.silent, bool):
+            e = f"O silent precisa ser do tipo bool ({type(self.silent)})."
+            raise TypeError(e)
 
     def __eq__(self, value):
         result = False
@@ -52,6 +55,7 @@ class Player(MongoBase):
         text = f"Name: {self.name}\n"
         text += f"Username: {self.username or ''}\n"
         text += f"User ID: {self.user_id}\n"
+        text += f"Modo Silencioso: {self.translate(self.silent)}\n"
 
         return text
 

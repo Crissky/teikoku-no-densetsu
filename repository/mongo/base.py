@@ -2,7 +2,7 @@ import logging
 
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
-from typing import Union
+from typing import Any, Union
 
 from bson import ObjectId
 
@@ -40,3 +40,11 @@ class MongoBase:
         self_fields = fields(self)
 
         return {f.name: data[f.name] for f in self_fields if f.init}
+
+    def translate(self, value: Any) -> Union[str, Any]:
+        if value is True:
+            value = "Sim"
+        elif value is False:
+            value = "Não"
+
+        return value
