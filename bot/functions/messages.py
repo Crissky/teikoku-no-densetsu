@@ -371,6 +371,15 @@ def schedule_job_delete_message_from_context(
         logger.info(f'Job "{job_name}" já existe.')
 
 
+def remove_job_delete_message_from_context(
+    context: ContextTypes.DEFAULT_TYPE, chat_id: int, message_id: int
+):
+    job_name = get_job_delete_message_from_context_name(
+        chat_id=chat_id, message_id=message_id
+    )
+    remove_job_by_name(context=context, job_name=job_name)
+
+
 # SUPPORT FUNCTIONs
 def get_hours_delete_message_from_context(
     chat_id: int = None,
