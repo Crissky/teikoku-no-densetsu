@@ -22,9 +22,9 @@ def save_player(player: Player) -> Player:
     return saved_player
 
 
-def get_player_by_user_id(user_id: str) -> Player:
-    if not isinstance(user_id, str):
-        raise TypeError("user_id precisa ser uma string.")
+def get_player_by_user_id(user_id: int) -> Player:
+    if not isinstance(user_id, int):
+        raise TypeError("user_id precisa ser uma int.")
 
     player_model = PlayerModel()
     player = player_model.get(query={"user_id": user_id})
@@ -32,9 +32,9 @@ def get_player_by_user_id(user_id: str) -> Player:
     return player
 
 
-def exists_player(user_id: str) -> bool:
-    if not isinstance(user_id, str):
-        raise TypeError("user_id precisa ser uma string.")
+def exists_player(user_id: int) -> bool:
+    if not isinstance(user_id, int):
+        raise TypeError("user_id precisa ser uma int.")
     player_model = PlayerModel()
 
     return player_model.exists(_id=user_id)

@@ -6,7 +6,7 @@ from repository.mongo.base import MongoBase
 
 @dataclass
 class Player(MongoBase):
-    user_id: Union[int, str]  # TELEGRAM ID
+    user_id: int  # TELEGRAM ID
     name: str
     username: str = None  # @ do usuário
 
@@ -16,12 +16,9 @@ class Player(MongoBase):
         # USER ID
         if not self.user_id:
             raise ValueError(f"O user_id '{self.user_id}' não é válido.")
-        elif isinstance(self.user_id, int):
-            self.user_id = str(self.user_id)
-        if not isinstance(self.user_id, str):
+        if not isinstance(self.user_id, int):
             raise TypeError(
-                "O user_id precisa ser do tipo int ou str "
-                f"({type(self.user_id)})."
+                f"O user_id precisa ser do tipo int ({type(self.user_id)})."
             )
 
         # NAME
@@ -44,10 +41,10 @@ class Player(MongoBase):
         result = False
         if isinstance(value, Player):
             result = self.user_id == value.user_id
-        elif isinstance(value, str):
-            result = self.user_id == value
+        elif isinstance(value, str) and value.isnumeric():
+            result = self.user_id == int(value)
         elif isinstance(value, int):
-            result = self.user_id == str(value)
+            result = self.user_id == value
 
         return result
 
