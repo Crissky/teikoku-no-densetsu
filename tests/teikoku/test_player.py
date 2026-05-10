@@ -125,7 +125,8 @@ class TestPlayer(unittest.TestCase):
 
         player = self._make_player(user_id=123, name="Teste")
         expected = (
-            "Name: Teste\nUsername: \nUser ID: 123\nModo Silencioso: Não\n"
+            "Nome: Teste\nNome de Usuário: \n"
+            "ID de Usuário: 123\nModo Silencioso: Não\n"
         )
         self.assertEqual(player.telegram_text, expected)
 
@@ -136,8 +137,8 @@ class TestPlayer(unittest.TestCase):
             user_id=123, name="Teste", username="@jogador"
         )
         expected = (
-            "Name: Teste\nUsername: @jogador\n"
-            "User ID: 123\nModo Silencioso: Não\n"
+            "Nome: Teste\nNome de Usuário: @jogador\n"
+            "ID de Usuário: 123\nModo Silencioso: Não\n"
         )
         self.assertEqual(player.telegram_text, expected)
 
@@ -146,6 +147,7 @@ class TestPlayer(unittest.TestCase):
 
         player = self._make_player(user_id=123, name="Teste", silent=True)
         expected = (
-            "Name: Teste\nUsername: \nUser ID: 123\nModo Silencioso: Sim\n"
+            "Nome: Teste\nNome de Usuário: \n"
+            "ID de Usuário: 123\nModo Silencioso: Sim\n"
         )
         self.assertEqual(player.telegram_text, expected)

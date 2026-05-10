@@ -35,6 +35,7 @@ class Player(MongoBase):
                 "(precisa começar com '@')."
             )
 
+        # SILENT
         if not isinstance(self.silent, bool):
             e = f"O silent precisa ser do tipo bool ({type(self.silent)})."
             raise TypeError(e)
@@ -52,9 +53,9 @@ class Player(MongoBase):
 
     @property
     def telegram_text(self) -> str:
-        text = f"Name: {self.name}\n"
-        text += f"Username: {self.username or ''}\n"
-        text += f"User ID: {self.user_id}\n"
+        text = f"Nome: {self.name}\n"
+        text += f"Nome de Usuário: {self.username or ''}\n"
+        text += f"ID de Usuário: {self.user_id}\n"
         text += f"Modo Silencioso: {self.translate(self.silent)}\n"
 
         return text
