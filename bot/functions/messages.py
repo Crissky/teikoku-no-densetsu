@@ -3,7 +3,7 @@ import logging
 from datetime import timedelta
 from random import randint
 from time import sleep
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Union
 
 from bson import ObjectId
 from telegram import (
@@ -185,12 +185,12 @@ async def reply_message(
     function_caller: str,
     text: str,
     context: ContextTypes.DEFAULT_TYPE,
-    update: Update = None,
-    chat_id: int = None,
-    user_id: int = None,
-    message_id: int = None,
+    update: Optional[Update] = None,
+    chat_id: Optional[int] = None,
+    user_id: Optional[int] = None,
+    message_id: Optional[int] = None,
     markdown: bool = False,
-    silent: bool = None,
+    silent: Optional[bool] = None,
     reply_markup: InlineKeyboardMarkup = REPLY_MARKUP_DEFAULT,
     allow_sending_without_reply: bool = True,
     close_by_owner: bool = True,
@@ -218,6 +218,8 @@ async def reply_message(
 
     if update and not message_id:
         message_id = update.effective_message.id
+    if message_id is None:
+        raise ValueError("É obrigatório passar o update ou o message_id.")
 
     chat_id = chat_id if chat_id else context._chat_id
     user_id = user_id if user_id else context._user_id
@@ -418,7 +420,7 @@ def remove_job_delete_message_from_context(
 
 # SUPPORT FUNCTIONs
 def get_hours_delete_message_from_context(
-    chat_id: int = None,
+    chat_id: Optional[int] = None,
     value: Union[bool, int, timedelta] = HOURS_DELETE_MESSAGE_FROM_CONTEXT,
 ) -> timedelta:
     """Retorna o tempo para deletar uma mensagem após um tempo
@@ -442,7 +444,7 @@ def get_hours_delete_message_from_context(
 
 
 def get_timedelta_from_chat(
-    chat_id: int = None, minutes: int = 0, hours: int = 0
+    chat_id: Optional[int] = None, minutes: int = 0, hours: int = 0
 ) -> timedelta:
     if minutes < 0 or hours < 0:
         raise ValueError(
@@ -472,7 +474,9 @@ def get_job_delete_message_from_context_name(chat_id, message_id):
     return f"DELETE_MESSAGE_FROM_CONTEXT_{chat_id}_{message_id}"
 
 
-def is_chat_group(message: Message = None, chat_type: str = None) -> bool:
+def is_chat_group(
+    message: Optional[Message] = None, chat_type: Optional[str] = None
+) -> bool:
     if isinstance(message, Message):
         chat_type = message.chat.type
     elif not isinstance(chat_type, str):
@@ -513,7 +517,7 @@ def job_exists(context: ContextTypes.DEFAULT_TYPE, job_name: str) -> bool:
 # BUTTONS FUNCTIONS
 def get_close_button(
     user_id: int,
-    text: str = None,
+    text: Optional[str] = None,
     right_icon: bool = False,
 ) -> InlineKeyboardButton:
     """Se user_id for None, qualquer um pode fechar a mensagem,
