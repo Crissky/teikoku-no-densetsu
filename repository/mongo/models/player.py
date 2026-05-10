@@ -24,10 +24,18 @@ if __name__ == "__main__":
     print("\nSAVING PLAYER...")
     player_model.save(player)
 
-    print("\nGETTING SAVED PLAYER...")
-    saved_player = player_model.get(123456789)
-    print("\nSAVED PLAYER:")
-    print(saved_player)
-    print("\nEQUALS:", player == saved_player)
+    print("\nRETRIEVING SAVED PLAYER...")
+    retrieved_player = player_model.get(123456789)
+    if retrieved_player is None:
+        raise ValueError(f"retrieved_player é None ({retrieved_player}).")
+    print("\nRETRIEVED PLAYER:")
+    print(retrieved_player)
+    print("\nEQUALS:", player == retrieved_player)
+    if player != retrieved_player:
+        raise ValueError(
+            "O valor salvo é diferente do valor recuperado.\n"
+            f"Valor Salvo: {player}\n"
+            f"Valor Recuperado: {retrieved_player}\n"
+        )
 
     print(" END LOCAL TEST ".center(79, "="))
