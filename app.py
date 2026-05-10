@@ -1,6 +1,7 @@
 import logging
 from decouple import config
 
+from bot import CLOSE_MSG_HANDLER
 from bot import SIGNUP_HANDLERS
 
 from telegram.ext import Application
@@ -36,7 +37,7 @@ def main() -> None:
     application = Application.builder().token(TELEGRAM_TOKEN).build()
 
     # Add Single Handler =====================================================
-    # application.add_handler()
+    application.add_handler(CLOSE_MSG_HANDLER)
 
     # Add Multiple Handlers ==================================================
     application.add_handlers(SIGNUP_HANDLERS)
