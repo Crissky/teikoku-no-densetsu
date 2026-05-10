@@ -1,13 +1,16 @@
+import logging
+
 from datetime import datetime, timedelta
 from random import randint
 
 import pytz
 
-
 UTC = pytz.UTC
-BRAZIL_TIMEZONE = pytz.timezone('America/Sao_Paulo')
+BRAZIL_TIMEZONE = pytz.timezone("America/Sao_Paulo")
 MIN_ADD_MINUTES = 5
 MAX_ADD_MINUTES = 10
+
+logger = logging.getLogger(__name__)
 
 
 def get_utc_time_now() -> datetime:
@@ -48,7 +51,7 @@ def add_random_minutes_now(dt: datetime = None) -> datetime:
         dt = get_brazil_time_now()
     dt = replace_tzinfo(dt)
     minutes = randint(MIN_ADD_MINUTES, MAX_ADD_MINUTES)
-    print(f"Adding {minutes} minutes")
+    logger.info(f"Adding {minutes} minutes")
 
     return dt + timedelta(minutes=minutes)
 
@@ -76,12 +79,12 @@ def get_midnight_hour(get_yesterday: bool = False) -> datetime:
 
 
 def adjust_season_datetime(input_datetime: datetime) -> datetime:
-    '''Adiciona 1 ano ao datetime fornecido se a data já passou em relação ao
+    """Adiciona 1 ano ao datetime fornecido se a data já passou em relação ao
     momento atual.
     Caso contrário, retorna o mesmo datetime sem alterações.
-    '''
+    """
 
-    # print('START ADJUST_DATETIME:', input_datetime)
+    logger.debug("START ADJUST_DATETIME:", input_datetime)
     now = get_brazil_time_now()
     if replace_tzinfo(input_datetime) <= now:
         try:
@@ -94,16 +97,16 @@ def adjust_season_datetime(input_datetime: datetime) -> datetime:
             # Trata datas como 29 de fevereiro em anos não bissextos
             input_datetime = input_datetime + timedelta(days=366)
             input_datetime = adjust_season_datetime(input_datetime)
-    # print('END ADJUST_DATETIME:', input_datetime)
+    logger.debug("END ADJUST_DATETIME:", input_datetime)
 
     return input_datetime
 
 
-if __name__ == '__main__':
-    print('UTC', get_utc_time_now())
-    print('BRAZIL', get_brazil_time_now())
+if __name__ == "__main__":
+    print("UTC", get_utc_time_now())
+    print("BRAZIL", get_brazil_time_now())
 
     dt = get_utc_time_now()
     dt = utc_to_brazil_datetime(dt)
     dt = utc_to_brazil_datetime(dt)
-    print('BRAZIL', dt)
+    print("BRAZIL", dt)
