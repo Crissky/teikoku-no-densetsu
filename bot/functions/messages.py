@@ -7,6 +7,7 @@ from typing import Any, Callable, Union
 
 from bson import ObjectId
 from telegram import (
+    CallbackQuery,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
@@ -18,21 +19,26 @@ from telegram.error import BadRequest, RetryAfter, TimedOut
 from telegram.ext import ContextTypes, ConversationHandler
 
 from bot.constants.close import CALLBACK_CLOSE
+from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
 
 logger = logging.getLogger(__name__)
 
 
 HOURS_DELETE_MESSAGE_FROM_CONTEXT = 4
-BASE_JOB_KWARGS = {"misfire_grace_time": None}
 CHAT_TYPE_GROUPS = (ChatType.GROUP, ChatType.SUPERGROUP)
+MIN_AUTODELETE_TIME = timedelta(minutes=15)
+HALF_AUTODELETE_TIME = timedelta(minutes=30)
 
 # TEXTS
-REPLY_MARKUP_DEFAULT = 'DEFAULT'
-LEFT_CLOSE_BUTTON_TEXT = f'{EmojiEnum.CLOSE.value}Fechar'
-RIGHT_CLOSE_BUTTON_TEXT = f'Fechar{EmojiEnum.CLOSE.value}'
-REFRESH_BUTTON_TEXT = f'{EmojiEnum.REFRESH.value}Atualizar'
-DETAIL_BUTTON_TEXT = f'{EmojiEnum.DETAIL.value}Detalhar'
+REPLY_MARKUP_DEFAULT = "DEFAULT"
+LEFT_CLOSE_BUTTON_TEXT = f"{EmojiEnum.CLOSE.value}Fechar"
+RIGHT_CLOSE_BUTTON_TEXT = f"Fechar{EmojiEnum.CLOSE.value}"
+REFRESH_BUTTON_TEXT = f"{EmojiEnum.REFRESH.value}Atualizar"
+DETAIL_BUTTON_TEXT = f"{EmojiEnum.DETAIL.value}Detalhar"
+
+
+CALLBACK_KEY_LIST = ["command", "user_id"]
 
 
 # CALL TELEGRAM FUNCTIONs
