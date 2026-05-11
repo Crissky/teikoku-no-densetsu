@@ -6,6 +6,8 @@ from bot import SIGNUP_HANDLERS
 
 from telegram.ext import Application
 
+from bot.conversations.register.signup_group import SIGNUP_GROUP_HANDLERS
+
 TELEGRAM_TOKEN = config("TELEGRAM_TOKEN")
 IS_PRODUCTION = config("IS_PRODUCTION", cast=bool, default=True)
 
@@ -49,6 +51,7 @@ def main() -> None:
 
     # Add Multiple Handlers ==================================================
     application.add_handlers(SIGNUP_HANDLERS)
+    application.add_handlers(SIGNUP_GROUP_HANDLERS)
 
     logger.info("Iniciando run_polling() Teikoku no Densetshu!")
     # Run the bot until the user presses Ctrl-C
