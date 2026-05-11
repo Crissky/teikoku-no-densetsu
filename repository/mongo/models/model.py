@@ -72,7 +72,7 @@ class Model(ABC):
 
         Se fields for passado e partial não for True,
         retorna o objeto instanciado com os campos desejados passados como
-        argumentos e os demais usaram o default da classe.
+        argumentos e os demais usarão o default da classe.
         """
 
         if _id:
