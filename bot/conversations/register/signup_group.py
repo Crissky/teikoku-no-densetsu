@@ -7,14 +7,16 @@ from bot.constants.sections import (
     GROUP_SUBSECTION_NAME,
     SIGNUP_GROUP_SECTION_NAME,
 )
+from bot.decorators.group import only_group
+from bot.decorators.player import need_admin_player
 from bot.functions.messages import reply_message
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.group import exists_group, save_group
 from teikoku.register.group import Group
 
 
-# TODO Adicionar @decorator que checa se usuário é admin do grupo
-# TODO Adicionar @decorator que checa se usuário está cadastrado
+@only_group
+@need_admin_player
 async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update._effective_chat
     chat_id = chat.id
