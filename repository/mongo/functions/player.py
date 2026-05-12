@@ -32,7 +32,15 @@ def get_player_by_user_id(user_id: int) -> Player:
     return player
 
 
-def exists_player(user_id: int) -> bool:
+def exists_player(
+    user_id: Optional[int] = None,
+    update: Optional[Update] = None,
+    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+) -> bool:
+    if update and user_id is None:
+        user_id = update.effective_user.id
+    elif context and user_id is None:
+        user_id = context._user_id
     if not isinstance(user_id, int):
         raise TypeError("user_id precisa ser um int.")
     player_model = PlayerModel()
