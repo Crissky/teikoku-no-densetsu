@@ -6,7 +6,8 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from bot.constants.close import ACCESS_DENIED, CALLBACK_CLOSE
+from bot.constants.close import ACCESS_DENIED
+from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.decorators.player import (
     alert_if_not_chat_owner,
     skip_if_no_singup_player,
@@ -48,5 +49,5 @@ async def close(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 
 CLOSE_MSG_HANDLER = CallbackQueryHandler(
-    close, pattern=check_pattern(f'"{CALLBACK_CLOSE}"', _match=False)
+    close, pattern=check_pattern(f'"{CALLBACK_COMMAND_CLOSE}"', _match=False)
 )
