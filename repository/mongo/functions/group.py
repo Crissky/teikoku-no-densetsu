@@ -41,9 +41,9 @@ def get_group(
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
 ) -> Group:
-    if update:
+    if isinstance(update, Update):
         chat_id = update.effective_chat.id
-    elif context:
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE):
         chat_id = context._chat_id
     else:
         raise ValueError("É preciso informar ou update ou context.")
@@ -56,9 +56,9 @@ def exists_group(
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
 ) -> bool:
-    if update and chat_id is None:
+    if isinstance(update, Update) and chat_id is None:
         chat_id = update.effective_chat.id
-    elif context and chat_id is None:
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE) and chat_id is None:
         chat_id = context._chat_id
     if not isinstance(chat_id, int):
         raise TypeError("chat_id precisa ser um int.")

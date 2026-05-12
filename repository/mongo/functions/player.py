@@ -41,9 +41,9 @@ def get_player(
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
 ) -> Player:
-    if update:
+    if isinstance(update, Update):
         user_id = update.effective_user.id
-    elif context:
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE):
         user_id = context._user_id
     else:
         raise ValueError("É preciso informar ou update ou context.")
@@ -56,9 +56,9 @@ def exists_player(
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
 ) -> bool:
-    if update and user_id is None:
+    if isinstance(update, Update) and user_id is None:
         user_id = update.effective_user.id
-    elif context and user_id is None:
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE) and user_id is None:
         user_id = context._user_id
     if not isinstance(user_id, int):
         raise TypeError("user_id precisa ser um int.")
