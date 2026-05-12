@@ -92,6 +92,7 @@ class EmojiEnum(Enum):
     EQUIP_INFO = 'ℹ️'
     EQUIP_COMPARE = '🧿'
     REFRESH = '🔄'
+    UPDATE = '⬆️'
     DETAIL = 'ℹ️'
     CLOSE = '❌'
     REST = '💤'
