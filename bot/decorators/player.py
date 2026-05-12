@@ -10,7 +10,7 @@ from bot.functions.messages import (
     callback_data_to_dict,
     reply_message,
 )
-from repository.mongo.functions.player import exists_player
+from repository.mongo.functions.player import exists_player, user_is_admin
 from repository.mongo.models.player import PlayerModel
 
 logger = logging.getLogger(__name__)
@@ -32,7 +32,7 @@ def need_singup_player(callback):
                 f"Crie a conta com o comando /{SIGNUP_COMMNADS[0]}."
             )
             await reply_message(
-                function_caller="PLAYER.NEED_SINGUP_PLAYER()",
+                function_caller="@NEED_SINGUP_PLAYER()",
                 text=text,
                 context=context,
                 update=update,
@@ -42,6 +42,39 @@ def need_singup_player(callback):
                 auto_delete_message=MIN_AUTODELETE_TIME,
             )
             return ConversationHandler.END
+
+    return wrapper
+
+
+def need_admin_player(callback):
+    async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
+        logger.info("@NEED_ADMIN_PLAYER")
+        user_id = update.effective_user.id
+        is_admin = await user_is_admin(update=update)
+
+        if not exists_player(user_id=user_id):
+            text = (
+                "Você precisa criar sua conta "
+                "para utilizar esse comando.\n"
+                f"Crie a conta com o comando /{SIGNUP_COMMNADS[0]}."
+            )
+        elif not is_admin:
+            text = "Somente um Admnistrador do Grupo pode usar esse comando."
+        else:
+            logger.info("\tAUTORIZADO - ADMNISTRADOR POSSUI CONTA.")
+            return await callback(update, context)
+
+        await reply_message(
+            function_caller="@NEED_ADMIN_PLAYER()",
+            text=text,
+            context=context,
+            update=update,
+            allow_sending_without_reply=True,
+            need_response=False,
+            skip_retry=False,
+            auto_delete_message=MIN_AUTODELETE_TIME,
+        )
+        return ConversationHandler.END
 
     return wrapper
 
