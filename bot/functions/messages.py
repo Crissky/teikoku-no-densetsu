@@ -18,7 +18,7 @@ from telegram.constants import ChatType, ParseMode
 from telegram.error import BadRequest, RetryAfter, TimedOut
 from telegram.ext import ContextTypes, ConversationHandler
 
-from bot.constants.close import CALLBACK_CLOSE
+from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
 
@@ -34,7 +34,10 @@ HALF_AUTODELETE_TIME = timedelta(minutes=30)
 REPLY_MARKUP_DEFAULT = "DEFAULT"
 LEFT_CLOSE_BUTTON_TEXT = f"{EmojiEnum.CLOSE.value}Fechar"
 RIGHT_CLOSE_BUTTON_TEXT = f"Fechar{EmojiEnum.CLOSE.value}"
-REFRESH_BUTTON_TEXT = f"{EmojiEnum.REFRESH.value}Atualizar"
+LEFT_REFRESH_BUTTON_TEXT = f"{EmojiEnum.REFRESH.value}Recarregar"
+RIGHT_REFRESH_BUTTON_TEXT = f"Recarregar{EmojiEnum.REFRESH.value}"
+LEFT_UPDATE_BUTTON_TEXT = f"{EmojiEnum.UPDATE.value}Atualizar"
+RIGHT_UPDATE_BUTTON_TEXT = f"Atualizar{EmojiEnum.UPDATE.value}"
 DETAIL_BUTTON_TEXT = f"{EmojiEnum.DETAIL.value}Detalhar"
 
 
@@ -516,6 +519,29 @@ def job_exists(context: ContextTypes.DEFAULT_TYPE, job_name: str) -> bool:
 
 
 # BUTTONS FUNCTIONS
+def get_button(
+    user_id: int,
+    text: str,
+    command: str,
+    left_button_text: str,
+    right_button_text: str,
+    right_icon: bool = False,
+) -> InlineKeyboardButton:
+    """ """
+
+    if text is None:
+        text = left_button_text
+        if right_icon:
+            text = right_button_text
+
+    callback_data = dict_to_callback_data(
+        {"command": command, "user_id": user_id}
+    )
+    button = InlineKeyboardButton(text=text, callback_data=callback_data)
+
+    return button
+
+
 def get_close_button(
     user_id: int,
     text: Optional[str] = None,
@@ -526,18 +552,62 @@ def get_close_button(
     a mensagem.
     """
 
-    if text is None:
-        text = LEFT_CLOSE_BUTTON_TEXT
-        if right_icon:
-            text = RIGHT_CLOSE_BUTTON_TEXT
-
-    callback_data = dict_to_callback_data(
-        {"command": CALLBACK_CLOSE, "user_id": user_id}
-    )
-    return InlineKeyboardButton(
+    close_button = get_button(
+        user_id=user_id,
         text=text,
-        callback_data=(callback_data),
+        command=CALLBACK_COMMAND_CLOSE,
+        left_button_text=LEFT_CLOSE_BUTTON_TEXT,
+        right_button_text=RIGHT_CLOSE_BUTTON_TEXT,
+        right_icon=right_icon,
     )
+
+    return close_button
+
+
+def get_refresh_button(
+    user_id: int,
+    command: str,
+    text: Optional[str] = None,
+    right_icon: bool = False,
+) -> InlineKeyboardButton:
+    """Se user_id for None, qualquer um pode recarregar a mensagem,
+    caso contrário, somente o usuário com o mesmo user_id poderar recarregar
+    a mensagem.
+    """
+
+    refresh_button = get_button(
+        user_id=user_id,
+        text=text,
+        command=command,
+        left_button_text=LEFT_REFRESH_BUTTON_TEXT,
+        right_button_text=RIGHT_REFRESH_BUTTON_TEXT,
+        right_icon=right_icon,
+    )
+
+    return refresh_button
+
+
+def get_update_button(
+    user_id: int,
+    command: str,
+    text: Optional[str] = None,
+    right_icon: bool = False,
+) -> InlineKeyboardButton:
+    """Se user_id for None, qualquer um pode atualizar a mensagem,
+    caso contrário, somente o usuário com o mesmo user_id poderar atualizar
+    a mensagem.
+    """
+
+    update_button = get_button(
+        user_id=user_id,
+        text=text,
+        command=command,
+        left_button_text=LEFT_UPDATE_BUTTON_TEXT,
+        right_button_text=RIGHT_UPDATE_BUTTON_TEXT,
+        right_icon=right_icon,
+    )
+
+    return update_button
 
 
 # KEYBOARDS FUNCTIONS
@@ -547,7 +617,49 @@ def get_close_keyboard(user_id: int) -> InlineKeyboardMarkup:
     a mensagem.
     """
 
-    return InlineKeyboardMarkup([[get_close_button(user_id=user_id)]])
+    close_button = get_close_button(user_id=user_id)
+    return InlineKeyboardMarkup([[close_button]])
+
+
+def get_refresh_close_keyboard(
+    user_id: int,
+    refresh_command: str,
+    refresh_text: Optional[str] = None,
+) -> InlineKeyboardMarkup:
+    """Se user_id for None, qualquer um pode recarregar e fechar a mensagem,
+    caso contrário, somente o usuário com o mesmo user_id poderar recarregar
+    e fechar a mensagem.
+    """
+
+    refresh_button = get_refresh_button(
+        user_id=user_id, command=refresh_command, text=refresh_text
+    )
+    close_button = get_close_button(user_id=user_id, right_icon=True)
+    return InlineKeyboardMarkup([[refresh_button, close_button]])
+
+
+def get_refresh_update_close_keyboard(
+    user_id: int,
+    refresh_command: str,
+    update_command: str,
+    refresh_text: Optional[str] = None,
+    update_text: Optional[str] = None,
+) -> InlineKeyboardMarkup:
+    """Se user_id for None, qualquer um pode recarregar, atualizar e fechar
+    a mensagem, caso contrário, somente o usuário com o mesmo user_id poderar
+    recarregar, atualizar e fechar a mensagem.
+    """
+
+    refresh_button = get_refresh_button(
+        user_id=user_id, command=refresh_command, text=refresh_text
+    )
+    update_button = get_update_button(
+        user_id=user_id, command=update_command, text=update_text
+    )
+    close_button = get_close_button(user_id=user_id, right_icon=True)
+    return InlineKeyboardMarkup(
+        [[refresh_button, update_button, close_button]]
+    )
 
 
 if __name__ == "__main__":
