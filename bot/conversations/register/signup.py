@@ -44,9 +44,58 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+@need_singup_player
+async def player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query:
+        data = callback_data_to_dict(query.data)
+        command = data.get("command", "COMANDO NÃO ENCONTRADO")
+        await query.answer(f"COMANDO '{command}' AINDA NÃO FOI IMPLEMENTADO.")
+    else:
+        player = get_player(update=update)
+        user_id = player.user_id
+        player_telegram_text = player.telegram_text
+        subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
+        reply_text = f"{subsection}" f"{player_telegram_text}"
+        reply_text = create_text_in_box(
+            text=reply_text, section_name=PLAYER_SECTION_NAME
+        )
+        reply_markup = get_refresh_update_close_keyboard(
+            user_id=user_id,
+            refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
+            update_command=CALLBACK_COMMAND_UPDATE_PLAYER,
+        )
+
+        await reply_message(
+            function_caller="SIGNUP()",
+            text=reply_text,
+            context=context,
+            update=update,
+            markdown=True,
+            reply_markup=reply_markup,
+        )
+
+
+
 SIGNUP_HANDLERS = [
     PrefixHandler(
         PREFIX_COMMANDS, SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER
     ),
     CommandHandler(SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER),
+    PrefixHandler(
+        PREFIX_COMMANDS, PLAYER_COMMNADS, player, BASIC_COMMAND_FILTER
+    ),
+    CommandHandler(PLAYER_COMMNADS, player, BASIC_COMMAND_FILTER),
+    CallbackQueryHandler(
+        player,
+        pattern=check_pattern(
+            f'"{CALLBACK_COMMAND_REFRESH_PLAYER}"', _match=False
+        ),
+    ),
+    CallbackQueryHandler(
+        player,
+        pattern=check_pattern(
+            f'"{CALLBACK_COMMAND_UPDATE_PLAYER}"', _match=False
+        ),
+    ),
 ]
