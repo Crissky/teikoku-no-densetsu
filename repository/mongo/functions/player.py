@@ -1,4 +1,8 @@
 import logging
+from typing import Optional
+
+from telegram import Update
+from telegram.ext import ContextTypes
 
 from repository.mongo.models.player import PlayerModel
 from teikoku.register.player import Player
