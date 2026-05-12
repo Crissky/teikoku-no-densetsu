@@ -2,12 +2,13 @@ import logging
 from typing import Optional
 
 from telegram import Update
+from telegram.constants import ChatType
 from telegram.ext import ContextTypes
 
 from repository.mongo.models.group import GroupModel
 from teikoku.register.group import Group
 
-
+GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
 logger = logging.getLogger(__name__)
 
 
@@ -64,3 +65,7 @@ def exists_group(
     group_model = GroupModel()
 
     return group_model.exists(_id=chat_id)
+
+
+def chat_is_group(update: Update) -> bool:
+    return update.effective_chat.type in GROUP_TYPES
