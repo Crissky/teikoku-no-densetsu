@@ -2,12 +2,13 @@ import logging
 from typing import Optional
 
 from telegram import Update
+from telegram.constants import ChatMemberStatus
 from telegram.ext import ContextTypes
 
 from repository.mongo.models.player import PlayerModel
 from teikoku.register.player import Player
 
-
+ADMIN_TYPES = (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
 logger = logging.getLogger(__name__)
 
 
@@ -64,3 +65,13 @@ def exists_player(
     player_model = PlayerModel()
 
     return player_model.exists(_id=user_id)
+
+
+async def user_is_admin(update: Update) -> bool:
+    chat_id = update.effective_chat.id
+    user_id = update.effective_user.id
+    chat_member = await update._bot.get_chat_member(
+        chat_id=chat_id, user_id=user_id
+    )
+
+    return chat_member.status in ADMIN_TYPES
