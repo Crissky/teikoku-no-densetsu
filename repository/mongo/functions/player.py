@@ -32,6 +32,20 @@ def get_player_by_user_id(user_id: int) -> Player:
     return player
 
 
+def get_player(
+    update: Optional[Update] = None,
+    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+) -> Player:
+    if update:
+        user_id = update.effective_user.id
+    elif context:
+        user_id = context._user_id
+    else:
+        raise ValueError("É preciso informar ou update ou context.")
+
+    return get_player_by_user_id(user_id)
+
+
 def exists_player(
     user_id: Optional[int] = None,
     update: Optional[Update] = None,
