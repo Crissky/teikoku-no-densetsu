@@ -32,6 +32,20 @@ def get_group_by_chat_id(chat_id: int) -> Group:
     return group
 
 
+def get_group(
+    update: Optional[Update] = None,
+    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+) -> Group:
+    if update:
+        chat_id = update.effective_chat.id
+    elif context:
+        chat_id = context._chat_id
+    else:
+        raise ValueError("É preciso informar ou update ou context.")
+
+    return get_group_by_chat_id(chat_id)
+
+
 def exists_group(
     chat_id: Optional[int] = None,
     update: Optional[Update] = None,
