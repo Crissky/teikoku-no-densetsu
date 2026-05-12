@@ -14,7 +14,6 @@ def only_group(callback):
         logger.info("@NEED_GROUP")
         is_group = chat_is_group(update=update)
 
-
         if not is_group:
             text = "Esse comando só pode ser usado em um grupo."
         else:

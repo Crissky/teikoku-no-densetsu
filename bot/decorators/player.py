@@ -134,7 +134,7 @@ def alert_if_not_is_message_owner(
     """Não executa a ação quando o botão é clicado por um usuário que não
     seja o dono da mensagem e envia um alerta para o usuário que clicou no
     botão.
-    
+
     Nomes antigos dessas funções:
         - alert_if_not_chat_owner_to_callback_data_to_dict
         - alert_if_not_chat_owner_to_anyway
