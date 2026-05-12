@@ -32,7 +32,15 @@ def get_group_by_chat_id(chat_id: int) -> Group:
     return group
 
 
-def exists_group(chat_id: int) -> bool:
+def exists_group(
+    chat_id: Optional[int] = None,
+    update: Optional[Update] = None,
+    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+) -> bool:
+    if update and chat_id is None:
+        chat_id = update.effective_chat.id
+    elif context and chat_id is None:
+        chat_id = context._chat_id
     if not isinstance(chat_id, int):
         raise TypeError("chat_id precisa ser um int.")
     group_model = GroupModel()
