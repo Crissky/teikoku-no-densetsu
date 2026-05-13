@@ -47,6 +47,10 @@ async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE): ...
+async def update_group(update: Update, context: ContextTypes.DEFAULT_TYPE): ...
+
+
 SIGNUP_GROUP_HANDLERS = [
     PrefixHandler(
         PREFIX_COMMANDS,
