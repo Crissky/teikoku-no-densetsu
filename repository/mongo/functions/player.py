@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Iterable, Optional, Tuple
+from typing import Any, Iterable, Optional, Tuple, get_type_hints
 
 from telegram import Update
 from telegram.constants import ChatMemberStatus
@@ -39,17 +39,18 @@ def update_player(
         raise TypeError(f"player precisa ser do tipo Player ({type(player)}).")
 
     is_updated = False
+    player_type_hints = get_type_hints(player)
     for attr, value in args:
         if player.has_updatable_attr(attr):
-            player_attr = getattr(player, attr)
-            if type(player_attr) == type(value):
+            player_attr_type = player_type_hints[attr]
+            if player_attr_type == type(value):
                 setattr(player, attr, value)
                 is_updated = True
             else:
                 logger.warning(
                     f"O atributo '{attr}' não pode ser atualizado com o valor "
-                    f"do tipo {type(value)}. "
-                    f"O tipo esperado é {type(player_attr)}."
+                    f"do tipo {type(value)}, pois o tipo esperado é "
+                    f"{type(player_attr_type)}."
                 )
         else:
             logger.warning(f"Player não possui o atributo '{attr}'.")
