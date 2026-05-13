@@ -41,8 +41,16 @@ def update_player(
     is_updated = False
     for attr, value in args:
         if player.has_updatable_attr(attr):
-            setattr(player, attr, value)
-            is_updated = True
+            player_attr = getattr(player, attr)
+            if type(player_attr) == type(value):
+                setattr(player, attr, value)
+                is_updated = True
+            else:
+                logger.warning(
+                    f"O atributo '{attr}' não pode ser atualizado com o valor "
+                    f"do tipo {type(value)}. "
+                    f"O tipo esperado é {type(player_attr)}."
+                )
         else:
             logger.warning(f"Player não possui o atributo '{attr}'.")
 
