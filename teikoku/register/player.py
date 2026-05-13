@@ -10,6 +10,8 @@ class Player(MongoBase):
     username: str = None  # @ do usuário
     silent: bool = False
 
+    UPDATABLE_ATTR_LIST = ("silent",)
+
     def __post_init__(self):
         super().__post_init__()
 
@@ -63,6 +65,7 @@ class Player(MongoBase):
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
+    print(f"UPDATABLE_ATTR_LIST: {Player.UPDATABLE_ATTR_LIST}")
     player = Player(user_id=123456789, name="Teste")
 
     print("\nPLAYER:")
