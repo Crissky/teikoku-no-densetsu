@@ -6,7 +6,7 @@ from telegram.ext import (
     CommandHandler,
 )
 
-from bot.constants.close import ACCESS_DENIED
+from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.commands import PLAYER_COMMNADS, SIGNUP_COMMNADS
 from bot.constants.filters import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.query import (
@@ -73,7 +73,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @need_singup_player
-@alert_if_not_chat_owner(alert_text=ACCESS_DENIED)
+@alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     player = get_player(update=update)

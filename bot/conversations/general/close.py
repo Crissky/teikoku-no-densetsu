@@ -6,7 +6,7 @@ from telegram.ext import (
     ContextTypes,
 )
 
-from bot.constants.close import ACCESS_DENIED
+from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.decorators.player import (
     alert_if_not_chat_owner,
@@ -25,7 +25,7 @@ from bot.functions.messages import (
 logger = logging.getLogger(__name__)
 
 
-@alert_if_not_chat_owner(alert_text=ACCESS_DENIED)
+@alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 @print_basic_infos
 @skip_if_no_singup_player
 async def close(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
