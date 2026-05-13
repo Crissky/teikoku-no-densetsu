@@ -239,3 +239,7 @@ class FaceEmojiEnum(Enum):
     WEARY_CAT_FACE = "🙀"
     CRYING_CAT_FACE = "😿"
     POUTING_CAT_FACE = "😾"
+
+
+def get_random_face_emoji() -> str:
+    return choice(list(FaceEmojiEnum)).value
