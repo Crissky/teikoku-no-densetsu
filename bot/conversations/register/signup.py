@@ -133,7 +133,7 @@ async def update_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_text = (
             f"{FAIL_UPDATE_NOT_ARGS}"
             "Atributos alteráveis do jogador:\n"
-            f"{', '.join(Player.UPDATABLE_ATTR_LIST)}"
+            f"{', '.join((f'`{a}`' for a in Player.UPDATABLE_ATTR_LIST))}"
         )
     else:
         formated_args = format_args(args)
