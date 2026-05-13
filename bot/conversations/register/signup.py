@@ -1,13 +1,41 @@
 from telegram import Update
-from telegram.ext import ContextTypes, PrefixHandler, CommandHandler
+from telegram.ext import (
+    CallbackQueryHandler,
+    ContextTypes,
+    PrefixHandler,
+    CommandHandler,
+)
 
-from bot.constants.commands import SIGNUP_COMMNADS
+from bot.constants.close import ACCESS_DENIED
+from bot.constants.commands import PLAYER_COMMNADS, SIGNUP_COMMNADS
 from bot.constants.filters import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
-from bot.constants.sections import PLAYER_SUBSECTION_NAME, SIGNUP_SECTION_NAME
-from bot.functions.messages import reply_message
+from bot.constants.query import (
+    CALLBACK_COMMAND_REFRESH_PLAYER,
+    CALLBACK_COMMAND_UPDATE_PLAYER,
+)
+from bot.constants.sections import (
+    PLAYER_SECTION_NAME,
+    PLAYER_SUBSECTION_NAME,
+    REFRESH_PLAYER_SECTION_NAME,
+    SIGNUP_SECTION_NAME,
+    UPDATE_PLAYER_SECTION_NAME,
+)
+from bot.decorators.player import alert_if_not_chat_owner, need_singup_player
+from bot.functions.handler import check_pattern
+from bot.functions.messages import (
+    callback_data_to_dict,
+    edit_message_text,
+    get_refresh_update_close_keyboard,
+    reply_message,
+)
 from bot.functions.user import get_username
+from bot.functions.player import player_telegram_text
 from general.functions.text import create_text_in_box, format_subsection
-from repository.mongo.functions.player import exists_player, save_player
+from repository.mongo.functions.player import (
+    exists_player,
+    get_player,
+    save_player,
+)
 from teikoku.register.player import Player
 
 
@@ -45,35 +73,43 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @need_singup_player
-async def player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+@alert_if_not_chat_owner(alert_text=ACCESS_DENIED)
+async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
-    if query:
-        data = callback_data_to_dict(query.data)
-        command = data.get("command", "COMANDO NÃO ENCONTRADO")
-        await query.answer(f"COMANDO '{command}' AINDA NÃO FOI IMPLEMENTADO.")
-    else:
-        player = get_player(update=update)
-        user_id = player.user_id
-        player_telegram_text = player.telegram_text
-        subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
-        reply_text = f"{subsection}" f"{player_telegram_text}"
-        reply_text = create_text_in_box(
-            text=reply_text, section_name=PLAYER_SECTION_NAME
-        )
-        reply_markup = get_refresh_update_close_keyboard(
-            user_id=user_id,
-            refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
-            update_command=CALLBACK_COMMAND_UPDATE_PLAYER,
-        )
+    player = get_player(update=update)
+    func_message = reply_message
+    section_name = PLAYER_SECTION_NAME
 
-        await reply_message(
-            function_caller="SIGNUP()",
-            text=reply_text,
-            context=context,
-            update=update,
-            markdown=True,
-            reply_markup=reply_markup,
-        )
+    if query:
+        func_message = edit_message_text
+        data = callback_data_to_dict(query.data)
+        command = data.get("command")
+        if command == CALLBACK_COMMAND_REFRESH_PLAYER:
+            section_name = REFRESH_PLAYER_SECTION_NAME
+        elif command == CALLBACK_COMMAND_UPDATE_PLAYER:
+            section_name = UPDATE_PLAYER_SECTION_NAME
+            player.name = update.effective_user.full_name
+            player.username = get_username(update=update)
+            player = save_player(player)
+
+    user_id = player.user_id
+    reply_text = player_telegram_text(player=player, section_name=section_name)
+    reply_markup = get_refresh_update_close_keyboard(
+        user_id=user_id,
+        refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
+        update_command=CALLBACK_COMMAND_UPDATE_PLAYER,
+    )
+    func_message_kwargs = dict(
+        function_caller="SHOW_PLAYER()",
+        text=reply_text,
+        context=context,
+        update=update,
+        markdown=True,
+        reply_markup=reply_markup,
+    )
+    func_message_kwargs
+
+    await func_message(**func_message_kwargs)
 
 
 
@@ -83,17 +119,17 @@ SIGNUP_HANDLERS = [
     ),
     CommandHandler(SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER),
     PrefixHandler(
-        PREFIX_COMMANDS, PLAYER_COMMNADS, player, BASIC_COMMAND_FILTER
+        PREFIX_COMMANDS, PLAYER_COMMNADS, show_player, BASIC_COMMAND_FILTER
     ),
-    CommandHandler(PLAYER_COMMNADS, player, BASIC_COMMAND_FILTER),
+    CommandHandler(PLAYER_COMMNADS, show_player, BASIC_COMMAND_FILTER),
     CallbackQueryHandler(
-        player,
+        show_player,
         pattern=check_pattern(
             f'"{CALLBACK_COMMAND_REFRESH_PLAYER}"', _match=False
         ),
     ),
     CallbackQueryHandler(
-        player,
+        show_player,
         pattern=check_pattern(
             f'"{CALLBACK_COMMAND_UPDATE_PLAYER}"', _match=False
         ),
