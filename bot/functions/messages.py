@@ -152,6 +152,56 @@ async def call_telegram_message_function(
     return response
 
 
+async def edit_message_text(
+    function_caller: str,
+    text: str,
+    context: ContextTypes.DEFAULT_TYPE,
+    update: Optional[Update] = None,
+    chat_id: Optional[int] = None,
+    user_id: Optional[int] = None,
+    message_id: Optional[int] = None,
+    markdown: bool = False,
+    reply_markup: InlineKeyboardMarkup = REPLY_MARKUP_DEFAULT,
+    close_by_owner: bool = True,
+    need_response: bool = True,
+    skip_retry: bool = False,
+) -> Union[Message, bool]:
+    """Edita uma mensagem usando um Message ou um ContextTypes."""
+
+    if update and not message_id:
+        message_id = update.effective_message.id
+    if message_id is None:
+        raise ValueError("É obrigatório passar o update ou o message_id.")
+
+    chat_id = chat_id if chat_id else context._chat_id
+    user_id = user_id if user_id else context._user_id
+    markdown = ParseMode.MARKDOWN_V2 if markdown is True else None
+    owner_id = user_id if close_by_owner is True else None
+    reply_markup = (
+        reply_markup
+        if reply_markup != REPLY_MARKUP_DEFAULT
+        else get_close_keyboard(user_id=owner_id)
+    )
+    edit_text_kwargs = dict(
+        text=text,
+        chat_id=chat_id,
+        message_id=message_id,
+        parse_mode=markdown,
+        reply_markup=reply_markup,
+    )
+
+    response = await call_telegram_message_function(
+        function_caller=f"{function_caller} -> EDIT_MESSAGE_EDIT()",
+        function=context.bot.edit_message_text,
+        context=context,
+        need_response=need_response,
+        skip_retry=skip_retry,
+        **edit_text_kwargs,
+    )
+
+    return response
+
+
 async def delete_message_from_context(
     function_caller: str,
     context: ContextTypes.DEFAULT_TYPE,
