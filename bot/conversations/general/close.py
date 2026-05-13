@@ -16,7 +16,7 @@ from bot.decorators.print import print_basic_infos
 
 
 from bot.functions.handler import check_pattern
-from bot.functions.messages import (
+from bot.functions.message import (
     answer,
     delete_message_from_query,
     remove_job_delete_message_from_context,

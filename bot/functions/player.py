@@ -1,4 +1,4 @@
-from bot.constants.sections import PLAYER_SECTION_NAME, PLAYER_SUBSECTION_NAME
+from bot.constants.section import PLAYER_SECTION_NAME, PLAYER_SUBSECTION_NAME
 from general.enums.emojis import get_random_face_emoji
 from general.functions.text import create_text_in_box, format_subsection
 from teikoku.register.player import Player

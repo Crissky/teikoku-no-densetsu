@@ -7,18 +7,18 @@ from telegram.ext import (
 )
 
 from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
-from bot.constants.commands import (
+from bot.constants.command import (
     PLAYER_COMMNADS,
     SIGNUP_COMMNADS,
     UPDATE_PLAYER_COMMNADS,
 )
-from bot.constants.filters import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
-from bot.constants.messages import FAIL_UPDATE_NOT_ARGS
+from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
+from bot.constants.message import FAIL_UPDATE_NOT_ARGS
 from bot.constants.query import (
     CALLBACK_COMMAND_REFRESH_PLAYER,
     CALLBACK_COMMAND_UPDATE_PLAYER,
 )
-from bot.constants.sections import (
+from bot.constants.section import (
     FAIL_UPDATE_PLAYER_SECTION_NAME,
     PLAYER_SECTION_NAME,
     PLAYER_SUBSECTION_NAME,
@@ -28,13 +28,13 @@ from bot.constants.sections import (
 )
 from bot.decorators.player import alert_if_not_chat_owner, need_singup_player
 from bot.functions.handler import check_pattern
-from bot.functions.messages import (
+from bot.functions.message import (
     callback_data_to_dict,
     edit_message_text,
     get_refresh_update_close_keyboard,
     reply_message,
 )
-from bot.functions.updates import format_args
+from bot.functions.update import format_args
 from bot.functions.user import get_username
 from bot.functions.player import player_telegram_text
 from general.functions.text import create_text_in_box, format_subsection

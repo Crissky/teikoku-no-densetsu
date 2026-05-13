@@ -1,15 +1,15 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
-from bot.constants.commands import SIGNUP_GROUP_COMMNADS
-from bot.constants.filters import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
-from bot.constants.sections import (
+from bot.constants.command import SIGNUP_GROUP_COMMNADS
+from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
+from bot.constants.section import (
     GROUP_SUBSECTION_NAME,
     SIGNUP_GROUP_SECTION_NAME,
 )
 from bot.decorators.group import only_group
 from bot.decorators.player import need_admin_player
-from bot.functions.messages import reply_message
+from bot.functions.message import reply_message
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.group import exists_group, save_group
 from teikoku.register.group import Group

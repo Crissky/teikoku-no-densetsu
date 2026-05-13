@@ -3,7 +3,7 @@ import logging
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from bot.functions.messages import MIN_AUTODELETE_TIME, reply_message
+from bot.functions.message import MIN_AUTODELETE_TIME, reply_message
 from repository.mongo.functions.group import chat_is_group
 
 logger = logging.getLogger(__name__)

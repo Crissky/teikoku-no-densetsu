@@ -3,8 +3,8 @@ import logging
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from bot.constants.commands import SIGNUP_COMMNADS
-from bot.functions.messages import (
+from bot.constants.command import SIGNUP_COMMNADS
+from bot.functions.message import (
     MIN_AUTODELETE_TIME,
     answer,
     callback_data_to_dict,
