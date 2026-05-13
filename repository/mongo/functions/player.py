@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Iterable, Optional, Tuple
 
 from telegram import Update
 from telegram.constants import ChatMemberStatus
@@ -25,6 +25,33 @@ def save_player(player: Player) -> Player:
     )
 
     return retrieved_player
+
+
+def update_player(
+    player: Player, args: Iterable[Tuple[str, Any]]
+) -> Optional[Player]:
+    """Atualiza os atributos do player com os valores passados em args.
+    args deve ser um iterável de tuplas no formato (atributo, valor).
+    Exemplo: [("name", "João"), ("username", "@joaozinho")]
+    """
+
+    if not isinstance(player, Player):
+        raise TypeError(f"player precisa ser do tipo Player ({type(player)}).")
+
+    is_updated = False
+    for attr, value in args:
+        if player.has_updatable_attr(attr):
+            setattr(player, attr, value)
+            is_updated = True
+        else:
+            logger.warning(f"Player não possui o atributo '{attr}'.")
+
+    if is_updated:
+        player_model = PlayerModel()
+        player_model.save(player)
+        retrieved_player = get_player_by_user_id(player.user_id)
+
+        return retrieved_player
 
 
 def get_player_by_user_id(user_id: int) -> Player:
