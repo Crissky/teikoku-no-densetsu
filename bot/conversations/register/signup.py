@@ -7,13 +7,19 @@ from telegram.ext import (
 )
 
 from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
-from bot.constants.commands import PLAYER_COMMNADS, SIGNUP_COMMNADS
+from bot.constants.commands import (
+    PLAYER_COMMNADS,
+    SIGNUP_COMMNADS,
+    UPDATE_PLAYER_COMMNADS,
+)
 from bot.constants.filters import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
+from bot.constants.messages import FAIL_UPDATE_NOT_ARGS
 from bot.constants.query import (
     CALLBACK_COMMAND_REFRESH_PLAYER,
     CALLBACK_COMMAND_UPDATE_PLAYER,
 )
 from bot.constants.sections import (
+    FAIL_UPDATE_PLAYER_SECTION_NAME,
     PLAYER_SECTION_NAME,
     PLAYER_SUBSECTION_NAME,
     REFRESH_PLAYER_SECTION_NAME,
@@ -28,6 +34,7 @@ from bot.functions.messages import (
     get_refresh_update_close_keyboard,
     reply_message,
 )
+from bot.functions.updates import format_args
 from bot.functions.user import get_username
 from bot.functions.player import player_telegram_text
 from general.functions.text import create_text_in_box, format_subsection
@@ -40,6 +47,8 @@ from teikoku.register.player import Player
 
 
 async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Cadastro do player."""
+
     user_id = update.effective_user.id
     full_name = update.effective_user.full_name
     username = get_username(update=update)
@@ -75,12 +84,16 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @need_singup_player
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Exibe os dados do player e gerencia a recarga da exibição e atualiza as
+    informações básicas do player.
+    """
+
     query = update.callback_query
     player = get_player(update=update)
     func_message = reply_message
     section_name = PLAYER_SECTION_NAME
 
-    if query:
+    if query:  # UPDATE OR REFRESH BUTTON
         func_message = edit_message_text
         data = callback_data_to_dict(query.data)
         command = data.get("command")
@@ -92,10 +105,9 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
             player.username = get_username(update=update)
             player = save_player(player)
 
-    user_id = player.user_id
     reply_text = player_telegram_text(player=player, section_name=section_name)
     reply_markup = get_refresh_update_close_keyboard(
-        user_id=user_id,
+        user_id=player.user_id,
         refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
         update_command=CALLBACK_COMMAND_UPDATE_PLAYER,
     )
@@ -112,12 +124,41 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await func_message(**func_message_kwargs)
 
 
+@need_singup_player
+async def update_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    args = context.args
+    if not args:
+        section_name = FAIL_UPDATE_PLAYER_SECTION_NAME
+        reply_text = (
+            f"{FAIL_UPDATE_NOT_ARGS}"
+            "Atributos alteráveis do jogador:\n"
+            f"{', '.join(Player.UPDATABLE_ATTR_LIST)}"
+        )
+    else:
+        formated_args = format_args(args)
+        section_name = UPDATE_PLAYER_SECTION_NAME
+        reply_text = "COMANDO NÃO IMPLEMENTADO!!!"
+
+    reply_text = create_text_in_box(
+        text=reply_text, section_name=section_name
+    )
+    await reply_message(
+        function_caller="UPDATE_PLAYER()",
+        text=reply_text,
+        context=context,
+        update=update,
+        markdown=True,
+    )
+
 
 SIGNUP_HANDLERS = [
+    # SIGNUP
     PrefixHandler(
         PREFIX_COMMANDS, SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER
     ),
     CommandHandler(SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER),
+    # SHOW_PLAYER
     PrefixHandler(
         PREFIX_COMMANDS, PLAYER_COMMNADS, show_player, BASIC_COMMAND_FILTER
     ),
@@ -133,5 +174,15 @@ SIGNUP_HANDLERS = [
         pattern=check_pattern(
             f'"{CALLBACK_COMMAND_UPDATE_PLAYER}"', _match=False
         ),
+    ),
+    # UPDATE PLAYER
+    PrefixHandler(
+        PREFIX_COMMANDS,
+        UPDATE_PLAYER_COMMNADS,
+        update_player,
+        BASIC_COMMAND_FILTER,
+    ),
+    CommandHandler(
+        UPDATE_PLAYER_COMMNADS, update_player, BASIC_COMMAND_FILTER
     ),
 ]
