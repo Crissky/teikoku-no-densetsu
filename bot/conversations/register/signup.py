@@ -13,12 +13,19 @@ from bot.constants.command import (
     UPDATE_PLAYER_COMMNADS,
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
-from bot.constants.message import FAIL_UPDATE_NOT_ARGS
+from bot.constants.message import (
+    FAIL_UPDATE_NOT_ARGS,
+    NO_CHANGE_IN_PLAYER,
+    PLAYER_ALREADY_REGISTERED_FORMAT,
+    PLAYER_ALTERABLE_ATTRIBUTES_HEADER,
+    REGISTERED_PLAYER_FORMAT,
+)
 from bot.constants.query import (
     CALLBACK_COMMAND_REFRESH_PLAYER,
     CALLBACK_COMMAND_UPDATE_PLAYER,
 )
 from bot.constants.section import (
+    FAIL_SIGNUP_SECTION_NAME,
     FAIL_UPDATE_PLAYER_SECTION_NAME,
     PLAYER_SECTION_NAME,
     PLAYER_SUBSECTION_NAME,
@@ -35,7 +42,7 @@ from bot.functions.message import (
     get_refresh_update_close_keyboard,
     reply_message,
 )
-from bot.functions.update import format_args
+from bot.functions.arg import format_args
 from bot.functions.user import get_username
 from bot.functions.player import player_telegram_text
 from general.functions.text import create_text_in_box, format_subsection
@@ -43,6 +50,7 @@ from repository.mongo.functions.player import (
     exists_player,
     get_player,
     save_player,
+    update_player,
 )
 from teikoku.register.player import Player
 
@@ -128,24 +136,32 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 @need_singup_player
-async def update_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Define valores de atributos do jogador por meio de argumentos na
+    mensagem.
+    """
 
     args = context.args
-    if not args:
-        section_name = FAIL_UPDATE_PLAYER_SECTION_NAME
+    section_name = FAIL_UPDATE_PLAYER_SECTION_NAME
+    if not args:  # SEM ARGUMENTOS
         reply_text = (
             f"{FAIL_UPDATE_NOT_ARGS}"
-            "Atributos alteráveis do jogador:\n"
+            f"{PLAYER_ALTERABLE_ATTRIBUTES_HEADER}"
             f"{', '.join((f'`{a}`' for a in Player.UPDATABLE_ATTR_LIST))}"
         )
-    else:
+    else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
-        section_name = UPDATE_PLAYER_SECTION_NAME
-        reply_text = "COMANDO NÃO IMPLEMENTADO!!!"
+        player = update_player(args=formated_args, update=update)
 
-    reply_text = create_text_in_box(
-        text=reply_text, section_name=section_name
-    )
+        if player:  # UPDATE COM SUCESSO
+            section_name = UPDATE_PLAYER_SECTION_NAME
+            player_telegram_text = player.telegram_text
+            subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
+            reply_text = f"{subsection}" f"{player_telegram_text}"
+        else:  # UPDATE SEM SUCESSO
+            reply_text = f"{NO_CHANGE_IN_PLAYER}"
+
+    reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(
         function_caller="UPDATE_PLAYER()",
         text=reply_text,
@@ -183,10 +199,10 @@ SIGNUP_HANDLERS = [
     PrefixHandler(
         PREFIX_COMMANDS,
         UPDATE_PLAYER_COMMNADS,
-        update_player,
+        set_attr_player,
         BASIC_COMMAND_FILTER,
     ),
     CommandHandler(
-        UPDATE_PLAYER_COMMNADS, update_player, BASIC_COMMAND_FILTER
+        UPDATE_PLAYER_COMMNADS, set_attr_player, BASIC_COMMAND_FILTER
     ),
 ]
