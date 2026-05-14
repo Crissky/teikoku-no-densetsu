@@ -63,24 +63,21 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = get_username(update=update)
     player = Player(user_id=user_id, name=full_name, username=username)
 
-    if exists_player(player.user_id):
-        reply_text = (
-            f"Player com USER ID: '{player.user_id}', já está cadastrado."
-        )
-    else:
+    if exists_player(player.user_id):  # JÁ CADASTRADO
+        section_name = FAIL_SIGNUP_SECTION_NAME
+        reply_text = PLAYER_ALREADY_REGISTERED_FORMAT.format(id=player.user_id)
+    else:  # CADASTRO
+        section_name = SIGNUP_SECTION_NAME
         new_player = save_player(player)
         player_telegram_text = new_player.telegram_text
         subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
-        reply_text = (
-            f"Olá {username or full_name}!\n"
-            f"Você foi cadastrado com sucesso!\n\n"
-            f"{subsection}"
-            f"{player_telegram_text}"
+        reply_text = REGISTERED_PLAYER_FORMAT.format(
+            name=(username or full_name),
+            subsection=subsection,
+            telegram_text=player_telegram_text,
         )
 
-    reply_text = create_text_in_box(
-        text=reply_text, section_name=SIGNUP_SECTION_NAME
-    )
+    reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(
         function_caller="SIGNUP()",
         text=reply_text,
