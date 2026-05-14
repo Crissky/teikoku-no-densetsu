@@ -3,7 +3,12 @@ from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
 from bot.constants.command import SIGNUP_GROUP_COMMNADS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
+from bot.constants.message import (
+    GROUP_ALREADY_REGISTERED_FORMAT,
+    GROUP_SUCCESSFULLY_REGISTERED_FORMAT,
+)
 from bot.constants.section import (
+    FAIL_SIGNUP_GROUP_SECTION_NAME,
     GROUP_SUBSECTION_NAME,
     SIGNUP_GROUP_SECTION_NAME,
 )
@@ -15,6 +20,7 @@ from repository.mongo.functions.group import exists_group, save_group
 from teikoku.register.group import Group
 
 
+# TODO REFATORAR reply_text PARA USAREM CONSTANTES DE message.py
 @only_group
 @need_admin_player
 async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -24,20 +30,20 @@ async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     group = Group(chat_id=chat_id, name=chat_name)
 
     if exists_group(chat_id=chat_id):
-        reply_text = f"Grupo com CHAT ID: '{chat_id}', já está cadastrado."
+        section_name = FAIL_SIGNUP_GROUP_SECTION_NAME
+        reply_text = GROUP_ALREADY_REGISTERED_FORMAT.format(id=chat_id)
     else:
+        section_name = SIGNUP_GROUP_SECTION_NAME
         new_group = save_group(group=group)
         group_telegram_text = new_group.telegram_text
         subsection = format_subsection(text=GROUP_SUBSECTION_NAME)
-        reply_text = (
-            f"Grupo cadastrado com sucesso!\n\n"
-            f"{subsection}"
-            f"{group_telegram_text}"
+        reply_text = GROUP_SUCCESSFULLY_REGISTERED_FORMAT.format(
+            name=new_group.name,
+            subsection=subsection,
+            telegram_text=group_telegram_text,
         )
 
-    reply_text = create_text_in_box(
-        text=reply_text, section_name=SIGNUP_GROUP_SECTION_NAME
-    )
+    reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(
         function_caller="SIGNUP()",
         text=reply_text,
