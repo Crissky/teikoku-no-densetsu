@@ -18,7 +18,7 @@ from bot.constants.message import (
     NO_CHANGE_IN_PLAYER,
     PLAYER_ALREADY_REGISTERED_FORMAT,
     PLAYER_ALTERABLE_ATTRIBUTES_HEADER,
-    REGISTERED_PLAYER_FORMAT,
+    PLAYER_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.query import (
     CALLBACK_COMMAND_REFRESH_PLAYER,
@@ -71,7 +71,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
         new_player = save_player(player)
         player_telegram_text = new_player.telegram_text
         subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
-        reply_text = REGISTERED_PLAYER_FORMAT.format(
+        reply_text = PLAYER_SUCCESSFULLY_REGISTERED_FORMAT.format(
             name=(username or full_name),
             subsection=subsection,
             telegram_text=player_telegram_text,

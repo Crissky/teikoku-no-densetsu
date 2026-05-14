@@ -2,7 +2,7 @@
 PLAYER_ALREADY_REGISTERED_FORMAT = (
     "*Player* com *USER ID*: *{id}* já está cadastrado."
 )
-REGISTERED_PLAYER_FORMAT = (
+PLAYER_SUCCESSFULLY_REGISTERED_FORMAT = (
     "Olá {name}!\n"
     "Você foi cadastrado com sucesso!\n\n"
     "{subsection}"
