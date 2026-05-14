@@ -29,6 +29,7 @@ from bot.constants.section import (
 from bot.decorators.player import alert_if_not_chat_owner, need_singup_player
 from bot.functions.handler import check_pattern
 from bot.functions.message import (
+    MIN_AUTODELETE_TIME,
     callback_data_to_dict,
     edit_message_text,
     get_refresh_update_close_keyboard,
@@ -78,6 +79,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context=context,
         update=update,
         markdown=True,
+        auto_delete_message=MIN_AUTODELETE_TIME,
     )
 
 
@@ -118,6 +120,7 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
         update=update,
         markdown=True,
         reply_markup=reply_markup,
+        auto_delete_message=MIN_AUTODELETE_TIME,
     )
     func_message_kwargs
 
@@ -149,6 +152,7 @@ async def update_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
         context=context,
         update=update,
         markdown=True,
+        auto_delete_message=MIN_AUTODELETE_TIME,
     )
 
 
