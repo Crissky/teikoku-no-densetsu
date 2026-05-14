@@ -25,7 +25,7 @@ from general.enums.emojis import EmojiEnum
 logger = logging.getLogger(__name__)
 
 
-HOURS_DELETE_MESSAGE_FROM_CONTEXT = 4
+HOURS_DELETE_MESSAGE_FROM_CONTEXT = 1
 CHAT_TYPE_GROUPS = (ChatType.GROUP, ChatType.SUPERGROUP)
 MIN_AUTODELETE_TIME = timedelta(minutes=15)
 HALF_AUTODELETE_TIME = timedelta(minutes=30)
