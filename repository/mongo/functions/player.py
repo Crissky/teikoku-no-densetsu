@@ -28,12 +28,17 @@ def save_player(player: Player) -> Player:
 
 
 def update_player(
-    player: Player, args: Iterable[Tuple[str, Any]]
+    args: Iterable[Tuple[str, Any]],
+    player: Optional[Player] = None,
+    update: Optional[Update] = None,
 ) -> Optional[Player]:
     """Atualiza os atributos do player com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
     Exemplo: [("name", "João"), ("username", "@joaozinho")]
     """
+
+    if isinstance(update, Update) and player is None:
+        player = get_player(update=update)
 
     if not isinstance(player, Player):
         raise TypeError(f"player precisa ser do tipo Player ({type(player)}).")
@@ -53,7 +58,9 @@ def update_player(
                     f"{type(player_attr_type)}."
                 )
         else:
-            logger.warning(f"Player não possui o atributo '{attr}'.")
+            logger.warning(
+                f"Player não possui ou não pode alterar o atributo '{attr}'."
+            )
 
     if is_updated:
         player_model = PlayerModel()
