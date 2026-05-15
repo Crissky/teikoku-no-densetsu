@@ -99,8 +99,16 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     player = get_player(update=update)
     func_message = reply_message
     section_name = PLAYER_SECTION_NAME
+    func_message_kwargs = dict(
+        function_caller="SHOW_PLAYER()",
+        context=context,
+        update=update,
+        markdown=True,
+        auto_delete_message=MIN_AUTODELETE_TIME,
+    )
 
     if query:  # UPDATE OR REFRESH BUTTON
+        func_message_kwargs.pop("auto_delete_message")
         func_message = edit_message_text
         data = callback_data_to_dict(query.data)
         command = data.get("command")
@@ -118,16 +126,12 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
         refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
         update_command=CALLBACK_COMMAND_UPDATE_PLAYER,
     )
-    func_message_kwargs = dict(
-        function_caller="SHOW_PLAYER()",
-        text=reply_text,
-        context=context,
-        update=update,
-        markdown=True,
-        reply_markup=reply_markup,
-        auto_delete_message=MIN_AUTODELETE_TIME,
+    func_message_kwargs.update(
+        dict(
+            text=reply_text,
+            reply_markup=reply_markup,
+        )
     )
-    func_message_kwargs
 
     await func_message(**func_message_kwargs)
 
