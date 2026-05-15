@@ -55,10 +55,10 @@ class Player(MongoBase):
 
     @property
     def telegram_text(self) -> str:
-        text = f"Nome: {self.name}\n"
-        text += f"Nome de Usuário: {self.username or ''}\n"
-        text += f"ID de Usuário: {self.user_id}\n"
-        text += f"Modo Silencioso: {self.translate(self.silent)}\n"
+        text = f"*Nome*: {self.name}\n"
+        text += f"*Nome de Usuário*: {self.username or ''}\n"
+        text += f"*ID de Usuário*: {self.user_id}\n"
+        text += f"*Modo Silencioso*: {self.translate(self.silent)}\n"
 
         return text
 

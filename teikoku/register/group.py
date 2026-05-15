@@ -42,9 +42,9 @@ class Group(MongoBase):
 
     @property
     def telegram_text(self) -> str:
-        text = f"Grupo: {self.name}\n"
-        text += f"ID do Grupo: {self.chat_id}\n"
-        text += f"Modo Silencioso: {self.translate(self.silent)}\n"
+        text = f"*Grupo*: {self.name}\n"
+        text += f"*ID do Grupo*: {self.chat_id}\n"
+        text += f"*Modo Silencioso*: {self.translate(self.silent)}\n"
 
         return text
 
