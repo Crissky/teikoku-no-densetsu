@@ -33,7 +33,7 @@ from bot.constants.section import (
     SIGNUP_SECTION_NAME,
     UPDATE_PLAYER_SECTION_NAME,
 )
-from bot.decorators.player import alert_if_not_chat_owner, need_singup_player
+from bot.decorators.player import alert_if_not_chat_owner, need_signedup_player
 from bot.functions.handler import check_pattern
 from bot.functions.message import (
     MIN_AUTODELETE_TIME,
@@ -88,7 +88,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-@need_singup_player
+@need_signedup_player
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Exibe os dados do player e gerencia a recarga da exibição e atualiza as
@@ -136,7 +136,7 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await func_message(**func_message_kwargs)
 
 
-@need_singup_player
+@need_signedup_player
 async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Define valores de atributos do jogador por meio de argumentos na
     mensagem.

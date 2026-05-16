@@ -10,7 +10,7 @@ from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.decorators.player import (
     alert_if_not_chat_owner,
-    skip_if_no_singup_player,
+    skip_if_no_signedup_player,
 )
 from bot.decorators.print import print_basic_infos
 
@@ -27,7 +27,7 @@ logger = logging.getLogger(__name__)
 
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 @print_basic_infos
-@skip_if_no_singup_player
+@skip_if_no_signedup_player
 async def close(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Fecha uma mensagem."""
 

@@ -16,9 +16,9 @@ from repository.mongo.models.player import PlayerModel
 logger = logging.getLogger(__name__)
 
 
-def need_singup_player(callback):
+def need_signedup_player(callback):
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        logger.info("@NEED_SINGUP_PLAYER")
+        logger.info("@NEED_SIGNEDUP_PLAYER")
         player_model = PlayerModel()
         user_id = update.effective_user.id
 
@@ -32,7 +32,7 @@ def need_singup_player(callback):
                 f"Crie a conta com o comando /{SIGNUP_COMMNADS[0]}."
             )
             await reply_message(
-                function_caller="@NEED_SINGUP_PLAYER()",
+                function_caller="@NEED_SIGNEDUP_PLAYER()",
                 text=text,
                 context=context,
                 update=update,
@@ -79,9 +79,9 @@ def need_admin_player(callback):
     return wrapper
 
 
-def skip_if_no_singup_player(callback):
+def skip_if_no_signedup_player(callback):
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-        logger.info("@SKIP_IF_NO_SINGUP_PLAYER")
+        logger.info("@SKIP_IF_NO_SIGNEDUP_PLAYER")
         chat_id = update.effective_chat.id
         user_id = update.effective_user.id
 
