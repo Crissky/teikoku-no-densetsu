@@ -47,6 +47,8 @@ from teikoku.register.group import Group
 @only_group
 @need_admin_player
 async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Cadastro do Grupo."""
+
     chat = update._effective_chat
     chat_id = chat.id
     chat_name = chat.full_name or chat.title
@@ -76,7 +78,13 @@ async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+@only_group
+@need_admin_player
 async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Exibe os dados do group e gerencia a recarga da exibição e atualiza as
+    informações básicas do group.
+    """
+
     query = update.callback_query
     group = get_group(update=update)
     func_message = reply_message
