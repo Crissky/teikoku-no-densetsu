@@ -14,10 +14,9 @@ from bot.constants.command import (
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
-    FAIL_UPDATE_NOT_ARGS,
+    FAIL_UPDATE_NOT_ARGS_FORMAT,
     NO_CHANGE_IN_PLAYER,
     PLAYER_ALREADY_REGISTERED_FORMAT,
-    ALTERABLE_ATTRIBUTES_HEADER,
     PLAYER_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.query import (
@@ -145,10 +144,10 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     section_name = FAIL_UPDATE_PLAYER_SECTION_NAME
     if not args:  # SEM ARGUMENTOS
-        reply_text = (
-            f"{FAIL_UPDATE_NOT_ARGS}"
-            f"{ALTERABLE_ATTRIBUTES_HEADER}"
-            f"{', '.join((f'`{a}`' for a in Player.UPDATABLE_ATTR_LIST))}"
+        reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
+            attrs=(
+                f"{', '.join((f'`{a}`' for a in Player.UPDATABLE_ATTR_LIST))}"
+            )
         )
     else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
