@@ -1,5 +1,5 @@
 import logging
-from typing import Optional
+from typing import Any, Iterable, Optional, Tuple, get_type_hints
 
 from telegram import Update
 from telegram.constants import ChatType
@@ -25,6 +25,49 @@ def save_group(group: Group) -> Group:
     )
 
     return retrieved_group
+
+
+def update_group(
+    args: Iterable[Tuple[str, Any]],
+    group: Optional[Group] = None,
+    update: Optional[Update] = None,
+) -> Optional[Group]:
+    """Atualiza os atributos do group com os valores passados em args.
+    args deve ser um iterável de tuplas no formato (atributo, valor).
+    Exemplo: [("name", "Grupo Master"), ("silent", True)]
+    """
+
+    if isinstance(update, Update) and group is None:
+        group = get_group(update=update)
+
+    if not isinstance(group, Group):
+        raise TypeError(f"group precisa ser do tipo Group ({type(group)}).")
+
+    is_updated = False
+    group_type_hints = get_type_hints(group)
+    for attr, value in args:
+        if group.has_updatable_attr(attr):
+            group_attr_type = group_type_hints[attr]
+            if group_attr_type == type(value):
+                setattr(group, attr, value)
+                is_updated = True
+            else:
+                logger.warning(
+                    f"O atributo '{attr}' não pode ser atualizado com o valor "
+                    f"do tipo {type(value)}, pois o tipo esperado é "
+                    f"{type(group_attr_type)}."
+                )
+        else:
+            logger.warning(
+                f"Group não possui ou não pode alterar o atributo '{attr}'."
+            )
+
+    if is_updated:
+        group_model = GroupModel()
+        group_model.save(group)
+        retrieved_group = get_group_by_chat_id(group.chat_id)
+
+        return retrieved_group
 
 
 def get_group_by_chat_id(chat_id: int) -> Group:
