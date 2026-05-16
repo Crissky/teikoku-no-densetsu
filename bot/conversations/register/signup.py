@@ -10,14 +10,14 @@ from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.command import (
     PLAYER_COMMNADS,
     SIGNUP_COMMNADS,
-    UPDATE_PLAYER_COMMNADS,
+    SET_ATTR_PLAYER_COMMNADS,
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     FAIL_UPDATE_NOT_ARGS,
     NO_CHANGE_IN_PLAYER,
     PLAYER_ALREADY_REGISTERED_FORMAT,
-    PLAYER_ALTERABLE_ATTRIBUTES_HEADER,
+    ALTERABLE_ATTRIBUTES_HEADER,
     PLAYER_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.query import (
@@ -138,7 +138,7 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 @need_signedup_player
 async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Define valores de atributos do jogador por meio de argumentos na
+    """Define valores de atributos do player por meio de argumentos na
     mensagem.
     """
 
@@ -147,7 +147,7 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if not args:  # SEM ARGUMENTOS
         reply_text = (
             f"{FAIL_UPDATE_NOT_ARGS}"
-            f"{PLAYER_ALTERABLE_ATTRIBUTES_HEADER}"
+            f"{ALTERABLE_ATTRIBUTES_HEADER}"
             f"{', '.join((f'`{a}`' for a in Player.UPDATABLE_ATTR_LIST))}"
         )
     else:  # UPDATE COM ARGUMENTOS
@@ -164,7 +164,7 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(
-        function_caller="UPDATE_PLAYER()",
+        function_caller="SET_ATTR_PLAYER()",
         text=reply_text,
         context=context,
         update=update,
@@ -196,14 +196,14 @@ SIGNUP_HANDLERS = [
             f'"{CALLBACK_COMMAND_UPDATE_PLAYER}"', _match=False
         ),
     ),
-    # UPDATE PLAYER
+    # SET ATTR PLAYER
     PrefixHandler(
         PREFIX_COMMANDS,
-        UPDATE_PLAYER_COMMNADS,
+        SET_ATTR_PLAYER_COMMNADS,
         set_attr_player,
         BASIC_COMMAND_FILTER,
     ),
     CommandHandler(
-        UPDATE_PLAYER_COMMNADS, set_attr_player, BASIC_COMMAND_FILTER
+        SET_ATTR_PLAYER_COMMNADS, set_attr_player, BASIC_COMMAND_FILTER
     ),
 ]
