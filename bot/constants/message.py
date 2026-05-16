@@ -1,13 +1,5 @@
-# PLAYER
-PLAYER_ALREADY_REGISTERED_FORMAT = (
-    "*Player* com *USER ID*: *{id}* já está cadastrado."
-)
-PLAYER_SUCCESSFULLY_REGISTERED_FORMAT = (
-    "Olá {name}!\n"
-    "Você foi cadastrado com sucesso!\n\n"
-    "{subsection}"
-    "{telegram_text}"
-)
+# GENERAL
+ALTERABLE_ATTRIBUTES_HEADER = "*Atributos alteráveis*:\n"
 FAIL_UPDATE_NOT_ARGS = (
     "⚠️ Este comando requer *argumentos* para funcionar.\n\n"
     "*Como usar:*\n"
@@ -19,9 +11,19 @@ FAIL_UPDATE_NOT_ARGS = (
     "⚠️ Argumentos fora desse formato, atributos não alteráveis ou valores "
     "inválidos serão ignorados.\n\n"
 )
-PLAYER_ALTERABLE_ATTRIBUTES_HEADER = "*Atributos alteráveis do jogador*:\n"
+
+# PLAYER
+PLAYER_ALREADY_REGISTERED_FORMAT = (
+    "*Player* com *USER ID*: *{id}* já está cadastrado."
+)
+PLAYER_SUCCESSFULLY_REGISTERED_FORMAT = (
+    "Olá {name}!\n"
+    "Você foi cadastrado com sucesso!\n\n"
+    "{subsection}"
+    "{telegram_text}"
+)
 NO_CHANGE_IN_PLAYER = (
-    "*Nenhuma alteração* foi feito no jogador. "
+    "*Nenhuma alteração* foi feita no jogador. "
     "Nenhum *atributo* ou *valor* válido foi informado."
 )
 
@@ -33,4 +35,8 @@ GROUP_SUCCESSFULLY_REGISTERED_FORMAT = (
     "Grupo *{name}* cadastrado com sucesso!\n\n"
     "{subsection}"
     "{telegram_text}"
+)
+NO_CHANGE_IN_GROUP = (
+    "*Nenhuma alteração* foi feita no grupo. "
+    "Nenhum *atributo* ou *valor* válido foi informado."
 )
