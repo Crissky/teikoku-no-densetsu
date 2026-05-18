@@ -9,6 +9,12 @@ class TestCoordinate(unittest.TestCase):
 
         return Coordinate(x=x, y=y)
 
+    def test_show(self):
+        """Verifica se show retorna a representação correta da coordenada."""
+
+        coord = self._make_coordinate(x=3, y=7)
+        self.assertEqual(coord.show, "(3, 7)")
+
     def test_x_valid(self):
         """Verifica se x válido é aceito sem alterações."""
 
