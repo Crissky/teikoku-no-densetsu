@@ -5,12 +5,13 @@ from teikoku.register.player import Player
 class TestPlayer(unittest.TestCase):
 
     def _make_player(
-        self, user_id=123, name="Teste", username=None, silent=False
+        self, user_id=123, name="Teste", username=None, silent=False, **kwargs
     ):
         """Cria e retorna uma instância de Player com valores padrão."""
 
         return Player(
-            user_id=user_id, name=name, username=username, silent=silent
+            user_id=user_id, name=name, username=username, silent=silent,
+            **kwargs
         )
 
     def test_user_id_valid(self):
@@ -151,3 +152,43 @@ class TestPlayer(unittest.TestCase):
             "*ID de Usuário*: 123\n*Modo Silencioso*: Sim\n"
         )
         self.assertEqual(player.telegram_text, expected)
+
+    def test_effective_name_returns_username_when_set(self):
+        """Verifica se effective_name retorna username quando definido."""
+
+        player = self._make_player(username="@jogador")
+        self.assertEqual(player.effective_name, "@jogador")
+
+    def test_effective_name_returns_name_when_no_username(self):
+        """Verifica se effective_name retorna name quando username é None."""
+
+        player = self._make_player(name="Teste")
+        self.assertEqual(player.effective_name, "Teste")
+
+    def test_to_dict_contains_expected_keys(self):
+        """Verifica se to_dict retorna as chaves esperadas."""
+
+        player = self._make_player(user_id=123, name="Teste")
+        d = player.to_dict()
+        self.assertIn("user_id", d)
+        self.assertIn("name", d)
+        self.assertIn("username", d)
+        self.assertIn("silent", d)
+
+    def test_has_updatable_attr_silent(self):
+        """Verifica se 'silent' está na lista de atributos atualizáveis."""
+
+        player = self._make_player()
+        self.assertTrue(player.has_updatable_attr("silent"))
+
+    def test_has_updatable_attr_invalid(self):
+        """Verifica se atributo não atualizável retorna False."""
+
+        player = self._make_player()
+        self.assertFalse(player.has_updatable_attr("name"))
+
+    def test_invalid_id_type_raises_type_error(self):
+        """Verifica se _id de tipo inválido levanta TypeError."""
+
+        with self.assertRaises(TypeError):
+            self._make_player(_id=123)

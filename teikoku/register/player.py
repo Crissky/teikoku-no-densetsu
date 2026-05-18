@@ -62,6 +62,10 @@ class Player(MongoBase):
 
         return text
 
+    @property
+    def effective_name(self) -> str:
+        return self.username or self.name
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
