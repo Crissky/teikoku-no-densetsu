@@ -90,7 +90,7 @@ class TestGroup(unittest.TestCase):
 
         group = self._make_group(chat_id=123, name="Teste")
         expected = (
-            "Grupo: Teste\nID do Grupo: 123\nModo Silencioso: Não\n"
+            "*Grupo*: Teste\n*ID do Grupo*: 123\n*Modo Silencioso*: Não\n"
         )
         self.assertEqual(group.telegram_text, expected)
 
@@ -99,6 +99,6 @@ class TestGroup(unittest.TestCase):
 
         group = self._make_group(chat_id=123, name="Teste", silent=True)
         expected = (
-            "Grupo: Teste\nID do Grupo: 123\nModo Silencioso: Sim\n"
+            "*Grupo*: Teste\n*ID do Grupo*: 123\n*Modo Silencioso*: Sim\n"
         )
         self.assertEqual(group.telegram_text, expected)
