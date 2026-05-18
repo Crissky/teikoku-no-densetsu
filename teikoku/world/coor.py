@@ -7,6 +7,8 @@ class Coordenate:
     y: int
 
     def __post_init__(self):
+        super().__post_init__()
+
         if not isinstance(self.x, int):
             erro_msg = f"O parâmetro x precisa ser um int. ({type(self.x)})"
             raise TypeError(erro_msg)
