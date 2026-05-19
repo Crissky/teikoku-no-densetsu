@@ -46,9 +46,7 @@ class MongoBase(ABC):
             )
 
         if not isinstance(cls.UPDATABLE_ATTR_LIST, tuple):
-            raise TypeError(
-                "UPDATABLE_ATTR_LIST deve ser uma tuple[str, ...]"
-            )
+            raise TypeError("UPDATABLE_ATTR_LIST deve ser uma tuple[str, ...]")
 
         if not all(isinstance(x, str) for x in cls.UPDATABLE_ATTR_LIST):
             raise TypeError(
