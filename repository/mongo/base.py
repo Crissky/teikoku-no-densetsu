@@ -55,9 +55,13 @@ class MongoBase(ABC):
 
     def to_dict(self):
         data = asdict(self)
-        self_fields = fields(self)
-
-        return {f.name: data[f.name] for f in self_fields if f.init}
+        return {
+            f.name: getattr(self, f.name)._id
+            if isinstance(getattr(self, f.name), MongoBase)
+            else data[f.name]
+            for f in fields(self)
+            if f.init
+        }
 
     def translate(self, value: Any) -> Union[str, Any]:
         if value is True:
