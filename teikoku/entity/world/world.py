@@ -3,8 +3,8 @@ import logging
 from typing import Dict, Optional, Tuple
 
 from repository.mongo.base import MongoBase
-from teikoku.world.city import City
-from teikoku.world.coor import Coordinate
+from teikoku.entity.world.city import City
+from teikoku.entity.world.coor import Coordinate
 
 logger = logging.getLogger(__name__)
 
@@ -98,7 +98,7 @@ class World(MongoBase):
 
 
 if __name__ == "__main__":
-    from teikoku.register.player import Player
+    from teikoku.entity.register.player import Player
 
     print(" START LOCAL TEST ".center(79, "="))
     p = Player(user_id=123, name="teste")

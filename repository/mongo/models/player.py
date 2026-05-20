@@ -2,7 +2,7 @@ import logging
 
 from repository.mongo.collection_enum import CollectionEnum
 from repository.mongo.models.model import Model
-from teikoku.register.player import Player
+from teikoku.entity.register.player import Player
 
 logger = logging.getLogger(__name__)
 

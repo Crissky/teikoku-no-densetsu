@@ -2,7 +2,7 @@ from dataclasses import InitVar, asdict, dataclass, fields
 from enum import Enum
 
 from teikoku.enum.resource import LocationResourceEnum, ResourceEnum
-from teikoku.world.coor import Coordinate
+from teikoku.entity.world.coor import Coordinate
 
 
 @dataclass

@@ -1,8 +1,8 @@
 from dataclasses import dataclass, InitVar
 
 from repository.mongo.base import MongoBase
-from teikoku.register.player import Player
-from teikoku.world.coor import Coordinate
+from teikoku.entity.register.player import Player
+from teikoku.entity.world.coor import Coordinate
 
 
 @dataclass

@@ -2,7 +2,7 @@ import logging
 
 from repository.mongo.collection_enum import CollectionEnum
 from repository.mongo.models.model import Model
-from teikoku.register.group import Group
+from teikoku.entity.register.group import Group
 
 logger = logging.getLogger(__name__)
 

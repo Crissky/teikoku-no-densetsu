@@ -50,7 +50,7 @@ from repository.mongo.functions.group import (
     save_group,
     update_group,
 )
-from teikoku.register.group import Group
+from teikoku.entity.register.group import Group
 
 
 @only_group

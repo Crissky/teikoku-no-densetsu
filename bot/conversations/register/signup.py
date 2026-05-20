@@ -51,7 +51,7 @@ from repository.mongo.functions.player import (
     save_player,
     update_player,
 )
-from teikoku.register.player import Player
+from teikoku.entity.register.player import Player
 
 
 async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):

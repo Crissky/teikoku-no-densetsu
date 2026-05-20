@@ -1,6 +1,6 @@
 from bot.constants.section import PLAYER_SECTION_NAME, PLAYER_SUBSECTION_NAME
 from bot.functions.text import create_telegram_text
-from teikoku.register.player import Player
+from teikoku.entity.register.player import Player
 
 
 def player_telegram_text(

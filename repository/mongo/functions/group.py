@@ -6,7 +6,7 @@ from telegram.constants import ChatType
 from telegram.ext import CallbackContext, ContextTypes
 
 from repository.mongo.models.group import GroupModel
-from teikoku.register.group import Group
+from teikoku.entity.register.group import Group
 
 GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
 logger = logging.getLogger(__name__)

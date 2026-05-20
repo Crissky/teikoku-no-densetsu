@@ -1,6 +1,6 @@
 from bot.constants.section import GROUP_SECTION_NAME, GROUP_SUBSECTION_NAME
 from bot.functions.text import create_telegram_text
-from teikoku.register.group import Group
+from teikoku.entity.register.group import Group
 
 
 def group_telegram_text(

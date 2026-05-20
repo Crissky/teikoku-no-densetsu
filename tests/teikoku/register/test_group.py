@@ -3,7 +3,7 @@ from datetime import datetime
 
 from bson import ObjectId
 
-from teikoku.register.group import Group
+from teikoku.entity.register.group import Group
 
 
 class TestGroup(unittest.TestCase):

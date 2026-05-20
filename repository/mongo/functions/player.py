@@ -6,7 +6,7 @@ from telegram.constants import ChatMemberStatus
 from telegram.ext import CallbackContext, ContextTypes
 
 from repository.mongo.models.player import PlayerModel
-from teikoku.register.player import Player
+from teikoku.entity.register.player import Player
 
 ADMIN_TYPES = (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
 logger = logging.getLogger(__name__)

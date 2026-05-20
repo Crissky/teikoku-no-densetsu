@@ -8,8 +8,8 @@ from bson import ObjectId
 from general.functions.date_time import get_brazil_time_now
 from repository.mongo.database import Database
 
-from teikoku.register.group import Group  # noqa
-from teikoku.register.player import Player  # noqa
+from teikoku.entity.register.group import Group  # noqa
+from teikoku.entity.register.player import Player  # noqa
 
 logger = logging.getLogger(__name__)
 
