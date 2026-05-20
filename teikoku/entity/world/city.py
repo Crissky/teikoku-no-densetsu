@@ -36,6 +36,13 @@ class City(MongoBase):
 
         return text
 
+    @property
+    def extra_attr(self) -> dict:
+        return {
+            "x": self.coor.x,
+            "y": self.coor.y,
+        }
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
