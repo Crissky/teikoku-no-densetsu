@@ -65,6 +65,8 @@ class MongoBase(ABC):
             obj = getattr(self, f.name)
             d[f.name] = self._parse_to_mongo(obj)
 
+        d.update(self.extra_attr)
+
         return d
 
     def _parse_to_mongo(self, obj: Any) -> Any:
@@ -106,3 +108,14 @@ class MongoBase(ABC):
         """
 
         return self._id
+
+    @property
+    def extra_attr(self) -> dict:
+        """Atributos extras necessários para instanciar a classe, mas que
+        não fazem parte do fields da classe.
+        Exemplo: attr que são `InitVar`
+
+        Geralmente precisam ser passados no `**kwargs` do `__post_init__`
+        """
+
+        return {}
