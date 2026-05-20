@@ -15,7 +15,7 @@ class World(MongoBase):
     base_size: int = 500
     cities: Dict[Tuple[int, int], City] = field(default_factory=dict)
 
-    UPDATABLE_ATTR_LIST = tuple()
+    UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self):
         super().__post_init__()

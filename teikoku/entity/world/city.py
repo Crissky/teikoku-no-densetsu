@@ -12,7 +12,7 @@ class City(MongoBase):
     x: InitVar[int]
     y: InitVar[int]
 
-    UPDATABLE_ATTR_LIST = tuple()
+    UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self, x: int, y: int):
         super().__post_init__()
