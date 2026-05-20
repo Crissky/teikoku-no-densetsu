@@ -1,5 +1,7 @@
-from abc import ABC, abstractmethod
 import logging
+
+from abc import ABC, abstractmethod
+from enum import Enum
 
 from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
@@ -53,15 +55,22 @@ class MongoBase(ABC):
                 "Todos os itens de UPDATABLE_ATTR_LIST devem ser string"
             )
 
-    def to_dict(self):
+    def to_dict(self) -> dict:
         data = asdict(self)
-        return {
-            f.name: getattr(self, f.name)._id
-            if isinstance(getattr(self, f.name), MongoBase)
-            else data[f.name]
-            for f in fields(self)
-            if f.init
-        }
+        d = {}
+        for f in fields(self):
+            if not f.init:
+                continue
+
+            obj = getattr(self, f.name)
+            if isinstance(obj, MongoBase):
+                d[f.name] = obj._id
+            elif isinstance(obj, Enum):
+                d[f.name] = obj.name
+            else:
+                data[f.name]
+
+        return d
 
     def translate(self, value: Any) -> Union[str, Any]:
         if value is True:
