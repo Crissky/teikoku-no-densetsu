@@ -4,6 +4,7 @@ from typing import Dict, Optional, Tuple
 
 from repository.mongo.base import MongoBase
 from teikoku.world.city import City
+from teikoku.world.coor import Coordinate
 
 logger = logging.getLogger(__name__)
 
@@ -58,6 +59,25 @@ class World(MongoBase):
                 f"{city.coor.show}."
             )
 
+    def get_city(
+        self,
+        coordinate: Optional[Coordinate],
+        x: Optional[int],
+        y: Optional[int],
+    ) -> Optional[City]:
+        if isinstance(coordinate, Coordinate):
+            x = coordinate.x
+            y = coordinate.y
+
+        if not isinstance(x, int) or not isinstance(y, int):
+            raise TypeError(
+                "Os parâmetros x e y precisam ser do tipo int."
+                f"x: {type(x)} | y: {type(y)}"
+            )
+
+        coor = (x, y)
+
+        return self.cities.get(coor, None)
 
     @property
     def size(self) -> int:
