@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 import logging
-from typing import List
+from typing import Dict, Optional, Tuple
 
 from repository.mongo.base import MongoBase
 from teikoku.world.city import City
@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class World(MongoBase):
     name: str
     base_size: int = 500
-    cities: List[City] = field(default_factory=list)
+    cities: Dict[Tuple[int, int], City] = field(default_factory=dict)
 
     UPDATABLE_ATTR_LIST = tuple()
 
@@ -40,8 +40,24 @@ class World(MongoBase):
             )
 
     def add_city(self, city: City):
-        self.cities.append(city)
-        logger.info(f"Cidade {city.name} adicionada ao Mundo {self.name}.")
+        if not isinstance(city, City):
+            raise TypeError(f"city precisa ser do tipo City ({type(city)}).")
+
+        x = city.coor.x
+        y = city.coor.y
+        coor = (x, y)
+        existing_city = self.cities.get(coor)
+
+        if existing_city is None:
+            self.cities[coor] = city
+            logger.info(f"Cidade {city.name} adicionada ao Mundo {self.name}.")
+        else:
+            logger.warning(
+                f"Cidade {city.name} NÃO foi adicionada ao Mundo {self.name}, "
+                f"por já existir a cidade {existing_city.name} na posição "
+                f"{city.coor.show}."
+            )
+
 
     @property
     def size(self) -> int:
