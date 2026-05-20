@@ -60,4 +60,7 @@ if __name__ == "__main__":
     print("\nGROUP.TELEGRAM_TEXT:")
     print(group.telegram_text)
 
+    print("\nGROUP.TO_DICT:")
+    print(group.to_dict())
+
     print(" END LOCAL TEST ".center(79, "="))

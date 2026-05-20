@@ -111,4 +111,7 @@ if __name__ == "__main__":
     print("\nWORLD.TELEGRAM_TEXT")
     print(world.telegram_text)
 
+    print("\nWORLD.TO_DICT")
+    print(world.to_dict())
+
     print(" END LOCAL TEST ".center(79, "="))

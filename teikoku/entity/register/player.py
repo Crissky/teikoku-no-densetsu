@@ -78,4 +78,7 @@ if __name__ == "__main__":
     print("\nPLAYER.TELEGRAM_TEXT:")
     print(player.telegram_text)
 
+    print("\nPLAYER.TO_DICT:")
+    print(player.to_dict())
+
     print(" END LOCAL TEST ".center(79, "="))
