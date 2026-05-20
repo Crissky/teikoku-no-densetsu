@@ -1,12 +1,16 @@
 from dataclasses import InitVar, asdict, dataclass, fields
 from enum import Enum
+from typing import Union
 
+from bson import ObjectId
+
+from repository.mongo.base import MongoBase
 from teikoku.enum.resource import LocationResourceEnum, ResourceEnum
 from teikoku.entity.world.coor import Coordinate
 
 
 @dataclass
-class Mine:
+class Mine(MongoBase):
     resource: int
     resource_name: ResourceEnum
     x: InitVar[int]
@@ -14,7 +18,10 @@ class Mine:
     location: LocationResourceEnum = LocationResourceEnum.MINE
     level: int = 1
 
+    UPDATABLE_ATTR_LIST = ()
+
     def __post_init__(self, x: int, y: int):
+        super().__post_init__()
 
         # RESOURCE
         if not isinstance(self.resource, int):
@@ -67,21 +74,6 @@ class Mine:
                 f"({self.level})."
             )
 
-    def to_dict(self):
-        data = asdict(self)
-        d = {
-            f.name: (
-                data[f.name].name
-                if isinstance(data[f.name], Enum)
-                else data[f.name]
-            )
-            for f in fields(self)
-            if f.init
-        }
-        d["x"] = self.coor.x
-        d["y"] = self.coor.y
-        return d
-
     @property
     def name(self):
         return (
@@ -97,6 +89,17 @@ class Mine:
         text += f"*{resource_name}*: {self.resource}\n"
 
         return text
+
+    @property
+    def persisted_fields(self) -> Union[dict, ObjectId]:
+        return self.to_dict()
+
+    @property
+    def extra_attr(self) -> dict:
+        return {
+            "x": self.coor.x,
+            "y": self.coor.y,
+        }
 
 
 if __name__ == "__main__":
