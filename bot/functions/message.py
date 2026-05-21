@@ -536,7 +536,7 @@ def is_chat_group(
     elif not isinstance(chat_type, str):
         raise TypeError(
             f'message precisa ser do tipo "Message" ({type(message)}) ou '
-            f'chat_type precisa ser do tipo "str" ({type(chat_type)})'
+            f'chat_type precisa ser do tipo "str" ({type(chat_type)}).'
         )
 
     return chat_type in CHAT_TYPE_GROUPS

@@ -22,7 +22,7 @@ class City(MongoBase):
             raise TypeError(e)
 
         if not isinstance(self.owner, Player):
-            e = f"owner deve ser do tipo PLayer ({type(self.owner)})"
+            e = f"owner deve ser do tipo PLayer ({type(self.owner)})."
             raise TypeError(e)
 
         self.coor = Coordinate(x=x, y=y)

@@ -25,19 +25,19 @@ class MongoBase(ABC):
             self._id = ObjectId(self._id)
         if not isinstance(self._id, ObjectId):
             raise TypeError(
-                f"O _id passado é do tipo inválido. ({type(self._id)})"
+                f"O _id passado é do tipo inválido. ({type(self._id)})."
             )
 
         if not isinstance(self.created_at, (datetime, type(None))):
             raise TypeError(
                 "O created_at passado é do tipo inválido. "
-                f"({type(self.created_at)})"
+                f"({type(self.created_at)})."
             )
 
         if not isinstance(self.updated_at, (datetime, type(None))):
             raise TypeError(
                 "O updated_at passado é do tipo inválido. "
-                f"({type(self.updated_at)})"
+                f"({type(self.updated_at)})."
             )
 
     def __init_subclass__(cls):

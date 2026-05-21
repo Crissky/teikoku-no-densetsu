@@ -8,10 +8,10 @@ class Coordinate:
 
     def __post_init__(self):
         if not isinstance(self.x, int):
-            e = f"O parâmetro x precisa ser um int. ({type(self.x)})"
+            e = f"O parâmetro x precisa ser um int. ({type(self.x)})."
             raise TypeError(e)
         if not isinstance(self.y, int):
-            e = f"O parâmetro y precisa ser um int. ({type(self.y)})"
+            e = f"O parâmetro y precisa ser um int. ({type(self.y)})."
             raise TypeError(e)
 
     @property
