@@ -15,17 +15,8 @@ class City(MongoBase):
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self, x: int, y: int):
-        super().__post_init__()
-
-        if not isinstance(self.name, str):
-            e = f"O name precisa ser do tipo str ({type(self.name)})."
-            raise TypeError(e)
-
-        if not isinstance(self.owner, Player):
-            e = f"owner deve ser do tipo PLayer ({type(self.owner)})."
-            raise TypeError(e)
-
         self.coor = Coordinate(x=x, y=y)
+        super().__post_init__()
 
     @property
     def telegram_text(self) -> str:

@@ -18,15 +18,12 @@ class World(MongoBase):
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self):
-        super().__post_init__()
 
-        if not isinstance(self.name, str):
-            e = f"O name precisa ser do tipo str ({type(self.name)})."
-            raise TypeError(e)
-
-        if not isinstance(self.base_size, int):
-            e = f"base_size precisa ser do tipo int ({type(self.base_size)})."
-            raise TypeError(e)
+        if self.base_size <= 0:
+            raise TypeError(
+                "base_size precisa ser um inteiro maior que zero "
+                f"({self.base_size})."
+            )
 
         error_cities = []
         for i, city in enumerate(self.cities):
@@ -39,6 +36,8 @@ class World(MongoBase):
                 "Todos os elementos de cities precisam ser do tipo City. "
                 f"Índices com erro:{e}."
             )
+
+        super().__post_init__()
 
     def add_city(self, city: City):
         if not isinstance(city, City):

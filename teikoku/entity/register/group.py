@@ -11,24 +11,6 @@ class Group(MongoBase):
 
     UPDATABLE_ATTR_LIST = ("silent",)
 
-    def __post_init__(self):
-        super().__post_init__()
-
-        # CHAT ID
-        if not isinstance(self.chat_id, int):
-            e = f"O chat_id precisa ser do tipo int ({type(self.chat_id)})."
-            raise TypeError(e)
-
-        # NAME
-        if not isinstance(self.name, str):
-            e = f"O name precisa ser do tipo str ({type(self.name)})."
-            raise TypeError(e)
-
-        # SILENT
-        if not isinstance(self.silent, bool):
-            e = f"O silent precisa ser do tipo bool ({type(self.silent)})."
-            raise TypeError(e)
-
     def __eq__(self, value):
         result = False
         if isinstance(value, Group):

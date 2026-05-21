@@ -5,7 +5,15 @@ from enum import Enum
 
 from dataclasses import dataclass, field, fields
 from datetime import datetime
-from typing import Any, ClassVar, Tuple, Union
+from typing import (
+    Any,
+    ClassVar,
+    Optional,
+    Tuple,
+    Union,
+    get_args,
+    get_type_hints,
+)
 
 from bson import ObjectId
 
@@ -15,30 +23,16 @@ logger = logging.getLogger(__name__)
 @dataclass(kw_only=True)
 class MongoBase(ABC):
     _id: Union[ObjectId, str] = field(default_factory=ObjectId)
-    created_at: datetime = None
-    updated_at: datetime = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     UPDATABLE_ATTR_LIST: ClassVar[Tuple[str]]
 
     def __post_init__(self):
         if self._id is None or isinstance(self._id, str):
             self._id = ObjectId(self._id)
-        if not isinstance(self._id, ObjectId):
-            raise TypeError(
-                f"O _id passado é do tipo inválido. ({type(self._id)})."
-            )
 
-        if not isinstance(self.created_at, (datetime, type(None))):
-            raise TypeError(
-                "O created_at passado é do tipo inválido. "
-                f"({type(self.created_at)})."
-            )
-
-        if not isinstance(self.updated_at, (datetime, type(None))):
-            raise TypeError(
-                "O updated_at passado é do tipo inválido. "
-                f"({type(self.updated_at)})."
-            )
+        self._check_init_types()
 
     def __init_subclass__(cls):
         super().__init_subclass__()
@@ -55,6 +49,28 @@ class MongoBase(ABC):
             raise TypeError(
                 "Todos os itens de UPDATABLE_ATTR_LIST devem ser string"
             )
+
+    def _check_init_types(self):
+        errors = []
+        init_fields = {f.name for f in fields(self) if f.init}
+        hints = {
+            k: v
+            for k, v in get_type_hints(type(self)).items()
+            if k in init_fields
+        }
+        for attr, expected_type in hints.items():
+            value = getattr(self, attr)
+            args = get_args(expected_type) or (expected_type,)
+            if not isinstance(
+                value, tuple(a for a in args if isinstance(a, type))
+            ):
+                errors.append(
+                    f"'{attr}' deve ser do tipo {expected_type}, "
+                    f"mas recebeu {type(value).__name__}."
+                )
+
+        if errors:
+            raise TypeError("\n".join(errors))
 
     def to_dict(self) -> dict:
         d = {}

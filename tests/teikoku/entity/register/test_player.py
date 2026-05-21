@@ -10,7 +10,10 @@ class TestPlayer(unittest.TestCase):
         """Cria e retorna uma instância de Player com valores padrão."""
 
         return Player(
-            user_id=user_id, name=name, username=username, silent=silent,
+            user_id=user_id,
+            name=name,
+            username=username,
+            silent=silent,
             **kwargs
         )
 
@@ -20,29 +23,17 @@ class TestPlayer(unittest.TestCase):
         player = self._make_player(user_id=123456789)
         self.assertEqual(player.user_id, 123456789)
 
-    def test_user_id_zero_raises_value_error(self):
-        """Verifica se user_id igual a zero levanta ValueError."""
-
-        with self.assertRaises(ValueError):
-            self._make_player(user_id=0)
-
     def test_user_id_invalid_type_raises_type_error(self):
         """Verifica se user_id de tipo inválido levanta TypeError."""
 
         with self.assertRaises(TypeError):
             self._make_player(user_id="123")
 
-    def test_name_converts_to_str(self):
-        """Verifica se name de tipo não-str é convertido para str."""
-
-        player = self._make_player(name=42)
-        self.assertEqual(player.name, "42")
-
-    def test_name_none_kept(self):
+    def test_name_none_raises_type_error(self):
         """Verifica se name igual a None é mantido sem alterações."""
 
-        player = self._make_player(name=None)
-        self.assertIsNone(player.name)
+        with self.assertRaises(TypeError):
+            self._make_player(name=None)
 
     def test_username_none_kept(self):
         """Verifica se username igual a None é mantido sem alterações."""

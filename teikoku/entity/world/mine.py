@@ -20,15 +20,9 @@ class Mine(MongoBase):
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self, x: int, y: int):
-        super().__post_init__()
 
         # RESOURCE
-        if not isinstance(self.resource, int):
-            raise TypeError(
-                "O atributo resource precisa ser um inteiro "
-                f"({type(self.resource)})."
-            )
-        elif self.resource < 0:
+        if self.resource < 0:
             raise ValueError(
                 "O atributo resource precisa ser um valor positivo "
                 f"({self.resource})."
@@ -36,12 +30,7 @@ class Mine(MongoBase):
 
         # RESOURCE_NAME
         if isinstance(self.resource_name, str):
-            self.resource_name = ResourceEnum(self.resource_name)
-        if not isinstance(self.resource_name, ResourceEnum):
-            raise TypeError(
-                "O atributo resource_name precisa ser um ResourceEnum "
-                f"({type(self.resource_name)})."
-            )
+            self.resource_name = ResourceEnum[self.resource_name]
 
         # COORDINATE
         if isinstance(x, int) and isinstance(y, int):
@@ -51,6 +40,8 @@ class Mine(MongoBase):
                 "Os atributos x e y precisam ser do tipo int."
                 f"x: {type(self.x)} | y: {type(self.y)}"
             )
+
+        super().__post_init__()
 
         # LOCATION
         if isinstance(self.location, str):
@@ -104,6 +95,7 @@ class Mine(MongoBase):
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
 
+    mine = Mine(100, "METAL", x=1, y=2)
     mine = Mine(100, ResourceEnum.METAL, x=1, y=2)
 
     print("\nMINE")

@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Optional
 
 from repository.mongo.base import MongoBase
 
@@ -7,40 +8,21 @@ from repository.mongo.base import MongoBase
 class Player(MongoBase):
     user_id: int  # TELEGRAM ID
     name: str
-    username: str = None  # @ do usuário
+    username: Optional[str] = None  # @ do usuário
     silent: bool = False
 
     UPDATABLE_ATTR_LIST = ("silent",)
 
     def __post_init__(self):
-        super().__post_init__()
-
-        # USER ID
-        if not self.user_id:
-            raise ValueError(f"O user_id '{self.user_id}' não é válido.")
-        if not isinstance(self.user_id, int):
-            e = f"O user_id precisa ser do tipo int ({type(self.user_id)})."
-            raise TypeError(e)
-
-        # NAME
-        if self.name is not None:
-            self.name = str(self.name)
-
         # USERNAME
         username = self.username
-        if not isinstance(username, (str, type(None))):
-            e = f"O username precisa ser do tipo str ({type(username)})."
-            raise TypeError(e)
-        elif isinstance(username, str) and not username.startswith("@"):
+        if isinstance(username, str) and not username.startswith("@"):
             raise ValueError(
                 f"O username '{username}' não é válido "
                 "(precisa começar com '@')."
             )
 
-        # SILENT
-        if not isinstance(self.silent, bool):
-            e = f"O silent precisa ser do tipo bool ({type(self.silent)})."
-            raise TypeError(e)
+        super().__post_init__()
 
     def __eq__(self, value):
         result = False
