@@ -1,5 +1,4 @@
-from dataclasses import InitVar, asdict, dataclass, fields
-from enum import Enum
+from dataclasses import InitVar, dataclass
 from typing import Union
 
 from bson import ObjectId
