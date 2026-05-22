@@ -4,33 +4,33 @@ from typing import Union
 from bson import ObjectId
 
 from repository.mongo.base import MongoBase
-from teikoku.enum.resource import LocationResourceEnum, ResourceEnum
+from teikoku.enum.resource import LocationResourceTypeEnum, ResourceEnum
 from teikoku.entity.world.coor import Coordinate
 
 
 @dataclass
 class Mine(MongoBase):
-    resource: int
-    resource_name: ResourceEnum
+    quantity: int
+    resource: ResourceEnum
     x: InitVar[int]
     y: InitVar[int]
-    location: LocationResourceEnum = LocationResourceEnum.MINE
+    location_type: LocationResourceTypeEnum = LocationResourceTypeEnum.MINE
     level: int = 1
 
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self, x: int, y: int):
 
-        # RESOURCE
-        if self.resource < 0:
+        # QUANTITY
+        if self.quantity < 0:
             raise ValueError(
                 "O atributo resource precisa ser um valor positivo "
-                f"({self.resource})."
+                f"({self.quantity})."
             )
 
-        # RESOURCE_NAME
-        if isinstance(self.resource_name, str):
-            self.resource_name = ResourceEnum[self.resource_name]
+        # RESOURCE
+        if isinstance(self.resource, str):
+            self.resource = ResourceEnum[self.resource]
 
         # COORDINATE
         if isinstance(x, int) and isinstance(y, int):
@@ -41,42 +41,32 @@ class Mine(MongoBase):
                 f"x: {type(self.x)} | y: {type(self.y)}"
             )
 
-        super().__post_init__()
-
         # LOCATION
-        if isinstance(self.location, str):
-            self.location = LocationResourceEnum(self.location)
-        if not isinstance(self.location, LocationResourceEnum):
-            raise TypeError(
-                "O atributo name precisa ser uma string "
-                f"({type(self.location)})."
-            )
+        if isinstance(self.location_type, str):
+            self.location_type = LocationResourceTypeEnum[self.location_type]
 
         # LEVEL
-        if not isinstance(self.level, int):
-            raise TypeError(
-                "O atributo level precisa ser um inteiro "
-                f"({type(self.level)})."
-            )
-        elif self.level < 0:
+        if self.level < 0:
             raise ValueError(
                 "O atributo level precisa ser um valor positivo "
                 f"({self.level})."
             )
 
+        super().__post_init__()
+
     @property
     def name(self):
         return (
-            f"{self.location.value.title()} de "
-            f"{self.resource_name.value.title()}"
+            f"{self.location_type.value.title()} de "
+            f"{self.resource.value.title()}"
         )
 
     @property
     def telegram_text(self):
-        resource_name = self.resource_name.value.title()
+        resource_name = self.resource.value.title()
         text = f"*Local*: {self.name}\n"
         text += f"*Nível*: {self.level}\n"
-        text += f"*{resource_name}*: {self.resource}\n"
+        text += f"*{resource_name}*: {self.quantity}\n"
 
         return text
 

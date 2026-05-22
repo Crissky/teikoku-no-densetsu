@@ -12,7 +12,7 @@ class ResourceEnum(Enum):
     WOOD = "madeira"
 
 
-class LocationResourceEnum(Enum):
+class LocationResourceTypeEnum(Enum):
     MINE = "mina"
     DEPOSIT = "JAZIDA"
     FOREST = "floresta"
