@@ -25,18 +25,6 @@ class World(MongoBase):
                 f"({self.base_size})."
             )
 
-        error_cities = []
-        for i, city in enumerate(self.cities):
-            if not isinstance(city, City):
-                error_cities.append((i, type(city)))
-
-        if error_cities:
-            e = ", ".join([f" {i} ({t})" for i, t in error_cities])
-            raise TypeError(
-                "Todos os elementos de cities precisam ser do tipo City. "
-                f"Índices com erro:{e}."
-            )
-
         super().__post_init__()
 
     def add_city(self, city: City):
@@ -102,7 +90,8 @@ if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
     p = Player(user_id=123, name="teste")
     c = City(name="Cidade Teste", x=1, y=2, owner=p)
-    world = World(name="Mundo Teste", cities=[c])
+    cities = {(c.coor.x, c.coor.y): c}
+    world = World(name="Mundo Teste", cities=cities)
 
     print("\nWORLD")
     print(world)

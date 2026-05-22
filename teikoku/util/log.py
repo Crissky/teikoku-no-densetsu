@@ -1,37 +1,44 @@
 from collections import deque
 from dataclasses import dataclass, field
-from datetime import datetime
 from html import escape
-from typing import Deque, Union
+from itertools import islice
+from typing import Deque, List, Union
 
 from bson import ObjectId
 
+from general.functions.date_time import get_brazil_time_now
 from repository.mongo.base import MongoBase
 from teikoku.entity.register.player import Player
 
 
 @dataclass
 class Log(MongoBase):
-    max_size: int
-    log_list: Deque[str] = field(default_factory=deque, repr=False)
+    max_show: int = 10
+    list_size: int = 100
+    log_list: Union[Deque[str], List[str]] = field(
+        default_factory=deque, repr=False
+    )
 
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self):
-        if not isinstance(self.max_size, int):
-            e = f"max_size deve ser do tipo int ({type(self.max_size)})."
-            raise TypeError(e)
-        elif self.max_size <= 0:
-            e = f"max_size deve ser maior que zero ({self.max_size})."
+        if self.max_show <= 0:
+            e = f"max_show deve ser maior que zero ({self.max_show})."
             raise ValueError(e)
-
-        if not isinstance(self.log_list, (list, deque)):
-            raise TypeError(
-                f"log_list deve ser do tipo list ou deque "
-                f"({type(self.log_list)})."
+        if self.list_size <= 0:
+            e = f"list_size deve ser maior que zero ({self.list_size})."
+            raise ValueError(e)
+        if self.max_show > self.list_size:
+            raise ValueError(
+                f"max_show ({self.max_show}) deve ser menor ou igual a "
+                f"list_size ({self.list_size})."
             )
-        else:
-            self.log_list = deque(self.log_list, maxlen=self.max_size)
+
+        self.log_list = deque(self.log_list, maxlen=self.list_size)
+        super().__post_init__()
+
+    def __len__(self) -> int:
+        return len(self.log_list)
 
     def add(self, msg: str, player: Player = None) -> str:
         if isinstance(player, Player):
@@ -43,12 +50,18 @@ class Log(MongoBase):
 
     @property
     def timestamp(self) -> str:
+        now = get_brazil_time_now()
 
-        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        return now.strftime("%Y-%m-%d %H:%M:%S")
 
     @property
     def telegram_text(self) -> str:
-        return "\n".join((f"  {escape(s)}" for s in self.log_list))
+        stop = len(self)
+        start = stop - self.max_show
+
+        return "\n".join(
+            (f"  {escape(s)}" for s in islice(self.log_list, start, stop))
+        )
 
     @property
     def persisted_fields(self) -> Union[dict, ObjectId]:
@@ -58,12 +71,9 @@ class Log(MongoBase):
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
 
-    log = Log(3, deque())
-    log.add("teste 1")
-    log.add("teste 2")
-    log.add("teste 3")
-    log.add("teste 4")
-    log.add("teste 5")
+    log = Log(max_show=3, list_size=10, log_list=deque())
+    for i in range(1, 21):
+        log.add(f"teste {i}")
 
     print("\nLOG")
     print(log)

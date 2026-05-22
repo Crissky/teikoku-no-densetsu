@@ -1,3 +1,4 @@
+from collections import deque
 import logging
 
 from abc import ABC, abstractmethod
@@ -8,10 +9,13 @@ from datetime import datetime
 from typing import (
     Any,
     ClassVar,
+    List,
+    Literal,
     Optional,
     Tuple,
     Union,
     get_args,
+    get_origin,
     get_type_hints,
 )
 
@@ -51,7 +55,7 @@ class MongoBase(ABC):
             )
 
     def _check_init_types(self):
-        errors = []
+        error_list = []
         init_fields = {f.name for f in fields(self) if f.init}
         hints = {
             k: v
@@ -60,17 +64,106 @@ class MongoBase(ABC):
         }
         for attr, expected_type in hints.items():
             value = getattr(self, attr)
-            args = get_args(expected_type) or (expected_type,)
-            if not isinstance(
-                value, tuple(a for a in args if isinstance(a, type))
-            ):
-                errors.append(
-                    f"'{attr}' deve ser do tipo {expected_type}, "
-                    f"mas recebeu {type(value).__name__}."
-                )
+            error_list.extend(self._validate_type(attr, expected_type, value))
 
-        if errors:
-            raise TypeError("\n".join(errors))
+        if error_list:
+            raise TypeError("\n".join(error_list))
+
+    def _validate_type(
+        self, attr: str, expected_type: type, value: Any
+    ) -> List[str]:
+        error_list = []
+        origin = get_origin(expected_type)
+        args = get_args(expected_type)
+
+        if origin is None:
+            if not isinstance(value, expected_type):
+                error = self._get_msg_error(attr, expected_type, value)
+                error_list.append(error)
+
+        elif origin is Union:
+            union_error_list = []
+            for a in args:
+                el = self._validate_type(attr, a, value)
+                if not el:
+                    union_error_list = []
+                    break
+                union_error_list.extend(el)
+
+            if union_error_list:
+                error_list.append(self._get_msg_error(attr, args, value))
+
+        elif origin is list:
+            if not isinstance(value, list):
+                error = self._get_msg_error(attr, expected_type, value)
+                error_list.append(error)
+            else:
+                for i, v in enumerate(value):
+                    error_list.extend(
+                        self._validate_type(f"{attr}.[{i}]", args[0], v)
+                    )
+
+        elif origin is deque:
+            if not isinstance(value, deque):
+                error = self._get_msg_error(attr, expected_type, value)
+                error_list.append(error)
+            else:
+                for i, v in enumerate(value):
+                    error_list.extend(
+                        self._validate_type(f"{attr}.[{i}]", args[0], v)
+                    )
+
+        elif origin is tuple:
+            if not isinstance(value, tuple):
+                error = self._get_msg_error(attr, expected_type, value)
+                error_list.append(error)
+            elif len(args) != len(value):
+                error = (
+                    f"'{attr}' deve ter tamanho {len(args)}, "
+                    f"mas recebeu o tamanho {len(value)}."
+                )
+                error_list.append(error)
+            else:
+                for i, (a, v) in enumerate(zip(args, value)):
+                    error_list.extend(
+                        self._validate_type(f"{attr}.[{i}]", a, v)
+                    )
+
+        elif origin is dict:
+            if not isinstance(value, dict):
+                error = self._get_msg_error(attr, expected_type, value)
+                error_list.append(error)
+            else:
+                key_type, value_type = args
+                for k, v in value.items():
+                    error_list.extend(
+                        self._validate_type(f"{attr}['{k}']", value_type, v)
+                    )
+                    error_list.extend(
+                        self._validate_type(f"{attr}['{k}']", key_type, k)
+                    )
+
+        elif origin is Optional:
+            if value is not None:
+                error_list.extend(self._validate_type(attr, args[0], value))
+
+        elif origin is Literal:
+            if value not in args:
+                error = (
+                    f"'{attr}' deve ser um dos valores {args}, "
+                    f"mas recebeu o valor {value}."
+                )
+                error_list.append(error)
+
+        return error_list
+
+    def _get_msg_error(
+        self, attr: str, expected_type: type, value: Any
+    ) -> str:
+        return (
+            f"'{attr}' deve ser do tipo {expected_type}, "
+            f"mas recebeu o tipo {type(value).__name__}."
+        )
 
     def to_dict(self) -> dict:
         d = {}
