@@ -4,14 +4,17 @@ from typing import Union
 from bson import ObjectId
 
 from repository.mongo.base import MongoBase
-from teikoku.enum.resource import LocationResourceTypeEnum, ResourceEnum
+from teikoku.enum.resource import (
+    CollectibleResourceEnum,
+    LocationResourceTypeEnum,
+)
 from teikoku.entity.world.coor import Coordinate
 
 
 @dataclass
-class Mine(MongoBase):
+class ResourceArea(MongoBase):
     quantity: int
-    resource: ResourceEnum
+    resource: CollectibleResourceEnum
     x: InitVar[int]
     y: InitVar[int]
     location_type: LocationResourceTypeEnum = LocationResourceTypeEnum.MINE
@@ -30,7 +33,7 @@ class Mine(MongoBase):
 
         # RESOURCE
         if isinstance(self.resource, str):
-            self.resource = ResourceEnum[self.resource]
+            self.resource = CollectibleResourceEnum[self.resource]
 
         # COORDINATE
         if isinstance(x, int) and isinstance(y, int):
@@ -85,8 +88,8 @@ class Mine(MongoBase):
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
 
-    mine = Mine(100, "METAL", x=1, y=2)
-    mine = Mine(100, ResourceEnum.METAL, x=1, y=2)
+    mine = ResourceArea(100, "METAL", x=1, y=2)
+    mine = ResourceArea(100, CollectibleResourceEnum.METAL, x=1, y=2)
 
     print("\nMINE")
     print(mine)
