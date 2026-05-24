@@ -1,15 +1,23 @@
 from dataclasses import InitVar, dataclass, field
-from typing import List
+from typing import Dict, List
 
 from repository.mongo.base import MongoBase
+from teikoku.data.unit import DEFAULT_BAG_CAPACITY
+from teikoku.entity.register.player import Player
 from teikoku.entity.unit.stats_modifier import StatModifier
+from teikoku.entity.unit.unit_bag import UnitBag
 from teikoku.entity.unit.unit_stats import Stats
-from teikoku.enum.unit import UnitNameEnum
+from teikoku.entity.world.coor import Coordinate
+from teikoku.enum.resource import CollectibleResourceEnum
+from teikoku.enum.unit import UnitCategoryEnum
 
 
 @dataclass
 class UnitBase(MongoBase):
-    name: UnitNameEnum
+    name: str
+    owner_id: int
+    x: InitVar[int]
+    y: InitVar[int]
     level: InitVar[int]
     hp: InitVar[int]
     damaged: InitVar[int]
@@ -17,13 +25,19 @@ class UnitBase(MongoBase):
     mind: InitVar[int]
     defense: InitVar[int]
     speed: InitVar[int]
+    category: UnitCategoryEnum = None
     stat_modifier_list: InitVar[List[StatModifier]] = field(
         default_factory=list
     )
-    bag_size: InitVar[int]
+    bag_capacity: InitVar[int] = DEFAULT_BAG_CAPACITY
+    bag_items: InitVar[Dict[CollectibleResourceEnum, int]] = field(
+        default_factory=dict
+    )
 
     def __post_init__(
         self,
+        x: int,
+        y: int,
         level: int,
         hp: int,
         damaged: int,
@@ -32,16 +46,15 @@ class UnitBase(MongoBase):
         defense: int,
         speed: int,
         stat_modifier_list: List[StatModifier],
-        bag_size: int,
+        bag_capacity: int,
+        bag_items: Dict[CollectibleResourceEnum, int],
     ):
+        # COORDINATE
+        self.coor = Coordinate(x=x, y=y)
+
         # NAME
         if isinstance(self.name, str):
-            self.name = UnitNameEnum[self.name]
-
-        # BAG
-        if self.bag_size < 0:
-            e = f"bag_size deve ser um inteiro positivo ({self.bag_size})"
-            raise ValueError(e)
+            self.name = UnitCategoryEnum[self.name]
 
         # STATS
         self.stats = Stats(
@@ -54,5 +67,11 @@ class UnitBase(MongoBase):
             base_speed=speed,
             stat_modifier_list=stat_modifier_list,
         )
+
+        # BAG
+        if self.bag_capacity < 0:
+            e = f"bag_size deve ser um inteiro positivo ({self.bag_capacity})"
+            raise ValueError(e)
+        self.bag = UnitBag(capacity=bag_capacity, items=bag_items)
 
         super().__post_init__()

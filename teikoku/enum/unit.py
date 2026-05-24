@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class UnitNameEnum(Enum):
+class UnitCategoryEnum(Enum):
     VILLAGER = "Aldeão"
 
 
