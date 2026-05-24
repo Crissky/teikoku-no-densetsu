@@ -1,8 +1,11 @@
 from dataclasses import dataclass, field
 import logging
-from typing import Dict, Optional, Tuple
+import random
+from typing import Dict, List, Optional, Tuple
 
 from repository.mongo.base import MongoBase
+from teikoku.data.world import TERRAIN_PROBABILITIES
+from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.world.city import City
 from teikoku.entity.world.coor import Coordinate
 
@@ -14,6 +17,8 @@ class World(MongoBase):
     name: str
     base_size: int = 500
     cities: Dict[Tuple[int, int], City] = field(default_factory=dict)
+    units: Dict[Tuple[int, int], UnitBase] = field(default_factory=dict)
+    terrain_map: List[List[int]] = field(default_factory=list)
 
     UPDATABLE_ATTR_LIST = ()
 
@@ -25,7 +30,21 @@ class World(MongoBase):
                 f"({self.base_size})."
             )
 
+        if not self.terrain_map:
+            self.terrain_map = self.create_terrain_map()
+
         super().__post_init__()
+
+    def generate_terrain_map(self, seed: int = 42):
+        choices = []
+        local_rng = random.Random(seed)
+        for terrain_id, weight in TERRAIN_PROBABILITIES.items():
+            choices.extend([terrain_id] * weight)
+
+        return [
+            [local_rng.choice(choices) for _ in range(self.base_size)]
+            for _ in range(self.base_size)
+        ]
 
     def add_city(self, city: City):
         if not isinstance(city, City):
