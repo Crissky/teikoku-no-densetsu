@@ -28,7 +28,8 @@ class LocationResourceTypeEnum(Enum):
     TEMPLE = "templo"
 
 
-print(CollectibleResourceEnum, list(CollectibleResourceEnum), end="\n\n")
-print(SocialResourceEnum, list(SocialResourceEnum), end="\n\n")
-print(ResourceEnum, list(ResourceEnum), end="\n\n")
-print(type(ResourceEnum.METAL), end="\n\n")
+if __name__ == "__main__":
+    print(CollectibleResourceEnum, list(CollectibleResourceEnum), end="\n\n")
+    print(SocialResourceEnum, list(SocialResourceEnum), end="\n\n")
+    print(ResourceEnum, list(ResourceEnum), end="\n\n")
+    print(type(ResourceEnum.METAL), end="\n\n")
