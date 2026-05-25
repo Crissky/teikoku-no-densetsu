@@ -26,13 +26,13 @@ class UnitBase(MongoBase):
     defense: InitVar[int]
     speed: InitVar[int]
     category: UnitCategoryEnum = None
-    stat_modifier_list: InitVar[List[StatModifier]] = field(
-        default_factory=list
-    )
+    stat_modifier_list: InitVar[List[StatModifier]] = field(default=None)
     bag_capacity: InitVar[int] = DEFAULT_BAG_CAPACITY
     bag_items: InitVar[Dict[CollectibleResourceEnum, int]] = field(
-        default_factory=dict
+        default=None
     )
+
+    UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(
         self,
