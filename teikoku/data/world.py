@@ -1,3 +1,13 @@
+DEFAULT_TERRAIN_SIZE = 512
+DEFAULT_WORLD_SEED = 42
+PNOISE2_SCALE = 0.005
+PNOISE2_CONFIG = {
+    "octaves": 8,
+    "persistence": 0.5,
+    "lacunarity": 3.0,
+    "repeatx": 1024,
+    "repeaty": 1024,
+}
 TERRAIN_COLORS = {
     0: (76, 175, 80),  # Grama (Verde padrão)
     1: (13, 71, 161),  # Água Profunda / Oceano (Azul Escuro)
@@ -18,4 +28,3 @@ TERRAIN_NAMES = {
     6: "Montanha",
     7: "Pico Nevado",
 }
-DEFAULT_SEED = 42
