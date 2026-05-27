@@ -3,7 +3,6 @@ from typing import Dict, List
 
 from repository.mongo.base import MongoBase
 from teikoku.data.unit import DEFAULT_BAG_CAPACITY
-from teikoku.entity.register.player import Player
 from teikoku.entity.unit.stats_modifier import StatModifier
 from teikoku.entity.unit.unit_bag import UnitBag
 from teikoku.entity.unit.unit_stats import Stats

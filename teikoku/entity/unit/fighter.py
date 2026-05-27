@@ -4,4 +4,5 @@ from teikoku.entity.unit.unit_base import UnitBase
 
 
 @dataclass
-class Fighter(UnitBase): ...
+class Fighter(UnitBase):
+    ...
