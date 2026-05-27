@@ -2,6 +2,7 @@ from types import MappingProxyType
 
 DEFAULT_TERRAIN_SIZE = 512
 DEFAULT_WORLD_SEED = 42
+MIN_MAP_SIZE = (1024, 1024)
 PNOISE2_SCALE = 0.005
 PNOISE2_CONFIG = MappingProxyType(
     dict(
@@ -24,15 +25,23 @@ TERRAIN_COLORS = MappingProxyType(
         7: (245, 245, 245),  # Pico Nevado (Branco)
     }
 )
+GRASSLAND_TERRAIN_NAME = "Grama"
+DEEP_SEA_TERRAIN_NAME = "Mar Profundo"
+SHALLOW_WATER_TERRAIN_NAME = "Água Rasa"
+BEACH_TERRAIN_NAME = "Areia / Praia"
+SWANP_FOREST_TERRAIN_NAME = "Pântano / Floresta"
+HILLS_TERRAIN_NAME = "Colinas"
+MOUNTAIN_TERRAIN_NAME = "Montanha"
+SNOW_PEAK_TERRAIN_NAME = "Pico Nevado"
 TERRAIN_NAMES = MappingProxyType(
     {
-        0: "Grama",
-        1: "Mar Profundo",
-        2: "Água Rasa",
-        3: "Areia / Praia",
-        4: "Pântano / Floresta",
-        5: "Colinas",
-        6: "Montanha",
-        7: "Pico Nevado",
+        0: GRASSLAND_TERRAIN_NAME,
+        1: DEEP_SEA_TERRAIN_NAME,
+        2: SHALLOW_WATER_TERRAIN_NAME,
+        3: BEACH_TERRAIN_NAME,
+        4: SWANP_FOREST_TERRAIN_NAME,
+        5: HILLS_TERRAIN_NAME,
+        6: MOUNTAIN_TERRAIN_NAME,
+        7: SNOW_PEAK_TERRAIN_NAME,
     }
 )
