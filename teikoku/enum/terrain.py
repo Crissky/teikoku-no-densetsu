@@ -21,3 +21,14 @@ class TerrainEnum(Enum):
     HILLS = 5
     MOUNTAIN = 6
     SNOW_PEAK = 7
+
+
+class TerrainNamesEnum(Enum):
+    GRASSLAND = "Grama"
+    DEEP_SEA = "Mar Profundo"
+    SHALLOW_WATER = "Água Rasa"
+    BEACH = "Areia / Praia"
+    SWAMP_FOREST = "Pântano / Floresta"
+    HILLS = "Colinas"
+    MOUNTAIN = "Montanha"
+    SNOW_PEAK = "Pico Nevado"
