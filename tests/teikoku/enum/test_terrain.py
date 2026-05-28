@@ -1,16 +1,25 @@
 import unittest
 
-from teikoku.enum.terrain import TerrainColorsEnum, TerrainValueEnum
+from teikoku.enum.terrain import (
+    TerrainColorEnum,
+    TerrainNumberEnum,
+    TerrainTextEnum,
+)
 
 
 class TestTerrainEnum(unittest.TestCase):
 
-    def test_terrain_enum_names_in_colors_enum(self):
-        terrain_names = {e.name for e in TerrainValueEnum}
-        color_names = {e.name for e in TerrainColorsEnum}
-        self.assertEqual(terrain_names, color_names)
+    def test_terrain_number_enum_names_in_color_enum(self):
+        tne_names = {e.name for e in TerrainNumberEnum}
+        tce_names = {e.name for e in TerrainColorEnum}
+        self.assertEqual(tne_names, tce_names)
 
-    def test_terrain_colors_enum_names_in_terrain_enum(self):
-        color_names = {e.name for e in TerrainColorsEnum}
-        terrain_names = {e.name for e in TerrainValueEnum}
-        self.assertEqual(color_names, terrain_names)
+    def test_terrain_number_enum_names_in_text_enum(self):
+        tne_names = {e.name for e in TerrainNumberEnum}
+        tte_names = {e.name for e in TerrainTextEnum}
+        self.assertEqual(tte_names, tne_names)
+
+    def test_terrain_color_enum_names_in_text_enum(self):
+        tce_names = {e.name for e in TerrainColorEnum}
+        tte_names = {e.name for e in TerrainTextEnum}
+        self.assertEqual(tte_names, tce_names)

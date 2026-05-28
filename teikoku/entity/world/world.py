@@ -15,7 +15,7 @@ from teikoku.data.world import (
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.world.city import City
 from teikoku.entity.world.coor import Coordinate
-from teikoku.enum.terrain import TerrainValueEnum
+from teikoku.enum.terrain import TerrainColorEnum, TerrainNumberEnum
 
 logger = logging.getLogger(__name__)
 
@@ -54,27 +54,27 @@ class World(MongoBase):
                 )
 
                 # --- ÁREA DA ÁGUA (Abaixo de -0.12) ---
-                terrain = TerrainValueEnum.GRASSLAND.value
+                terrain = TerrainNumberEnum.GRASSLAND.value
                 if value < -0.32:
-                    terrain = TerrainValueEnum.DEEP_SEA.value
+                    terrain = TerrainNumberEnum.DEEP_SEA.value
                 elif value < -0.2:
-                    terrain = TerrainValueEnum.SHALLOW_WATER.value
+                    terrain = TerrainNumberEnum.SHALLOW_WATER.value
                 elif value < -0.12:
-                    terrain = TerrainValueEnum.BEACH.value
+                    terrain = TerrainNumberEnum.BEACH.value
 
                 # --- ÁREA DA TERRA PLANA E BIOMAS (Entre -0.12 e 0.25) ---
                 elif value < -0.05:
-                    terrain = TerrainValueEnum.SWAMP_FOREST.value
+                    terrain = TerrainNumberEnum.SWAMP_FOREST.value
                 elif value < 0.18:
-                    terrain = TerrainValueEnum.GRASSLAND.value
+                    terrain = TerrainNumberEnum.GRASSLAND.value
                 elif value < 0.25:
-                    terrain = TerrainValueEnum.HILLS.value
+                    terrain = TerrainNumberEnum.HILLS.value
 
                 # --- ÁREA DAS ALTITUDES (Acima de 0.25) ---
                 elif value < 0.36:
-                    terrain = TerrainValueEnum.MOUNTAIN.value
+                    terrain = TerrainNumberEnum.MOUNTAIN.value
                 else:
-                    terrain = TerrainValueEnum.SNOW_PEAK.value
+                    terrain = TerrainNumberEnum.SNOW_PEAK.value
                 terrain_map[-1].append(terrain)
 
         return terrain_map

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class TerrainColorsEnum(Enum):
+class TerrainColorEnum(Enum):
     GRASSLAND = (76, 175, 80)
     DEEP_SEA = (13, 71, 161)
     SHALLOW_WATER = (33, 150, 243)
@@ -12,7 +12,7 @@ class TerrainColorsEnum(Enum):
     SNOW_PEAK = (245, 245, 245)
 
 
-class TerrainValueEnum(Enum):
+class TerrainNumberEnum(Enum):
     GRASSLAND = 0
     DEEP_SEA = 1
     SHALLOW_WATER = 2
@@ -23,7 +23,7 @@ class TerrainValueEnum(Enum):
     SNOW_PEAK = 7
 
 
-class TerrainNamesEnum(Enum):
+class TerrainTextEnum(Enum):
     GRASSLAND = "Grama"
     DEEP_SEA = "Mar Profundo"
     SHALLOW_WATER = "Água Rasa"
