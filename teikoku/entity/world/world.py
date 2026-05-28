@@ -15,7 +15,7 @@ from teikoku.data.world import (
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.world.city import City
 from teikoku.entity.world.coor import Coordinate
-from teikoku.enum.terrain import TerrainEnum
+from teikoku.enum.terrain import TerrainValueEnum
 
 logger = logging.getLogger(__name__)
 
@@ -54,27 +54,27 @@ class World(MongoBase):
                 )
 
                 # --- ÁREA DA ÁGUA (Abaixo de -0.12) ---
-                terrain = TerrainEnum.GRASSLAND.value
+                terrain = TerrainValueEnum.GRASSLAND.value
                 if value < -0.32:
-                    terrain = TerrainEnum.DEEP_SEA.value
+                    terrain = TerrainValueEnum.DEEP_SEA.value
                 elif value < -0.2:
-                    terrain = TerrainEnum.SHALLOW_WATER.value
+                    terrain = TerrainValueEnum.SHALLOW_WATER.value
                 elif value < -0.12:
-                    terrain = TerrainEnum.BEACH.value
+                    terrain = TerrainValueEnum.BEACH.value
 
                 # --- ÁREA DA TERRA PLANA E BIOMAS (Entre -0.12 e 0.25) ---
                 elif value < -0.05:
-                    terrain = TerrainEnum.SWAMP_FOREST.value
+                    terrain = TerrainValueEnum.SWAMP_FOREST.value
                 elif value < 0.18:
-                    terrain = TerrainEnum.GRASSLAND.value
+                    terrain = TerrainValueEnum.GRASSLAND.value
                 elif value < 0.25:
-                    terrain = TerrainEnum.HILLS.value
+                    terrain = TerrainValueEnum.HILLS.value
 
                 # --- ÁREA DAS ALTITUDES (Acima de 0.25) ---
                 elif value < 0.36:
-                    terrain = TerrainEnum.MOUNTAIN.value
+                    terrain = TerrainValueEnum.MOUNTAIN.value
                 else:
-                    terrain = TerrainEnum.SNOW_PEAK.value
+                    terrain = TerrainValueEnum.SNOW_PEAK.value
                 terrain_map[-1].append(terrain)
 
         return terrain_map

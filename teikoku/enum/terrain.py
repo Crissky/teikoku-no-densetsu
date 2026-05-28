@@ -12,7 +12,7 @@ class TerrainColorsEnum(Enum):
     SNOW_PEAK = (245, 245, 245)
 
 
-class TerrainEnum(Enum):
+class TerrainValueEnum(Enum):
     GRASSLAND = 0
     DEEP_SEA = 1
     SHALLOW_WATER = 2
