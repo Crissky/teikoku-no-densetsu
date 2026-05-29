@@ -3,12 +3,14 @@ import logging
 from dataclasses import dataclass, field
 from typing import Dict, Optional, Tuple
 
+from PIL import Image
 import noise
 
 from repository.mongo.base import MongoBase
 from teikoku.data.world import (
     DEFAULT_WORLD_SEED,
     DEFAULT_TERRAIN_SIZE,
+    MIN_MAP_SIZE,
     PNOISE2_CONFIG,
     PNOISE2_SCALE,
 )
@@ -42,7 +44,7 @@ class World(MongoBase):
         y1 = coor.y - half_size1
         y2 = coor.y + half_size2
         terrain_map = []
-        print(f"x1: {x1}, x2: {x2}, y1: {y1}, y2: {y2}")
+        logger.info(f"GEN_TERRAIN - x1: {x1}, x2: {x2}, y1: {y1}, y2: {y2}")
         for y in range(y1, y2):
             terrain_map.append([])
             for x in range(x1, x2):
@@ -78,6 +80,30 @@ class World(MongoBase):
                 terrain_map[-1].append(terrain)
 
         return terrain_map
+
+    # RENDERs
+    def render_base_map(
+        self, terrain_map: list[list[int]] = None
+    ) -> Image.Image:
+        if terrain_map is None:
+            terrain_map = self.generate_partial_terrain_map()
+
+        # 1. Gera os dados de pixels do mapa original
+        pixel_data = []
+        for row in terrain_map:
+            for cell in row:
+                terrain_key = TerrainNumberEnum(cell).name
+                color = TerrainColorEnum[terrain_key].value
+                pixel_data.append(color)
+
+        # 2. Cria imagem do mapa base
+        size_x, size_y = len(terrain_map[0]), len(terrain_map)
+        map_img = Image.new("RGB", (size_x, size_y))
+        map_img.putdata(pixel_data)
+        if MIN_MAP_SIZE[0] > size_x and MIN_MAP_SIZE[1] > size_y:
+            map_img = map_img.resize(MIN_MAP_SIZE, Image.Resampling.NEAREST)
+
+        return map_img
 
     def add_city(self, city: City):
         if not isinstance(city, City):
@@ -150,5 +176,9 @@ if __name__ == "__main__":
 
     print("\nWORLD.GENERATE_PARTIAL_TERRAIN_MAP")
     print(world.generate_partial_terrain_map(size=10))
+
+    print("\nWORLD.RENDER_BASE_MAP")
+    img = world.render_base_map()
+    img.show()
 
     print(" END LOCAL TEST ".center(79, "="))
