@@ -1,23 +1,35 @@
 import logging
 
 from dataclasses import dataclass, field
+import os
 from typing import Dict, Optional, Tuple
 
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import noise
 
 from repository.mongo.base import MongoBase
 from teikoku.data.world import (
     DEFAULT_WORLD_SEED,
     DEFAULT_TERRAIN_SIZE,
+    LEGEND_BG_COLOR,
+    LEGEND_RECT_OUTLINE,
+    LEGEND_TEXT_COLOR,
+    LEGEND_WORLD_FONT_PATH,
     MIN_MAP_SIZE,
     PNOISE2_CONFIG,
     PNOISE2_SCALE,
+    LEGEND_TEXT_SIZE,
+    LEGEND_TITLE_COLOR,
+    LEGEND_TITLE_SIZE,
 )
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.world.city import City
 from teikoku.entity.world.coor import Coordinate
-from teikoku.enum.terrain import TerrainColorEnum, TerrainNumberEnum
+from teikoku.enum.terrain import (
+    TerrainColorEnum,
+    TerrainNumberEnum,
+    TerrainTextEnum,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -81,7 +93,7 @@ class World(MongoBase):
 
         return terrain_map
 
-    # RENDERs
+    # RENDER =================================================================
     def render_base_map(
         self, terrain_map: list[list[int]] = None
     ) -> Image.Image:
@@ -105,6 +117,151 @@ class World(MongoBase):
 
         return map_img
 
+    def render_map_legend(self, map_img: Image.Image) -> Image.Image:
+        size_x, size_y = map_img.size
+
+        # =========================
+        # Fontes
+        # =========================
+        if os.path.exists(LEGEND_WORLD_FONT_PATH):
+            font = ImageFont.truetype(LEGEND_WORLD_FONT_PATH, LEGEND_TEXT_SIZE)
+            title_font = ImageFont.truetype(
+                LEGEND_WORLD_FONT_PATH, LEGEND_TITLE_SIZE
+            )
+        else:
+            font = ImageFont.load_default()
+            title_font = font
+
+        # =========================
+        # Configurações visuais
+        # =========================
+        padding_x = 20
+        padding_y = 30
+        spacing_y = 12
+        box_size = 14
+        text_gap = 10
+
+        # =========================
+        # Calcula maior largura de texto
+        # =========================
+        dummy_img = Image.new("RGB", (1, 1))
+        dummy_draw = ImageDraw.Draw(dummy_img)
+
+        title = "LEGENDA"
+
+        legend_items = []
+        max_text_width = 0
+
+        for terrain_color_enum in TerrainColorEnum:
+            enum_name = terrain_color_enum.name
+            text = TerrainTextEnum[enum_name].value
+
+            bbox = dummy_draw.textbbox((0, 0), text, font=font)
+            text_width = bbox[2] - bbox[0]
+
+            max_text_width = max(max_text_width, text_width)
+
+            legend_items.append(
+                {
+                    "color": terrain_color_enum.value,
+                    "text": text,
+                }
+            )
+
+        # Largura do título
+        title_bbox = dummy_draw.textbbox((0, 0), title, font=title_font)
+        title_width = title_bbox[2] - title_bbox[0]
+
+        max_content_width = max(max_text_width, title_width)
+
+        # =========================
+        # Define largura dinâmica da legenda
+        # =========================
+        legend_width = padding_x * 2 + box_size + text_gap + max_content_width
+
+        final_width = size_x + legend_width
+
+        # =========================
+        # Cria imagem final
+        # =========================
+        final_img = Image.new("RGB", (final_width, size_y), LEGEND_BG_COLOR)
+        final_img.paste(map_img, (0, 0))
+
+        draw = ImageDraw.Draw(final_img)
+
+        start_x = size_x + padding_x
+        current_y = padding_y
+
+        # =========================
+        # Título
+        # =========================
+        draw.text(
+            (start_x, current_y),
+            text=title,
+            fill=LEGEND_TITLE_COLOR,
+            font=title_font,
+        )
+
+        title_height = title_bbox[3] - title_bbox[1]
+        current_y += title_height + 20
+
+        # =========================
+        # Itens da legenda
+        # =========================
+        for item in legend_items:
+            color = item["color"]
+            text = item["text"]
+
+            # Mede texto
+            text_bbox = draw.textbbox((0, 0), text, font=font)
+            text_height = text_bbox[3] - text_bbox[1]
+
+            # Altura da linha baseada no maior elemento
+            line_height = max(box_size, text_height)
+
+            # Centraliza verticalmente o quadrado
+            box_y = current_y + (line_height - box_size) // 2
+
+            # Centraliza verticalmente o texto
+            text_y = (
+                current_y + (line_height - text_height) // 2 - text_bbox[1]
+            )
+
+            # Quadrado colorido
+            draw.rectangle(
+                [
+                    (start_x, box_y),
+                    (start_x + box_size, box_y + box_size),
+                ],
+                fill=color,
+                outline=LEGEND_RECT_OUTLINE,
+                width=1,
+            )
+
+            # Texto
+            text_x = start_x + box_size + text_gap
+
+            draw.text(
+                (text_x, text_y),
+                text,
+                fill=LEGEND_TEXT_COLOR,
+                font=font,
+            )
+
+            # Próxima linha
+            current_y += line_height + spacing_y
+
+        return final_img
+
+    def render_full_map(
+        self, terrain_map: list[list[int]] = None
+    ) -> Image.Image:
+        map_img = self.render_base_map(terrain_map)
+        map_img = self.render_map_legend(map_img)
+
+        return map_img
+
+    # CITIES =================================================================
     def add_city(self, city: City):
         if not isinstance(city, City):
             raise TypeError(f"city precisa ser do tipo City ({type(city)}).")
