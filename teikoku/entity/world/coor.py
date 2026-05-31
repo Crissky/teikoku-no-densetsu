@@ -3,8 +3,8 @@ from dataclasses import dataclass
 
 @dataclass
 class Coordinate:
-    x: int
-    y: int
+    x: int = 0
+    y: int = 0
 
     def __post_init__(self):
         if not isinstance(self.x, int):
