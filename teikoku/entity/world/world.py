@@ -1,23 +1,18 @@
 import logging
+import os
 
 from dataclasses import dataclass, field
-import os
 from typing import Dict, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
-import noise
 
 from repository.mongo.base import MongoBase
 from teikoku.data.world import (
-    DEFAULT_WORLD_SEED,
-    DEFAULT_TERRAIN_SIZE,
     LEGEND_BG_COLOR,
     LEGEND_RECT_OUTLINE,
     LEGEND_TEXT_COLOR,
     LEGEND_WORLD_FONT_PATH,
     MIN_MAP_SIZE,
-    PNOISE2_CONFIG,
-    PNOISE2_SCALE,
     LEGEND_TEXT_SIZE,
     LEGEND_TITLE_COLOR,
     LEGEND_TITLE_SIZE,
@@ -25,9 +20,9 @@ from teikoku.data.world import (
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.world.city import City
 from teikoku.entity.world.coor import Coordinate
+from teikoku.entity.world.terrain_map import TerrainMap
 from teikoku.enum.terrain import (
     TerrainColorEnum,
-    TerrainNumberEnum,
     TerrainTextEnum,
 )
 
@@ -42,74 +37,22 @@ class World(MongoBase):
 
     UPDATABLE_ATTR_LIST = ()
 
-    def generate_partial_terrain_map(
-        self,
-        coor: Coordinate = Coordinate(0, 0),
-        size: int = DEFAULT_TERRAIN_SIZE,
-        scale: float = PNOISE2_SCALE,
-        seed: int = DEFAULT_WORLD_SEED,
-    ):
-        half_size1 = size // 2
-        half_size2 = half_size1 if size % 2 == 0 else half_size1 + 1
-        x1 = coor.x - half_size1
-        x2 = coor.x + half_size2
-        y1 = coor.y - half_size1
-        y2 = coor.y + half_size2
-        terrain_map = []
-        logger.info(f"GEN_TERRAIN - x1: {x1}, x2: {x2}, y1: {y1}, y2: {y2}")
-        for y in range(y1, y2):
-            terrain_map.append([])
-            for x in range(x1, x2):
-                value = noise.pnoise2(
-                    x * scale + seed,
-                    y * scale + seed,
-                    base=seed,
-                    **PNOISE2_CONFIG,
-                )
-
-                # --- ÁREA DA ÁGUA (Abaixo de -0.12) ---
-                terrain = TerrainNumberEnum.GRASSLAND.value
-                if value < -0.32:
-                    terrain = TerrainNumberEnum.DEEP_SEA.value
-                elif value < -0.2:
-                    terrain = TerrainNumberEnum.SHALLOW_WATER.value
-                elif value < -0.12:
-                    terrain = TerrainNumberEnum.BEACH.value
-
-                # --- ÁREA DA TERRA PLANA E BIOMAS (Entre -0.12 e 0.25) ---
-                elif value < -0.05:
-                    terrain = TerrainNumberEnum.SWAMP_FOREST.value
-                elif value < 0.18:
-                    terrain = TerrainNumberEnum.GRASSLAND.value
-                elif value < 0.25:
-                    terrain = TerrainNumberEnum.HILLS.value
-
-                # --- ÁREA DAS ALTITUDES (Acima de 0.25) ---
-                elif value < 0.36:
-                    terrain = TerrainNumberEnum.MOUNTAIN.value
-                else:
-                    terrain = TerrainNumberEnum.SNOW_PEAK.value
-                terrain_map[-1].append(terrain)
-
-        return terrain_map
-
     # RENDER =================================================================
-    def render_base_map(
-        self, terrain_map: list[list[int]] = None
-    ) -> Image.Image:
+    def render_base_map(self, terrain_map: TerrainMap = None) -> Image.Image:
         if terrain_map is None:
-            terrain_map = self.generate_partial_terrain_map()
+            terrain_map = TerrainMap()
+            terrain_map.generate_terrain_map()
+        if not terrain_map:
+            terrain_map.generate_terrain_map()
 
         # 1. Gera os dados de pixels do mapa original
         pixel_data = []
-        for row in terrain_map:
-            for cell in row:
-                terrain_key = TerrainNumberEnum(cell).name
-                color = TerrainColorEnum[terrain_key].value
-                pixel_data.append(color)
+        for terrain_value in terrain_map.flatten:
+            color = terrain_map.value_to_color(terrain_value=terrain_value)
+            pixel_data.append(color)
 
         # 2. Cria imagem do mapa base
-        size_x, size_y = len(terrain_map[0]), len(terrain_map)
+        size_x, size_y = (terrain_map.size_x, terrain_map.size_y)
         map_img = Image.new("RGB", (size_x, size_y))
         map_img.putdata(pixel_data)
         if MIN_MAP_SIZE[0] > size_x and MIN_MAP_SIZE[1] > size_y:
@@ -253,9 +196,7 @@ class World(MongoBase):
 
         return final_img
 
-    def render_full_map(
-        self, terrain_map: list[list[int]] = None
-    ) -> Image.Image:
+    def render_full_map(self, terrain_map: TerrainMap = None) -> Image.Image:
         map_img = self.render_base_map(terrain_map)
         map_img = self.render_map_legend(map_img)
 
@@ -330,9 +271,6 @@ if __name__ == "__main__":
 
     print("\nWORLD.TO_DICT")
     print(world.to_dict())
-
-    print("\nWORLD.GENERATE_PARTIAL_TERRAIN_MAP")
-    print(world.generate_partial_terrain_map(size=10))
 
     print("\nWORLD.RENDER_BASE_MAP")
     img = world.render_base_map()
