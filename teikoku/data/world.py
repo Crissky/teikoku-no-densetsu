@@ -2,7 +2,7 @@ from types import MappingProxyType
 
 # TERRAIN MAP
 DEFAULT_TERRAIN_SIZE = 512
-DEFAULT_WORLD_SEED = 42
+DEFAULT_TERRAIN_SEED = 42
 PNOISE2_SCALE = 0.005
 PNOISE2_CONFIG = MappingProxyType(
     dict(
