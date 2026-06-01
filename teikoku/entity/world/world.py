@@ -1,3 +1,4 @@
+from functools import cached_property
 import logging
 import os
 
@@ -59,6 +60,79 @@ class World(MongoBase):
             map_img = map_img.resize(MIN_MAP_SIZE, Image.Resampling.NEAREST)
 
         return map_img
+
+    def render_map_coordinates(
+        self,
+        map_img: Image.Image,
+        terrain_map: TerrainMap,
+    ) -> Image.Image:
+        """
+        Adiciona na imagem as coordenadas:
+        - centro
+        - topo-centro
+        - baixo-centro
+        - esquerda-centro
+        - direita-centro
+        - quatro cantos
+        """
+
+        img = map_img.copy()
+        draw = ImageDraw.Draw(img)
+        font = self.font
+        size_x, size_y = map_img.size
+        cx = terrain_map.central_coor.x
+        cy = terrain_map.central_coor.y
+
+        half_w = size_x // 2
+        half_h = size_y // 2
+
+        points = {
+            "NO": (0, 0),
+            "N": (half_w, 0),
+            "NE": (size_x - 1, 0),
+            "O": (0, half_h),
+            "C": (half_w, half_h),
+            "L": (size_x - 1, half_h),
+            "SO": (0, size_y - 1),
+            "S": (half_w, size_y - 1),
+            "SE": (size_x - 1, size_y - 1),
+        }
+
+        for label, (px, py) in points.items():
+
+            # Converte posição local do mapa para coordenada global
+            world_x = cx + (px - half_w)
+            world_y = cy + (py - half_h)
+
+            text = f"{label}: ({world_x}, {world_y})"
+
+            bbox = draw.textbbox((0, 0), text, font=font)
+            text_w = bbox[2] - bbox[0]
+            text_h = bbox[3] - bbox[1]
+
+            # Mantém o texto dentro da imagem
+            tx = min(max(px + 4, 0), img.width - text_w)
+            ty = min(max(py + 4, 0), img.height - text_h)
+
+            # Fundo para melhorar legibilidade
+            draw.rectangle(
+                (
+                    tx - 2,
+                    ty - 2,
+                    tx + text_w + 2,
+                    ty + text_h + 2,
+                ),
+                fill=(0, 0, 0),
+            )
+
+            draw.text(
+                (tx, ty),
+                text,
+                fill=(255, 255, 255),
+                font=font,
+            )
+
+        return img
 
     def render_map_legend(self, map_img: Image.Image) -> Image.Image:
         size_x, size_y = map_img.size
@@ -187,7 +261,14 @@ class World(MongoBase):
         return final_img
 
     def render_full_map(self, terrain_map: TerrainMap = None) -> Image.Image:
-        map_img = self.render_base_map(terrain_map)
+        if terrain_map is None:
+            terrain_map = TerrainMap()
+            terrain_map.generate_terrain_map()
+        if not terrain_map:
+            terrain_map.generate_terrain_map()
+
+        map_img = self.render_base_map(terrain_map=terrain_map)
+        map_img = self.render_map_coordinates(map_img, terrain_map)
         map_img = self.render_map_legend(map_img)
 
         return map_img
