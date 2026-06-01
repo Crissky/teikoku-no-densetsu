@@ -62,18 +62,8 @@ class World(MongoBase):
 
     def render_map_legend(self, map_img: Image.Image) -> Image.Image:
         size_x, size_y = map_img.size
-
-        # =========================
-        # Fontes
-        # =========================
-        if os.path.exists(LEGEND_WORLD_FONT_PATH):
-            font = ImageFont.truetype(LEGEND_WORLD_FONT_PATH, LEGEND_TEXT_SIZE)
-            title_font = ImageFont.truetype(
-                LEGEND_WORLD_FONT_PATH, LEGEND_TITLE_SIZE
-            )
-        else:
-            font = ImageFont.load_default()
-            title_font = font
+        font = self.font
+        title_font = self.title_font
 
         # =========================
         # Configurações visuais
@@ -201,6 +191,26 @@ class World(MongoBase):
         map_img = self.render_map_legend(map_img)
 
         return map_img
+
+    @cached_property
+    def font(self) -> ImageFont:
+        if os.path.exists(LEGEND_WORLD_FONT_PATH):
+            font = ImageFont.truetype(LEGEND_WORLD_FONT_PATH, LEGEND_TEXT_SIZE)
+        else:
+            font = ImageFont.load_default()
+
+        return font
+
+    @cached_property
+    def title_font(self) -> ImageFont:
+        if os.path.exists(LEGEND_WORLD_FONT_PATH):
+            title_font = ImageFont.truetype(
+                LEGEND_WORLD_FONT_PATH, LEGEND_TITLE_SIZE
+            )
+        else:
+            title_font = ImageFont.load_default()
+
+        return title_font
 
     # CITIES =================================================================
     def add_city(self, city: City):
