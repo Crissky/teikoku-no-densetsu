@@ -12,11 +12,8 @@ from teikoku.data.world import (
     PNOISE2_SCALE,
 )
 from teikoku.entity.world.coor import Coordinate
-from teikoku.enum.terrain import (
-    TerrainColorEnum,
-    TerrainNumberEnum,
-    TerrainTextEnum,
-)
+from teikoku.entity.world.terrain_info import TerrainInfo
+from teikoku.enum.terrain import TerrainNumberEnum
 
 logger = logging.getLogger(__name__)
 
@@ -128,18 +125,18 @@ class TerrainMap:
     def size_y(self):
         return len(self.map)
 
-    def value_to_enum_name(self, terrain_value: int) -> str:
-        return TerrainNumberEnum(terrain_value).name
+    def value_to_info(self, terrain_value: int) -> TerrainInfo:
+        return TerrainInfo(terrain_value)
 
     def value_to_color(self, terrain_value: int) -> Tuple[int, int, int]:
-        terrain_enum_name = self.value_to_enum_name(terrain_value)
-        terrain_color = TerrainColorEnum[terrain_enum_name].value
+        terrain_info = self.value_to_info(terrain_value)
+        terrain_color = terrain_info.color
 
         return terrain_color
 
     def value_to_text(self, terrain_value: int) -> str:
-        terrain_enum_name = self.value_to_enum_name(terrain_value)
-        terrain_text = TerrainTextEnum[terrain_enum_name].value
+        terrain_info = self.value_to_info(terrain_value)
+        terrain_text = terrain_info.text
 
         return terrain_text
 
@@ -155,27 +152,20 @@ class TerrainMap:
         terrain_value = self[x, y]
         return terrain_value
 
-    def get_enum_name(
-        self, x: int = None, y: int = None, coordinate: Coordinate = None
-    ) -> str:
-        terrain_value = self.get_value(x=x, y=y, coordinate=coordinate)
-        terrain_enum_name = self.value_to_enum_name(terrain_value)
-
-        return terrain_enum_name
-
     def get_color(
         self, x: int = None, y: int = None, coordinate: Coordinate = None
     ) -> Tuple[int, int, int]:
-        terrain_enum_name = self.get_enum_name(x, y, coordinate)
-        terrain_color = TerrainColorEnum[terrain_enum_name].value
+        terrain_value = self.get_value(x, y, coordinate)
+        terrain_color = self.value_to_color(terrain_value)
 
         return terrain_color
 
     def get_text(
         self, x: int = None, y: int = None, coordinate: Coordinate = None
     ) -> str:
-        terrain_enum_name = self.get_enum_name(x, y, coordinate)
-        terrain_text = TerrainTextEnum[terrain_enum_name].value
+        terrain_value = self.get_value(x, y, coordinate)
+        terrain_text = self.value_to_text(terrain_value)
+
         return terrain_text
 
 
