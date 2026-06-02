@@ -10,20 +10,33 @@ def put_obj(
     key: ContextKeyEnum,
     obj: Any,
     user_id: Optional[int] = None,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.BOT,
 ):
-    obj_dict = context.bot_data.get(key.name, {})
-    if not obj_dict:
-        context.bot_data[key.name] = obj_dict
+    if data_type == ContextDataTypeEnum.BOT:
+        data = context.bot_data
+    elif data_type == ContextDataTypeEnum.CHAT:
+        data = context.chat_data
+    elif data_type == ContextDataTypeEnum.USER:
+        data = context.user_data
 
     if not isinstance(user_id, int):
         user_id = obj.user_id
 
-    obj_dict[user_id] = obj
+    data_dict = data.setdefault(key.name, {})
+    data_dict[user_id] = obj
 
 
 def get_obj(
     context: ContextTypes.DEFAULT_TYPE,
     key: ContextKeyEnum,
     user_id: int,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.BOT,
 ) -> Any:
-    return context.bot_data.get(key.name, {}).get(user_id)
+    if data_type == ContextDataTypeEnum.BOT:
+        data = context.bot_data
+    elif data_type == ContextDataTypeEnum.CHAT:
+        data = context.chat_data
+    elif data_type == ContextDataTypeEnum.USER:
+        data = context.user_data
+
+    return data.get(key.name, {}).get(user_id)
