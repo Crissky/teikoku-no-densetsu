@@ -27,6 +27,31 @@ class Model(ABC):
     def __alt_id_is_valid(self):
         return isinstance(self.alternative_id, str)
 
+    def _extract_attributes(self, data: dict, definition: dict) -> dict:
+        new_data = {}
+        for attribute_name in definition["attributes"]:
+            new_data[attribute_name] = data[attribute_name]
+
+        return new_data
+
+    def _object_to_dict(self, obj: Any) -> dict:
+        obj_dict: dict = obj.to_dict()
+        for field_name, definition in self.populate_fields:
+            new_data = {}
+            field_data = obj_dict[field_name]
+            if isinstance(field_data, list):
+                new_data[field_name] = [
+                    self._extract_attributes(data, definition)
+                    for data in field_data
+                ]
+            else:
+                new_data[field_name] = self._extract_attributes(
+                    field_data, definition
+                )
+            obj_dict.update(new_data)
+
+        return obj_dict
+
     def get_query_by_id(self, _id: Union[int, ObjectId, str]):
         query = None
         if isinstance(_id, ObjectId):
@@ -122,8 +147,7 @@ class Model(ABC):
                 f"Objeto inválido. Precisa ser {self._class} não {type(obj)}"
             )
 
-        obj_dict = obj.to_dict()
-        obj_dict["_class"] = obj.__class__.__name__
+        obj_dict = self._object_to_dict(obj=obj)
         query = {}
         if isinstance(obj._id, ObjectId):
             query["_id"] = obj._id
