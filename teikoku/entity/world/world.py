@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 from repository.mongo.base import MongoBase
 from teikoku.data.world import (
+    DEFAULT_WORLD_CHAT_ID,
     LEGEND_BG_COLOR,
     LEGEND_RECT_OUTLINE,
     LEGEND_TEXT_COLOR,
@@ -33,6 +34,7 @@ logger = logging.getLogger(__name__)
 @dataclass
 class World(MongoBase):
     name: str
+    chat_id: int = DEFAULT_WORLD_CHAT_ID
     cities: Dict[Tuple[int, int], City] = field(default_factory=dict)
     units: Dict[Tuple[int, int], UnitBase] = field(default_factory=dict)
 
