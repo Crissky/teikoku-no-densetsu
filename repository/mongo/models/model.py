@@ -1,7 +1,7 @@
 import logging
 
 from abc import ABC, abstractmethod
-from typing import Union, Any, List
+from typing import Dict, Union, Any, List
 
 from bson import ObjectId
 
@@ -36,7 +36,7 @@ class Model(ABC):
 
     def _object_to_dict(self, obj: Any) -> dict:
         obj_dict: dict = obj.to_dict()
-        for field_name, definition in self.populate_fields:
+        for field_name, definition in self.save_fields:
             new_data = {}
             field_data = obj_dict[field_name]
             if isinstance(field_data, list):
@@ -293,39 +293,61 @@ class Model(ABC):
     def _class(self) -> Any: ...
 
     @property
-    def populate_fields(self) -> dict:
+    def save_fields(self) -> Dict[str, Dict[str, Any]]:
+        """
+        Retorna um dicionário com os campos (e suas definições) que precisam
+        de algum tratamento para serem salvos no banco de dados. Esse campo
+        será salvo no banco como um object ou uma lista de objects.
+
+        field_name: Nome do campo que precisa de tratamento especial
+            para ser salvo.
+            attributes: lista de strings com os nomes dos atributos do campo
+                que serão salvos no banco.
+
+        save_fields = {
+            'cities': {
+                attributes: ["_id"]
+            }
+            ...
+        }
+        """
+
+        return {}
+
+    @property
+    def populate_fields(self) -> Dict[str, Dict[str, Any]]:
         """
         Retorna um dicionário com os campos necessários para criar
-        os objetos de outros modelos necessários para o modelo atual.
+        os objetos de outros modelos usados pelo modelo atual.
 
         field_name: Nome do campo que será populado ao criar o objeto.
-        id_key: caminho do campo usando para buscar o objeto no banco
-            (aka _id ou alternative_id).
-        model: Modelo usado para carregar o objeto que populará
-            o objeto do modelo atual.
-        subclass: Class que será usada para instanciar novos objetos.
-            Essa classe usará o objeto carregado pelo `model` como um
-            dos seus atributos, além dos demais chaves/valores do
-            dicionário salvo no banco.
-            Usado quando o campo é salvo no banco do objeto pai como
-            uma lista de dicionários (Usado no BagModel para usar os
-            objetos do tipo Equipment/Consumable carregados pelo
-            ItemModel como atributo da classe Item).
-        remakeclass: Se existir esse campo, define que a Classe que
-            será instanciada usando o to_dict() do
-            objeto carregado do banco pelo `model` como seus
-            atributos, além dos demais chaves/valores do dicionário
-            salvo no banco. (Usado pelo StatusModel para modificar
-            valores que deveriam ser variáveis [como turno e level] da
-            classe Condition sem alterar os valores padrão [como nome
-            e descrição]).
-        factory: Função que ira carregar o atributo a partir de uma
-            função factory usando como argumentos os campos vindos do
-            Mongo, ao invés de carregar do banco a partir de um Model.
-        _class: Atributo só será populado em objetos que
-            são dessa classe. (Usando em ItemModel para popular
-            atributo somente da classe Consumable e não tenta na
-            Classe Equipment, pois levantaria um erro).
+            id_key: caminho do campo usado para buscar o objeto no banco
+                (aka _id ou alternative_id).
+            model: Modelo usado para carregar o objeto que populará
+                o objeto do modelo atual.
+            subclass: Class que será usada para instanciar novos objetos.
+                Essa classe usará o objeto carregado pelo `model` como um
+                dos seus atributos, além dos demais chaves/valores do
+                dicionário salvo no banco.
+                Usado quando o campo é salvo no banco do objeto pai como
+                uma lista de dicionários (Usado no BagModel para usar os
+                objetos do tipo Equipment/Consumable carregados pelo
+                ItemModel como atributo da classe Item).
+            remakeclass: Se existir esse campo, define que a Classe que
+                será instanciada usando o to_dict() do
+                objeto carregado do banco pelo `model` como seus
+                atributos, além dos demais chaves/valores do dicionário
+                salvo no banco. (Usado pelo StatusModel para modificar
+                valores que deveriam ser variáveis [como turno e level] da
+                classe Condition sem alterar os valores padrão [como nome
+                e descrição]).
+            factory: Função que ira carregar o atributo a partir de uma
+                função factory usando como argumentos os campos vindos do
+                Mongo, ao invés de carregar do banco a partir de um Model.
+            _class: Atributo só será populado em objetos que
+                são dessa classe. (Usando em ItemModel para popular
+                atributo somente da classe Consumable e não tenta na
+                Classe Equipment, pois levantaria um erro).
 
         populate_fields = {
             'field_name': {
