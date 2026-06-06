@@ -275,8 +275,7 @@ class Model(ABC):
         return dict_obj
 
     def instanciate_class(self, populate_result: dict):
-        _class = eval(populate_result.pop("_class"))
-        return _class(**populate_result)
+        return self._class(**populate_result)
 
     database: Database = property(lambda self: Database.get_instance())
 
