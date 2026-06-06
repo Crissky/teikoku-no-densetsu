@@ -1,6 +1,6 @@
 import logging
 
-from repository.mongo.collection_enum import CollectionEnum
+from repository.mongo.enums.collection import CollectionEnum
 from repository.mongo.models.model import Model
 from teikoku.entity.world.world import World
 
