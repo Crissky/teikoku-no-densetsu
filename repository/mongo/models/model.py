@@ -7,9 +7,11 @@ from bson import ObjectId
 
 from general.functions.date_time import get_brazil_time_now
 from repository.mongo.database import Database
+from repository.mongo.enums.field import PopulateFieldEnum
 
-from teikoku.entity.register.group import Group  # noqa
-from teikoku.entity.register.player import Player  # noqa
+# from teikoku.entity.register.group import Group  # noqa
+# from teikoku.entity.register.player import Player  # noqa
+# from teikoku.entity.world.world import World  # noqa
 
 logger = logging.getLogger(__name__)
 
@@ -197,6 +199,7 @@ class Model(ABC):
         self.check_query(query)
         return self.database.length(self.collection, query, field)
 
+    # TODO Refatorar para não precisar mais salvar o _class no Banco
     def __populate_load(self, dict_obj: dict):
         """Função que popula os campos do objeto que são outras classes e que
         no banco são salvos somente a sua chave. Esses campo que serão
@@ -205,20 +208,33 @@ class Model(ABC):
 
         Quando o campo a ser populado é uma lista, todos os elementos da lista
         serão populados, porém todos eles devem pertencer a mesma tabela."""
-        for popu_field_name, popu_field_info in self.populate_fields.items():
-            expected_class = popu_field_info.get("_class")
-            is_same_class = (
-                issubclass(eval(dict_obj["_class"]), eval(expected_class))
-                if expected_class
-                else False
-            )
-            if expected_class and not is_same_class:
-                continue
 
-            if popu_field_info["id_key"] in dict_obj.keys():
-                mongo_field_name = popu_field_info["id_key"]
+        for popu_field_name, popu_definition in self.populate_fields.items():
+            obj = dict_obj[popu_field_name]
+            if isinstance(popu_definition.get(PopulateFieldEnum.MODEL), Model):
+                model = popu_definition[PopulateFieldEnum.MODEL]
+                subclass = popu_definition.get(PopulateFieldEnum.OVERCLASS)
+                if subclass:
+                    query = {"_id": obj.pop("_id")}
+                    over_obj = model.get(query)
+                    obj = subclass(over_obj, **obj)
+                else:
+                    obj = model.get(obj)
+            elif popu_definition.get(PopulateFieldEnum.CLASS) is not None:
+                _class = popu_definition[PopulateFieldEnum.CLASS]
+                obj = _class(**obj)
+            elif popu_definition.get(PopulateFieldEnum.FACTORY) is not None:
+                factory = popu_definition[PopulateFieldEnum.FACTORY]
+                obj = factory(**obj)
+            
+
+            dict_obj[popu_field_name] = obj
+
+            # =================================================================
+            if popu_definition["id_key"] in dict_obj.keys():
+                mongo_field_name = popu_definition["id_key"]
                 popu_field_args = dict_obj.pop(mongo_field_name)
-                model = popu_field_info.get("model")
+                model = popu_definition.get("model")
 
                 _object = None
                 if isinstance(popu_field_args, list):
@@ -226,22 +242,22 @@ class Model(ABC):
                     for item in popu_field_args:
                         if isinstance(item, dict):
                             item_id = item.pop("_id", None)
-                            if "subclass" in popu_field_info.keys():
+                            if "subclass" in popu_definition.keys():
                                 item_loaded = model.get(item_id)
-                                subclass = popu_field_info["subclass"]
+                                subclass = popu_definition["subclass"]
                                 item_loaded = subclass(item_loaded, **item)
                             # Instancia a classe novamente combinando os
                             # atributos fixo do objeto (que vem com model)
                             # com os atributos variáveis
                             # (que estão na lista do mongo).
-                            elif "remakeclass" in popu_field_info.keys():
+                            elif "remakeclass" in popu_definition.keys():
                                 item_loaded = model.get(item_id)
                                 remakeclass = item_loaded.__class__
                                 item_loaded_dict = item_loaded.to_dict()
                                 item_loaded_dict.update(item)
                                 item_loaded = remakeclass(**item_loaded_dict)
-                            elif "factory" in popu_field_info.keys():
-                                factory = popu_field_info["factory"]
+                            elif "factory" in popu_definition.keys():
+                                factory = popu_definition["factory"]
                                 item_loaded = factory(**item)
                             _object.append(item_loaded)
                         elif isinstance(item, (ObjectId, str)):
@@ -255,8 +271,8 @@ class Model(ABC):
                             )
                 # esperado que dict_field seja um _id
                 elif popu_field_args is not None:
-                    if "factory" in popu_field_info.keys():
-                        factory = popu_field_info["factory"]
+                    if "factory" in popu_definition.keys():
+                        factory = popu_definition["factory"]
                         _object = factory(popu_field_args)
                     else:
                         _object = model.get(popu_field_args)
@@ -269,7 +285,7 @@ class Model(ABC):
                     class_name = self._class.__name__
                 raise KeyError(
                     f"O dicionário da(s) classe(s) {class_name} "
-                    f'não possui campo {popu_field_info["id_key"]}.'
+                    f'não possui campo {popu_definition["id_key"]}.'
                 )
 
         return dict_obj
@@ -292,7 +308,7 @@ class Model(ABC):
     def _class(self) -> Any: ...
 
     @property
-    def save_fields(self) -> Dict[str, Dict[str, Any]]:
+    def save_fields(self) -> Dict[str, Dict[PopulateFieldEnum, Any]]:
         """
         Retorna um dicionário com os campos (e suas definições) que precisam
         de algum tratamento para serem salvos no banco de dados. Esse campo
@@ -300,12 +316,13 @@ class Model(ABC):
 
         field_name: Nome do campo que precisa de tratamento especial
             para ser salvo.
-            attributes: lista de strings com os nomes dos atributos do campo
-                que serão salvos no banco.
+
+            SaveFieldEnum.ATTRIBUTES: lista de strings com os nomes dos
+            atributos do campo que serão salvos no banco.
 
         save_fields = {
             'cities': {
-                attributes: ["_id"]
+                SaveFieldEnum.ATTRIBUTES: ["_id"]
             }
             ...
         }
@@ -320,77 +337,53 @@ class Model(ABC):
         os objetos de outros modelos usados pelo modelo atual.
 
         field_name: Nome do campo que será populado ao criar o objeto.
-            id_key: caminho do campo usado para buscar o objeto no banco
-                (aka _id ou alternative_id).
-            model: Modelo usado para carregar o objeto que populará
-                o objeto do modelo atual.
-            subclass: Class que será usada para instanciar novos objetos.
-                Essa classe usará o objeto carregado pelo `model` como um
-                dos seus atributos, além dos demais chaves/valores do
-                dicionário salvo no banco.
-                Usado quando o campo é salvo no banco do objeto pai como
-                uma lista de dicionários (Usado no BagModel para usar os
-                objetos do tipo Equipment/Consumable carregados pelo
-                ItemModel como atributo da classe Item).
-            remakeclass: Se existir esse campo, define que a Classe que
-                será instanciada usando o to_dict() do
-                objeto carregado do banco pelo `model` como seus
-                atributos, além dos demais chaves/valores do dicionário
-                salvo no banco. (Usado pelo StatusModel para modificar
-                valores que deveriam ser variáveis [como turno e level] da
-                classe Condition sem alterar os valores padrão [como nome
-                e descrição]).
-            factory: Função que ira carregar o atributo a partir de uma
-                função factory usando como argumentos os campos vindos do
-                Mongo, ao invés de carregar do banco a partir de um Model.
-            _class: Atributo só será populado em objetos que
-                são dessa classe. (Usando em ItemModel para popular
-                atributo somente da classe Consumable e não tenta na
-                Classe Equipment, pois levantaria um erro).
+
+            PopulateFieldEnum.MODEL: Modelo usado para carregar o objeto no
+            campo usando os dados do banco.
+                PopulateFieldEnum.OVERCLASS (opcional): Classe usada juntamente
+                com o model. Instancia uma nova classe (overclass) usando a
+                classe retornada pelo model como atributo.
+
+
+            PopulateFieldEnum.CLASS: Classe usada para instanciar o objeto no
+            campo.
+
+            PopulateFieldEnum.FACTORY: Callable usado para criar o objeto no
+            campo.
 
         populate_fields = {
             'field_name': {
-                'id_key': string,
-                'model': Model,
-                'subclass': Any Class,
+                PopulateFieldEnum.MODEL: Model,
             },
             ...
         }
-        Exemplo:
+
+        Exemplo1:
         populate_fields = {
             'race': {
-                'id_key': 'race_name',
-                'model': RaceModel,
+                PopulateFieldEnum.MODEL: RaceModel,
             }
         }
+
         Exemplo2:
         populate_fields = {
             'items': {
-                'id_key': 'items_ids',
-                'model': ItemModel(),  # Carrega equipamentos e consumíveis
-                'subclass': Item  # Usa o equipamento/consumível carregado
-                    como atributo ao instanciar a classe Item
+                # Carrega equipamentos e consumíveis
+                PopulateFieldEnum.MODEL: ItemModel,
+                # Usa o equipamento/consumível carregado como atributo
+                # ao instanciar a classe Item
+                PopulateFieldEnum.OVERCLASS: Item
             }
         }
+
         Exemplo3:
-        populate_fields = {
-            'conditions': {
-                'id_key': 'condition_args',
-                'model': ConditionModel(),
-                'remakeclass': True,  # Se a Classe será reinstanciada
-            }
+        'condition': {
+            PopulateFieldEnum.CLASS: BaseCity
         }
+
         Exemplo4:
         'condition': {
-            'id_key': 'condition_name',
-            '_class': 'Consumable',  # Atributo 'condition'
-                só será populado em objetos dessa classe.
-            'model': ConditionModel()
+            PopulateFieldEnum.FACTORY: factory_condition # Função Factory
         }
-        Exemplo4:
-        'condition': {
-            'id_key': 'condition_name',
-            'factory': factory_condition # Função Factory
-        },
         """
         return {}
