@@ -2,10 +2,8 @@ from enum import Enum
 
 
 class PopulateFieldEnum(Enum):
-    CLASS = "class"
-    FACTORY = "factory"
-    MODEL = "model"
-    OVERCLASS = "overclass"
+    CALLBACK = "factory"
+    INITIATOR = "initiator"
 
 
 class SaveFieldEnum(Enum):

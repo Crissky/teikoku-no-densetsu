@@ -211,22 +211,22 @@ class Model(ABC):
 
         for popu_field_name, popu_definition in self.populate_fields.items():
             obj = dict_obj[popu_field_name]
-            if isinstance(popu_definition.get(PopulateFieldEnum.MODEL), Model):
-                model = popu_definition[PopulateFieldEnum.MODEL]
-                subclass = popu_definition.get(PopulateFieldEnum.OVERCLASS)
-                if subclass:
-                    query = {"_id": obj.pop("_id")}
-                    over_obj = model.get(query)
-                    obj = subclass(over_obj, **obj)
-                else:
-                    obj = model.get(obj)
-            elif popu_definition.get(PopulateFieldEnum.CLASS) is not None:
-                _class = popu_definition[PopulateFieldEnum.CLASS]
-                obj = _class(**obj)
-            elif popu_definition.get(PopulateFieldEnum.FACTORY) is not None:
-                factory = popu_definition[PopulateFieldEnum.FACTORY]
-                obj = factory(**obj)
-            
+            initiator = popu_definition.get(PopulateFieldEnum.INITIATOR)
+            callback = popu_definition.get(PopulateFieldEnum.CALLBACK)
+
+            if not initiator:
+                raise KeyError(
+                    "É obrigatório ter um campo "
+                    f"{PopulateFieldEnum.INITIATOR} no definition do campo "
+                    f"{popu_field_name}."
+                )
+
+            if callback:
+                query = {"_id": obj.pop("_id")}
+                callback_obj = initiator.get(query)
+                obj = callback(callback_obj, **obj)
+            else:
+                obj = initiator.get(obj)
 
             dict_obj[popu_field_name] = obj
 
@@ -338,22 +338,17 @@ class Model(ABC):
 
         field_name: Nome do campo que será populado ao criar o objeto.
 
-            PopulateFieldEnum.MODEL: Modelo usado para carregar o objeto no
-            campo usando os dados do banco.
-                PopulateFieldEnum.OVERCLASS (opcional): Classe usada juntamente
-                com o model. Instancia uma nova classe (overclass) usando a
-                classe retornada pelo model como atributo.
+            PopulateFieldEnum.INITIATOR (Callable): Callable que usa os dados
+            de do campo para populá-lo com um novo objeto.
 
-
-            PopulateFieldEnum.CLASS: Classe usada para instanciar o objeto no
-            campo.
-
-            PopulateFieldEnum.FACTORY: Callable usado para criar o objeto no
-            campo.
+            PopulateFieldEnum.CALLBACK (Callable): Se CALLBACK por passado,
+            somente o "_id" será usado no INITIATOR e o valor retornado
+            juntamente com os demais dados do campo serão passados para o
+            CALLBACK para criar o objeto final que populará o campo.
 
         populate_fields = {
             'field_name': {
-                PopulateFieldEnum.MODEL: Model,
+                PopulateFieldEnum.INITIATOR: Model,
             },
             ...
         }
@@ -361,7 +356,7 @@ class Model(ABC):
         Exemplo1:
         populate_fields = {
             'race': {
-                PopulateFieldEnum.MODEL: RaceModel,
+                PopulateFieldEnum.INITIATOR: RaceModel,
             }
         }
 
@@ -369,21 +364,12 @@ class Model(ABC):
         populate_fields = {
             'items': {
                 # Carrega equipamentos e consumíveis
-                PopulateFieldEnum.MODEL: ItemModel,
+                PopulateFieldEnum.INITIATOR: ItemModel,
                 # Usa o equipamento/consumível carregado como atributo
                 # ao instanciar a classe Item
-                PopulateFieldEnum.OVERCLASS: Item
+                PopulateFieldEnum.CALLBACK: Item
             }
         }
 
-        Exemplo3:
-        'condition': {
-            PopulateFieldEnum.CLASS: BaseCity
-        }
-
-        Exemplo4:
-        'condition': {
-            PopulateFieldEnum.FACTORY: factory_condition # Função Factory
-        }
         """
         return {}
