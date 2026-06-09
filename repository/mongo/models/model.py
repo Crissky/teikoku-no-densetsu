@@ -110,7 +110,7 @@ class Model(ABC):
         if result := self.database.find(self.collection, query, fields):
             if fields and partial is True:
                 return result
-            populate_result = self.__populate_load(result)
+            populate_result = self._populate_load(result)
             return self.instanciate_class(populate_result)
 
     def get_all(
@@ -133,7 +133,7 @@ class Model(ABC):
 
         if not fields:
             result = [
-                self.instanciate_class(self.__populate_load(item))
+                self.instanciate_class(self._populate_load(item))
                 for item in result
             ]
         elif len(fields) == 1:
@@ -200,95 +200,85 @@ class Model(ABC):
         return self.database.length(self.collection, query, field)
 
     # TODO Refatorar para não precisar mais salvar o _class no Banco
-    def __populate_load(self, dict_obj: dict):
-        """Função que popula os campos do objeto que são outras classes e que
-        no banco são salvos somente a sua chave. Esses campo que serão
-        populados pertencem a outra tabela e por conta disso
-        devem possuir sua própria classe Model.
+    def _populate_load(self, dict_obj: dict):
+        """
+        Popula campos do objeto que referenciam outras classes que podem estar
+        armazenadas em coleções diferentes do banco de dados.
 
-        Quando o campo a ser populado é uma lista, todos os elementos da lista
-        serão populados, porém todos eles devem pertencer a mesma tabela."""
+        Esta função é responsável por carregar e/ou instanciar objetos
+        relacionados. Cada campo populado deve ter seu prório método
+        instanciador (INITIATOR) e, opcionalmente, um método de
+        callback (CALLBACK) que retorne o objeto instanciado como resultado.
 
-        for popu_field_name, popu_definition in self.populate_fields.items():
-            obj = dict_obj[popu_field_name]
-            initiator = popu_definition.get(PopulateFieldEnum.INITIATOR)
-            callback = popu_definition.get(PopulateFieldEnum.CALLBACK)
+        Pipeline:
+          - Se o campo tiver definido o INITIATOR, todos os dados serão usados
+            no INITIATOR. Mas, caso o campo também tenha definido o CALLBACK,
+            o INITIATOR receberá somente um dicionário contendo o "_id" e o
+            CALLBACK receberá o resultado do INITIATOR e os demais dados do
+            campo.
 
-            if not initiator:
-                raise KeyError(
-                    "É obrigatório ter um campo "
-                    f"{PopulateFieldEnum.INITIATOR} no definition do campo "
-                    f"{popu_field_name}."
-                )
+        Comportamento:
+          - Para campos simples: carrega e instancia o objeto referenciado
+          - Para campos do tipo lista: carrega e instancia todos os elementos,
+            passando seus dados pelo mesmo pipeline.
 
-            if callback:
-                query = {"_id": obj.pop("_id")}
-                callback_obj = initiator.get(query)
-                obj = callback(callback_obj, **obj)
+        Exemplo (somente INITIATOR)
+            return INITIATOR(field)
+        Exemplo (INITIATOR e CALLBACK)
+            return CALLBACK(INITIATOR(field.pop("_id")), **field)
+
+        Args:
+            dict_obj (dict): Dicionário contendo os dados do objeto a ser
+            populado.
+
+        Returns:
+            dict: Dicionário com os campos populados com objetos instanciados.
+        """
+
+        for p_field_name, p_definition in self.populate_fields.items():
+            obj = dict_obj[p_field_name]
+            if isinstance(obj, list):
+                obj = [
+                    self._populate_field(item, p_field_name, p_definition)
+                    for item in obj
+                ]
             else:
-                obj = initiator.get(obj)
+                obj = self._populate_field(obj, p_field_name, p_definition)
 
-            dict_obj[popu_field_name] = obj
-
-            # =================================================================
-            if popu_definition["id_key"] in dict_obj.keys():
-                mongo_field_name = popu_definition["id_key"]
-                popu_field_args = dict_obj.pop(mongo_field_name)
-                model = popu_definition.get("model")
-
-                _object = None
-                if isinstance(popu_field_args, list):
-                    _object = []
-                    for item in popu_field_args:
-                        if isinstance(item, dict):
-                            item_id = item.pop("_id", None)
-                            if "subclass" in popu_definition.keys():
-                                item_loaded = model.get(item_id)
-                                subclass = popu_definition["subclass"]
-                                item_loaded = subclass(item_loaded, **item)
-                            # Instancia a classe novamente combinando os
-                            # atributos fixo do objeto (que vem com model)
-                            # com os atributos variáveis
-                            # (que estão na lista do mongo).
-                            elif "remakeclass" in popu_definition.keys():
-                                item_loaded = model.get(item_id)
-                                remakeclass = item_loaded.__class__
-                                item_loaded_dict = item_loaded.to_dict()
-                                item_loaded_dict.update(item)
-                                item_loaded = remakeclass(**item_loaded_dict)
-                            elif "factory" in popu_definition.keys():
-                                factory = popu_definition["factory"]
-                                item_loaded = factory(**item)
-                            _object.append(item_loaded)
-                        elif isinstance(item, (ObjectId, str)):
-                            _object.append(model.get(item))
-                        else:
-                            raise KeyError(
-                                f'O valor da id_key "{mongo_field_name}" '
-                                'no "dict_obj" é uma lista e um elemento '
-                                "dessa lista não é um dict com o "
-                                f'campo "_id", str ou ObjectId. item: {item}.'
-                            )
-                # esperado que dict_field seja um _id
-                elif popu_field_args is not None:
-                    if "factory" in popu_definition.keys():
-                        factory = popu_definition["factory"]
-                        _object = factory(popu_field_args)
-                    else:
-                        _object = model.get(popu_field_args)
-
-                dict_obj[popu_field_name] = _object
-            else:
-                if isinstance(self._class, tuple):
-                    class_name = ", ".join([c.__name__ for c in self._class])
-                else:
-                    class_name = self._class.__name__
-                raise KeyError(
-                    f"O dicionário da(s) classe(s) {class_name} "
-                    f'não possui campo {popu_definition["id_key"]}.'
-                )
+            dict_obj[p_field_name] = obj
 
         return dict_obj
+
+    def _populate_field(self, obj: dict, field_name: str, definition: dict):
+        """Carrega os dados de um campo."""
+
+        initiator = definition.get(PopulateFieldEnum.INITIATOR)
+        callback = definition.get(PopulateFieldEnum.CALLBACK)
+        if not initiator:
+            raise KeyError(
+                "É obrigatório ter um campo "
+                f"{PopulateFieldEnum.INITIATOR} no definition do campo "
+                f"{field_name}."
+            )
+
+        if hasattr(initiator, "get"):
+            initiator_call = initiator.get
+        elif callable(initiator):
+            initiator_call = initiator
+        else:
+            raise TypeError(
+                f"initiator do campo {field_name} precisa ser um "
+                "callable ou um objeto com o método get."
+            )
+
+        if callback:
+            query = {"_id": obj.pop("_id")}
+            callback_obj = initiator_call(query)
+            obj = callback(callback_obj, **obj)
+        else:
+            obj = initiator_call(obj)
+
+        return obj
 
     def instanciate_class(self, populate_result: dict):
         return self._class(**populate_result)
@@ -341,7 +331,7 @@ class Model(ABC):
             PopulateFieldEnum.INITIATOR (Callable): Callable que usa os dados
             de do campo para populá-lo com um novo objeto.
 
-            PopulateFieldEnum.CALLBACK (Callable): Se CALLBACK por passado,
+            PopulateFieldEnum.CALLBACK (Callable): Se CALLBACK for definido,
             somente o "_id" será usado no INITIATOR e o valor retornado
             juntamente com os demais dados do campo serão passados para o
             CALLBACK para criar o objeto final que populará o campo.
