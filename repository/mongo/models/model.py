@@ -151,12 +151,16 @@ class Model(ABC):
 
         obj_dict = self._object_to_dict(obj=obj)
         query = {}
-        if isinstance(obj._id, ObjectId):
+        if obj_dict.get(self.alternative_id, None):
+            obj_dict.pop("_id", None)
+            query[self.alternative_id] = obj_dict[self.alternative_id]
+        elif isinstance(obj._id, ObjectId):
             query["_id"] = obj._id
         else:
-            obj_dict.pop("_id", None)
-            if obj_dict.get(self.alternative_id, None):
-                query[self.alternative_id] = obj_dict[self.alternative_id]
+            raise KeyError(
+                "Objeto precisa ter o campo '_id' ou "
+                f"'{self.alternative_id}' preenchido."
+            )
 
         if query and self.database.find(self.collection, query):
             if not replace:
