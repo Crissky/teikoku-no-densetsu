@@ -143,6 +143,7 @@ class Model(ABC):
 
         return result
 
+    # TODO Usar o alternative_id como primeira alternativa da query
     def save(self, obj: Any, replace=False):
         if not isinstance(obj, self._class):
             raise ValueError(
@@ -163,6 +164,7 @@ class Model(ABC):
             )
 
         if query and self.database.find(self.collection, query):
+            obj_dict.pop("created_at", None)
             if not replace:
                 logger.info(f"Updating: {self.__class__.__name__}")
                 obj_dict["updated_at"] = get_brazil_time_now()
