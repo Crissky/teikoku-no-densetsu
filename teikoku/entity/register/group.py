@@ -34,7 +34,7 @@ class Group(MongoBase):
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
     print(f"UPDATABLE_ATTR_LIST: {Group.UPDATABLE_ATTR_LIST}")
-    group = Group(chat_id=123456789, name="Teste")
+    group = Group(chat_id=123456789, name="Grupo Teste")
 
     print("\nGROUP:")
     print(group)
