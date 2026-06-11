@@ -40,6 +40,17 @@ class World(MongoBase):
 
     UPDATABLE_ATTR_LIST = ()
 
+    def __eq__(self, value):
+        result = False
+        if isinstance(value, World):
+            result = self.chat_id == value.chat_id
+        elif isinstance(value, str) and value.isnumeric():
+            result = self.chat_id == int(value)
+        elif isinstance(value, int):
+            result = self.chat_id == value
+
+        return result
+
     # RENDER =================================================================
     def render_base_map(self, terrain_map: TerrainMap = None) -> Image.Image:
         if terrain_map is None:
