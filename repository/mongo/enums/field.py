@@ -8,3 +8,8 @@ class PopulateFieldEnum(Enum):
 
 class SaveFieldEnum(Enum):
     ATTRIBUTES = "attributes"
+
+
+class AltIdEnum(Enum):
+    GROUP = "chat_id"
+    PLAYER = "user_id"

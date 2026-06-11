@@ -1,6 +1,7 @@
 import logging
 
 from repository.mongo.enums.collection import CollectionEnum
+from repository.mongo.enums.field import AltIdEnum
 from repository.mongo.models.model import Model
 from teikoku.entity.register.group import Group
 
@@ -10,12 +11,12 @@ logger = logging.getLogger(__name__)
 class GroupModel(Model):
     _class = property(lambda self: Group)
     collection = property(lambda self: CollectionEnum.GROUP.value)
-    alternative_id: str = property(lambda self: "chat_id")
+    alternative_id: str = property(lambda self: AltIdEnum.GROUP.value)
 
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
-    group = Group(chat_id=123456789, name="Teste")
+    group = Group(chat_id=123456789, name="Grupo Teste")
     group_model = GroupModel()
 
     print("COLLECTION NAME:")

@@ -1,6 +1,7 @@
 import logging
 
 from repository.mongo.enums.collection import CollectionEnum
+from repository.mongo.enums.field import AltIdEnum
 from repository.mongo.models.model import Model
 from teikoku.entity.register.player import Player
 
@@ -10,12 +11,12 @@ logger = logging.getLogger(__name__)
 class PlayerModel(Model):
     _class = property(lambda self: Player)
     collection = property(lambda self: CollectionEnum.PLAYER.value)
-    alternative_id: str = property(lambda self: "user_id")
+    alternative_id: str = property(lambda self: AltIdEnum.PLAYER.value)
 
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
-    player = Player(user_id=123456789, name="Teste")
+    player = Player(user_id=123456789, name="Player Teste")
     player_model = PlayerModel()
 
     print("COLLECTION NAME:")
