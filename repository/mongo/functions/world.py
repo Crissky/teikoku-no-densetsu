@@ -36,7 +36,15 @@ def update_world(
     """
 
 
-def get_world_by_chat_id(chat_id: int) -> World: ...
+def get_world_by_chat_id(chat_id: int) -> World:
+    if not isinstance(chat_id, int):
+        raise TypeError(f"chat_id precisa ser um int ({type(chat_id)}).")
+
+    world_model = WorldModel()
+    query = {"chat_id": chat_id}
+    world = world_model.get(query=query)
+
+    return world
 
 
 def get_world(
