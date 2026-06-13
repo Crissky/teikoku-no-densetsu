@@ -13,3 +13,4 @@ class SaveFieldEnum(Enum):
 class AltIdEnum(Enum):
     GROUP = "chat_id"
     PLAYER = "user_id"
+    WORLD = "chat_id"

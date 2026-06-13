@@ -1,6 +1,7 @@
 import logging
 
 from repository.mongo.enums.collection import CollectionEnum
+from repository.mongo.enums.field import AltIdEnum
 from repository.mongo.models.model import Model
 from teikoku.entity.world.world import World
 
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 class WorldModel(Model):
     _class = property(lambda self: World)
     collection = property(lambda self: CollectionEnum.WORLD.value)
-    alternative_id: str = property(lambda self: "chat_id")
+    alternative_id: str = property(lambda self: AltIdEnum.WORLD.value)
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
@@ -29,8 +30,8 @@ if __name__ == "__main__":
         raise ValueError(f"retrieved_world é None ({retrieved_world}).")
     print("\nRETRIEVED WORLD:")
     print(retrieved_world)
-    print("\nEQUALS:", world._id == retrieved_world._id)
-    if world._id != retrieved_world._id:
+    print("\nEQUALS:", world == retrieved_world)
+    if world != retrieved_world:
         raise ValueError(
             "O valor salvo é diferente do valor recuperado.\n"
             f"Valor Salvo: {world}\n"
