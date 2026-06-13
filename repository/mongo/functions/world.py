@@ -3,10 +3,26 @@ from typing import Any, Iterable, Optional, Tuple
 from telegram import Update
 from telegram.ext import ContextTypes
 
+from repository.mongo.models.world import WorldModel
 from teikoku.entity.world.world import World
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def save_world(world: World) -> World: ...
+def save_world(world: World) -> World:
+    if not isinstance(world, World):
+        raise TypeError(f"world precisa ser do tipo World ({type(world)}).")
+
+    world_model = WorldModel()
+    world_model.save(world)
+    retrieved_world = get_world_by_chat_id(world.chat_id)
+    logger.info(
+        f"World {retrieved_world.name}' salvo com "
+        f"CHAT ID '{retrieved_world.chat_id}'"
+    )
+
+    return retrieved_world
 
 
 def update_world(
