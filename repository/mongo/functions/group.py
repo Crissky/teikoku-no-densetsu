@@ -72,10 +72,11 @@ def update_group(
 
 def get_group_by_chat_id(chat_id: int) -> Group:
     if not isinstance(chat_id, int):
-        raise TypeError("chat_id precisa ser um int.")
+        raise TypeError(f"chat_id precisa ser um int ({type(chat_id)}).")
 
     group_model = GroupModel()
-    group = group_model.get(query={"chat_id": chat_id})
+    query = {"chat_id": chat_id}
+    group = group_model.get(query=query)
 
     return group
 

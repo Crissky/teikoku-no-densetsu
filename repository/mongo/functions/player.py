@@ -72,10 +72,11 @@ def update_player(
 
 def get_player_by_user_id(user_id: int) -> Player:
     if not isinstance(user_id, int):
-        raise TypeError("user_id precisa ser um int.")
+        raise TypeError(f"user_id precisa ser um int ({type(user_id)}).")
 
     player_model = PlayerModel()
-    player = player_model.get(query={"user_id": user_id})
+    query = {"user_id": user_id}
+    player = player_model.get(query=query)
 
     return player
 
