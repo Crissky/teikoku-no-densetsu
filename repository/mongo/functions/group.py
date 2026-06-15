@@ -3,7 +3,7 @@ from typing import Any, Iterable, Optional, Tuple, get_type_hints
 
 from telegram import Update
 from telegram.constants import ChatType
-from telegram.ext import CallbackContext, ContextTypes
+from telegram.ext import ContextTypes
 
 from repository.mongo.models.group import GroupModel
 from teikoku.entity.register.group import Group
@@ -87,7 +87,7 @@ def get_group(
 ) -> Group:
     if isinstance(update, Update):
         chat_id = update.effective_chat.id
-    elif isinstance(context, CallbackContext):
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE):
         chat_id = context._chat_id
     else:
         raise ValueError("É preciso informar ou update ou context.")
@@ -102,7 +102,7 @@ def exists_group(
 ) -> bool:
     if isinstance(update, Update) and chat_id is None:
         chat_id = update.effective_chat.id
-    elif isinstance(context, CallbackContext) and chat_id is None:
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE) and chat_id is None:
         chat_id = context._chat_id
     if not isinstance(chat_id, int):
         raise TypeError("chat_id precisa ser um int.")
