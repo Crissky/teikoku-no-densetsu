@@ -57,4 +57,13 @@ def exists_world(
     chat_id: Optional[int] = None,
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
-) -> bool: ...
+) -> bool:
+    if isinstance(update, Update) and chat_id is None:
+        chat_id = update.effective_chat.id
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE) and chat_id is None:
+        chat_id = context._chat_id
+    if not isinstance(chat_id, int):
+        raise TypeError("chat_id precisa ser um int.")
+    world_model = WorldModel()
+
+    return world_model.exists(_id=chat_id)
