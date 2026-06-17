@@ -1,6 +1,7 @@
 # REGISTER COMMANDS
 SIGNUP_COMMNADS = ["signup", "cadastrar"]
 SIGNUP_GROUP_COMMNADS = ["signup_group", "cadastrar_grupo"]
+SIGNUP_WORLD_COMMNADS = ["signup_world", "cadastrar_mundo"]
 
 # SHOW COMMANDS
 GROUP_COMMNADS = ["group", "grupo"]

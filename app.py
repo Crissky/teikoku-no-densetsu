@@ -5,6 +5,7 @@ from bot import (
     CLOSE_MSG_HANDLER,
     SIGNUP_GROUP_HANDLERS,
     SIGNUP_HANDLERS,
+    SIGNUP_WORLD_HANDLERS,
     WORLD_HANDLERS,
 )
 
@@ -54,6 +55,7 @@ def main() -> None:
     # Add Multiple Handlers ==================================================
     application.add_handlers(SIGNUP_HANDLERS)
     application.add_handlers(SIGNUP_GROUP_HANDLERS)
+    application.add_handlers(SIGNUP_WORLD_HANDLERS)
     application.add_handlers(WORLD_HANDLERS)
 
     logger.info("Iniciando run_polling() Teikoku no Densetshu!")

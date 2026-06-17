@@ -41,3 +41,11 @@ NO_CHANGE_IN_GROUP = (
     "*Nenhuma alteração* foi feita no grupo. "
     "Nenhum *atributo* ou *valor* válido foi informado."
 )
+
+
+# WORLD
+WORLD_SUCCESSFULLY_REGISTERED_FORMAT = (
+    "Mundo *{name}* cadastrado com sucesso!\n\n"
+    "{subsection}"
+    "{telegram_text}"
+)
