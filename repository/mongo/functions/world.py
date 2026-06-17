@@ -50,7 +50,15 @@ def get_world_by_chat_id(chat_id: int) -> World:
 def get_world(
     update: Optional[Update] = None,
     context: Optional[ContextTypes.DEFAULT_TYPE] = None,
-) -> World: ...
+) -> World:
+    if isinstance(update, Update):
+        chat_id = update.effective_chat.id
+    elif isinstance(context, ContextTypes.DEFAULT_TYPE):
+        chat_id = context._chat_id
+    else:
+        raise ValueError("É preciso informar ou update ou context.")
+
+    return get_world_by_chat_id(chat_id)
 
 
 def exists_world(
