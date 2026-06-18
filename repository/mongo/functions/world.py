@@ -1,7 +1,7 @@
 from typing import Any, Iterable, Optional, Tuple
 
 from telegram import Update
-from telegram.ext import ContextTypes
+from telegram.ext import CallbackContext
 
 from repository.mongo.models.world import WorldModel
 from teikoku.entity.world.world import World
@@ -49,11 +49,11 @@ def get_world_by_chat_id(chat_id: int) -> World:
 
 def get_world(
     update: Optional[Update] = None,
-    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+    context: Optional[CallbackContext] = None,
 ) -> World:
     if isinstance(update, Update):
         chat_id = update.effective_chat.id
-    elif isinstance(context, ContextTypes.DEFAULT_TYPE):
+    elif isinstance(context, CallbackContext):
         chat_id = context._chat_id
     else:
         raise ValueError("É preciso informar ou update ou context.")
@@ -64,11 +64,11 @@ def get_world(
 def exists_world(
     chat_id: Optional[int] = None,
     update: Optional[Update] = None,
-    context: Optional[ContextTypes.DEFAULT_TYPE] = None,
+    context: Optional[CallbackContext] = None,
 ) -> bool:
     if isinstance(update, Update) and chat_id is None:
         chat_id = update.effective_chat.id
-    elif isinstance(context, ContextTypes.DEFAULT_TYPE) and chat_id is None:
+    elif isinstance(context, CallbackContext) and chat_id is None:
         chat_id = context._chat_id
     if not isinstance(chat_id, int):
         raise TypeError("chat_id precisa ser um int.")
