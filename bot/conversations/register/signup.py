@@ -8,9 +8,9 @@ from telegram.ext import (
 
 from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.command import (
-    PLAYER_COMMNADS,
-    SIGNUP_COMMNADS,
-    SET_ATTR_PLAYER_COMMNADS,
+    PLAYER_COMMANDS,
+    SIGNUP_COMMANDS,
+    SET_ATTR_PLAYER_COMMANDS,
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
@@ -175,14 +175,14 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
 SIGNUP_HANDLERS = [
     # SIGNUP
     PrefixHandler(
-        PREFIX_COMMANDS, SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER
+        PREFIX_COMMANDS, SIGNUP_COMMANDS, signup, BASIC_COMMAND_FILTER
     ),
-    CommandHandler(SIGNUP_COMMNADS, signup, BASIC_COMMAND_FILTER),
+    CommandHandler(SIGNUP_COMMANDS, signup, BASIC_COMMAND_FILTER),
     # SHOW_PLAYER
     PrefixHandler(
-        PREFIX_COMMANDS, PLAYER_COMMNADS, show_player, BASIC_COMMAND_FILTER
+        PREFIX_COMMANDS, PLAYER_COMMANDS, show_player, BASIC_COMMAND_FILTER
     ),
-    CommandHandler(PLAYER_COMMNADS, show_player, BASIC_COMMAND_FILTER),
+    CommandHandler(PLAYER_COMMANDS, show_player, BASIC_COMMAND_FILTER),
     CallbackQueryHandler(
         show_player,
         pattern=check_pattern(
@@ -198,11 +198,11 @@ SIGNUP_HANDLERS = [
     # SET ATTR PLAYER
     PrefixHandler(
         PREFIX_COMMANDS,
-        SET_ATTR_PLAYER_COMMNADS,
+        SET_ATTR_PLAYER_COMMANDS,
         set_attr_player,
         BASIC_COMMAND_FILTER,
     ),
     CommandHandler(
-        SET_ATTR_PLAYER_COMMNADS, set_attr_player, BASIC_COMMAND_FILTER
+        SET_ATTR_PLAYER_COMMANDS, set_attr_player, BASIC_COMMAND_FILTER
     ),
 ]

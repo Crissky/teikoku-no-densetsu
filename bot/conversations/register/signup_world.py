@@ -1,7 +1,7 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
-from bot.constants.command import SIGNUP_WORLD_COMMNADS
+from bot.constants.command import SIGNUP_WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import WORLD_SUCCESSFULLY_REGISTERED_FORMAT
 from bot.constants.section import (
@@ -29,7 +29,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_text = f'O mundo "{world.name}" já existe.'
     if chat.type in CHAT_TYPE_PRIVATE:
         section_name = FAIL_SIGNUP_WORLD_SECTION_NAME
-        command = SIGNUP_WORLD_COMMNADS[0]
+        command = SIGNUP_WORLD_COMMANDS[0]
         reply_text = (
             "Não é possível criar um mundo em um chat privado. "
             f"Use o comando /{command} no grupo que deseja cadastrar."
@@ -59,11 +59,11 @@ SIGNUP_WORLD_HANDLERS = [
     # SIGNUP_GROUP
     PrefixHandler(
         PREFIX_COMMANDS,
-        SIGNUP_WORLD_COMMNADS,
+        SIGNUP_WORLD_COMMANDS,
         signup_world,
         BASIC_COMMAND_FILTER,
     ),
-    CommandHandler(SIGNUP_WORLD_COMMNADS, signup_world, BASIC_COMMAND_FILTER),
+    CommandHandler(SIGNUP_WORLD_COMMANDS, signup_world, BASIC_COMMAND_FILTER),
     # SHOW_GROUP
     # PrefixHandler(
     #     PREFIX_COMMANDS, GROUP_COMMNADS, show_group, BASIC_COMMAND_FILTER

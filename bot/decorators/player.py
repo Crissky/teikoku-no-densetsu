@@ -3,7 +3,7 @@ import logging
 from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
-from bot.constants.command import SIGNUP_COMMNADS
+from bot.constants.command import SIGNUP_COMMANDS
 from bot.functions.message import (
     MIN_AUTODELETE_TIME,
     answer,
@@ -26,10 +26,11 @@ def need_signedup_player(callback):
             logger.info("\tAUTORIZADO - USUÁRIO POSSUI CONTA.")
             return await callback(update, context)
         else:
+            command = SIGNUP_COMMANDS[0]
             text = (
                 "Você precisa criar sua conta "
                 "para utilizar esse comando.\n"
-                f"Crie a conta com o comando /{SIGNUP_COMMNADS[0]}."
+                f"Crie a conta com o comando /{command}."
             )
             await reply_message(
                 function_caller="@NEED_SIGNEDUP_PLAYER()",
@@ -53,10 +54,11 @@ def need_admin_player(callback):
         is_admin = await user_is_admin(update=update)
 
         if not exists_player(user_id=user_id):
+            command = SIGNUP_COMMANDS[0]
             text = (
                 "Você precisa criar sua conta "
                 "para utilizar esse comando.\n"
-                f"Crie a conta com o comando /{SIGNUP_COMMNADS[0]}."
+                f"Crie a conta com o comando /{command}."
             )
         elif not is_admin:
             text = "Somente um Admnistrador do Grupo pode usar esse comando."

@@ -7,9 +7,9 @@ from telegram.ext import (
 )
 
 from bot.constants.command import (
-    GROUP_COMMNADS,
-    SIGNUP_GROUP_COMMNADS,
-    SET_ATTR_GROUP_COMMNADS,
+    GROUP_COMMANDS,
+    SIGNUP_GROUP_COMMANDS,
+    SET_ATTR_GROUP_COMMANDS,
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
@@ -177,16 +177,16 @@ SIGNUP_GROUP_HANDLERS = [
     # SIGNUP_GROUP
     PrefixHandler(
         PREFIX_COMMANDS,
-        SIGNUP_GROUP_COMMNADS,
+        SIGNUP_GROUP_COMMANDS,
         signup_group,
         BASIC_COMMAND_FILTER,
     ),
-    CommandHandler(SIGNUP_GROUP_COMMNADS, signup_group, BASIC_COMMAND_FILTER),
+    CommandHandler(SIGNUP_GROUP_COMMANDS, signup_group, BASIC_COMMAND_FILTER),
     # SHOW_GROUP
     PrefixHandler(
-        PREFIX_COMMANDS, GROUP_COMMNADS, show_group, BASIC_COMMAND_FILTER
+        PREFIX_COMMANDS, GROUP_COMMANDS, show_group, BASIC_COMMAND_FILTER
     ),
-    CommandHandler(GROUP_COMMNADS, show_group, BASIC_COMMAND_FILTER),
+    CommandHandler(GROUP_COMMANDS, show_group, BASIC_COMMAND_FILTER),
     CallbackQueryHandler(
         show_group,
         pattern=check_pattern(
@@ -202,11 +202,11 @@ SIGNUP_GROUP_HANDLERS = [
     # SET ATTR GROUP
     PrefixHandler(
         PREFIX_COMMANDS,
-        SET_ATTR_GROUP_COMMNADS,
+        SET_ATTR_GROUP_COMMANDS,
         set_attr_group,
         BASIC_COMMAND_FILTER,
     ),
     CommandHandler(
-        SET_ATTR_GROUP_COMMNADS, set_attr_group, BASIC_COMMAND_FILTER
+        SET_ATTR_GROUP_COMMANDS, set_attr_group, BASIC_COMMAND_FILTER
     ),
 ]
