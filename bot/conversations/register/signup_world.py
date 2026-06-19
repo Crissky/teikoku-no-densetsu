@@ -1,11 +1,14 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
-from bot.constants.command import SIGNUP_WORLD_COMMANDS
+from bot.constants.command import SIGNUP_WORLD_COMMANDS, WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
-from bot.constants.message import WORLD_SUCCESSFULLY_REGISTERED_FORMAT
+from bot.constants.message import (
+    WORLD_FAIL_SHOW_ARGS,
+    WORLD_SUCCESSFULLY_REGISTERED_FORMAT,
+)
 from bot.constants.section import (
-    ALREADY_EXISTS_SIGNUP_WORLD_SECTION_NAME,
+    FAIL_SHOW_WORLD_SECTION_NAME,
     FAIL_SIGNUP_WORLD_SECTION_NAME,
     WORLD_SUBSECTION_NAME,
 )
@@ -55,6 +58,33 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
+async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    chat_id = update._effective_chat.id
+    args = context.args if context.args else [0, 0]
+    world = get_world_by_chat_id(chat_id=chat_id)
+
+    if len(args) == 2:
+        try:
+            x = int(args[0])
+            y = int(args[1])
+        except ValueError:
+            command = WORLD_COMMANDS[0]
+            reply_text = WORLD_FAIL_SHOW_ARGS.format(command=command)
+            reply_text = create_text_in_box(
+                text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
+            )
+            await reply_message(
+                function_caller="SHOW_WORLD()",
+                text=reply_text,
+                context=context,
+                update=update,
+                markdown=True,
+            )
+    # TODO Adicionar error por quantidade de argumentos inválidos.
+    else:
+        ...
+
+
 SIGNUP_WORLD_HANDLERS = [
     # SIGNUP_GROUP
     PrefixHandler(
@@ -65,10 +95,10 @@ SIGNUP_WORLD_HANDLERS = [
     ),
     CommandHandler(SIGNUP_WORLD_COMMANDS, signup_world, BASIC_COMMAND_FILTER),
     # SHOW_GROUP
-    # PrefixHandler(
-    #     PREFIX_COMMANDS, GROUP_COMMNADS, show_group, BASIC_COMMAND_FILTER
-    # ),
-    # CommandHandler(GROUP_COMMNADS, show_group, BASIC_COMMAND_FILTER),
+    PrefixHandler(
+        PREFIX_COMMANDS, WORLD_COMMANDS, show_world, BASIC_COMMAND_FILTER
+    ),
+    CommandHandler(WORLD_COMMANDS, show_world, BASIC_COMMAND_FILTER),
     # CallbackQueryHandler(
     #     show_group,
     #     pattern=check_pattern(
