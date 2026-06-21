@@ -153,6 +153,76 @@ async def call_telegram_message_function(
     return response
 
 
+async def send_message_text(
+    function_caller: str,
+    text: str,
+    context: ContextTypes.DEFAULT_TYPE,
+    chat_id: Optional[int] = None,
+    user_id: Optional[int] = None,
+    markdown: bool = False,
+    silent: Optional[bool] = None,
+    reply_markup: InlineKeyboardMarkup = REPLY_MARKUP_DEFAULT,
+    allow_sending_without_reply: bool = True,
+    close_by_owner: bool = True,
+    need_response: bool = False,
+    skip_retry: bool = False,
+    auto_delete_message: Union[bool, int, timedelta] = True,
+) -> Message:
+    """Envia uma mensagem.
+
+    Se markdown for True, o parse_mode será igual a
+    ParseMode.MARKDOWN_V2, caso contrário, parse_mode será igual a None
+
+    Se silent for None, usará a configuração de notificação do chat em
+    disable_notification.
+
+    Se reply_markup não for passado, a mensagem terá um botão de fechar.
+
+    Se close_by_owner for True e não for passado reply_markup, a mensagem terá
+    um botão de fechar que somente o usuário responsável pelo envio da
+    mensagem que poderá fechá-la. Caso contrário,
+    qualquer jogador poderá fechar.
+    """
+
+    chat_id = chat_id if chat_id else context._chat_id
+    user_id = user_id if user_id else context._user_id
+    markdown = ParseMode.MARKDOWN_V2 if markdown is True else None
+    owner_id = user_id if close_by_owner is True else None
+    reply_markup = (
+        reply_markup
+        if reply_markup != REPLY_MARKUP_DEFAULT
+        else get_close_keyboard(user_id=owner_id)
+    )
+
+    # TODO implementar atributo `silence` em Player e na class que for
+    # representar o grupo
+    # if silent is None:
+    #     if isinstance(chat_id, int):
+    #         silent = get_attribute_group_or_player(chat_id, "silent")
+    #     elif isinstance(user_id, int):
+    #         silent = get_player_attribute_by_id(user_id, "silent")
+
+    send_text_kwargs = dict(
+        chat_id=chat_id,
+        text=text,
+        parse_mode=markdown,
+        disable_notification=silent,
+        reply_markup=reply_markup,
+    )
+
+    response = await call_telegram_message_function(
+        function_caller=function_caller,
+        function=context.bot.send_message,
+        context=context,
+        need_response=need_response,
+        skip_retry=skip_retry,
+        auto_delete_message=auto_delete_message,
+        **send_text_kwargs,
+    )
+
+    return response
+
+
 async def edit_message_text(
     function_caller: str,
     text: str,
