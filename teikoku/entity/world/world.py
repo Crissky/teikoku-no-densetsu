@@ -40,6 +40,12 @@ class World(MongoBase):
 
     UPDATABLE_ATTR_LIST = ()
 
+    def __post_init__(self):
+        if self.chat_id >= 0:
+            raise TypeError("chat_id precisa ser um int negativo.")
+
+        self.terrain = TerrainMap(seed=abs(self.chat_id))
+
     def __eq__(self, value):
         result = False
         if isinstance(value, World):
