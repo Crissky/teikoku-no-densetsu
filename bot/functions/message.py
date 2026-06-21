@@ -327,15 +327,15 @@ async def reply_message(
 
     É obrigatório passar update ou message_id.
 
-    markdown for True, o parse_mode será igual a
+    Se markdown for True, o parse_mode será igual a
     ParseMode.MARKDOWN_V2, caso contrário, parse_mode será igual a None
 
-    silent for None, usará a configuração de notificação do chat em
+    Se silent for None, usará a configuração de notificação do chat em
     disable_notification.
 
-    reply_markup não for passado, a mensagem terá um botão de fechar.
+    Se reply_markup não for passado, a mensagem terá um botão de fechar.
 
-    close_by_owner for True e não for passado reply_markup, a mensagem terá
+    Se close_by_owner for True e não for passado reply_markup, a mensagem terá
     um botão de fechar que somente o usuário responsável pelo envio da
     mensagem que poderá fechá-la. Caso contrário,
     qualquer jogador poderá fechar.
