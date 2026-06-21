@@ -461,6 +461,7 @@ async def send_message_image(
 
     return response
 
+
 # QUERY FUNCTIONS ============================================================
 async def delete_message_from_query(
     function_caller: str,
