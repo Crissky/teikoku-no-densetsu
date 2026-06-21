@@ -13,6 +13,7 @@ class WorldModel(Model):
     collection = property(lambda self: CollectionEnum.WORLD.value)
     alternative_id: str = property(lambda self: AltIdEnum.WORLD.value)
 
+
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
     world = World(name="TESTE WORLD", chat_id=123456789)

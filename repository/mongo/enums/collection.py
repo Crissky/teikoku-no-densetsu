@@ -5,4 +5,3 @@ class CollectionEnum(Enum):
     GROUP = "groups"
     PLAYER = "players"
     WORLD = "worlds"
-
