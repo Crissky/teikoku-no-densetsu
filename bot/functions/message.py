@@ -31,7 +31,7 @@ CHAT_TYPE_PRIVATE = (ChatType.SENDER, ChatType.PRIVATE)
 MIN_AUTODELETE_TIME = timedelta(minutes=15)
 HALF_AUTODELETE_TIME = timedelta(minutes=30)
 
-# TEXTS
+# TEXTS ======================================================================
 REPLY_MARKUP_DEFAULT = "DEFAULT"
 LEFT_CLOSE_BUTTON_TEXT = f"{EmojiEnum.CLOSE.value}Fechar"
 RIGHT_CLOSE_BUTTON_TEXT = f"Fechar{EmojiEnum.CLOSE.value}"
@@ -45,7 +45,7 @@ DETAIL_BUTTON_TEXT = f"{EmojiEnum.DETAIL.value}Detalhar"
 CALLBACK_KEY_LIST = ["command", "user_id"]
 
 
-# CALL TELEGRAM FUNCTIONs
+# CALL TELEGRAM FUNCTIONs ====================================================
 async def call_telegram_message_function(
     function_caller: str,
     function: Callable,
@@ -389,7 +389,7 @@ async def reply_message(
     return response
 
 
-# QUERY FUNCTIONS
+# QUERY FUNCTIONS ============================================================
 async def delete_message_from_query(
     function_caller: str,
     context: ContextTypes.DEFAULT_TYPE,
@@ -432,7 +432,7 @@ async def answer(query: CallbackQuery, text: str, **kwargs):
         logger.warning(f"  text: {text}")
 
 
-# CALLBACK FUNCTIONS
+# CALLBACK FUNCTIONS =========================================================
 def dict_to_callback_data(callback_dict: dict) -> str:
     """Transforma um dicionário em uma string compactada usada no campo data
     de um botão.
@@ -468,7 +468,7 @@ def callback_data_to_dict(callback_data: str) -> dict:
     return callback_data
 
 
-# JOB FUNCTIONs
+# JOB FUNCTIONs ==============================================================
 # Funções usandas no callback de agendamentos do context.job_queue
 async def job_call_telegram(context: ContextTypes.DEFAULT_TYPE):
     """Job que chama a função call_telegram_message_function caso ocorra um
@@ -498,7 +498,7 @@ async def job_delete_message_from_context(context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-# SCHEDULE JOB FUNCTIONs
+# SCHEDULE JOB FUNCTIONs =====================================================
 def schedule_job_delete_message_from_context(
     function_caller: str,
     context: ContextTypes.DEFAULT_TYPE,
@@ -543,7 +543,7 @@ def remove_job_delete_message_from_context(
     remove_job_by_name(context=context, job_name=job_name)
 
 
-# SUPPORT FUNCTIONs
+# SUPPORT FUNCTIONs ==========================================================
 def get_hours_delete_message_from_context(
     chat_id: Optional[int] = None,
     value: Union[bool, int, timedelta] = HOURS_DELETE_MESSAGE_FROM_CONTEXT,
@@ -639,7 +639,7 @@ def job_exists(context: ContextTypes.DEFAULT_TYPE, job_name: str) -> bool:
     return bool(current_jobs)
 
 
-# BUTTONS FUNCTIONS
+# BUTTONS FUNCTIONS ==========================================================
 def get_button(
     user_id: int,
     text: str,
@@ -731,7 +731,7 @@ def get_update_button(
     return update_button
 
 
-# KEYBOARDS FUNCTIONS
+# KEYBOARDS FUNCTIONS ========================================================
 def get_close_keyboard(user_id: int) -> InlineKeyboardMarkup:
     """Se user_id for None, qualquer um pode fechar a mensagem,
     caso contrário, somente o usuário com o mesmo user_id poderar fechar
