@@ -25,6 +25,7 @@ from general.enums.emojis import EmojiEnum
 logger = logging.getLogger(__name__)
 
 
+# DATE & TIME ================================================================
 HOURS_DELETE_MESSAGE_FROM_CONTEXT = 1
 CHAT_TYPE_GROUPS = (ChatType.GROUP, ChatType.SUPERGROUP)
 CHAT_TYPE_PRIVATE = (ChatType.SENDER, ChatType.PRIVATE)
@@ -45,7 +46,7 @@ DETAIL_BUTTON_TEXT = f"{EmojiEnum.DETAIL.value}Detalhar"
 CALLBACK_KEY_LIST = ["command", "user_id"]
 
 
-# CALL TELEGRAM FUNCTIONs ====================================================
+# CALL TEXT TELEGRAM FUNCTIONs ===============================================
 async def call_telegram_message_function(
     function_caller: str,
     function: Callable,
@@ -388,6 +389,8 @@ async def reply_message(
 
     return response
 
+
+# CALL IMAGE TELEGRAM FUNCTIONs ==============================================
 
 # QUERY FUNCTIONS ============================================================
 async def delete_message_from_query(
