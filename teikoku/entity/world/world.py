@@ -387,9 +387,16 @@ if __name__ == "__main__":
 
     print(" START LOCAL TEST ".center(79, "="))
     p = Player(user_id=123, name="teste")
-    c = City(name="Cidade Teste", x=1, y=2, owner=p)
+    c = City(
+        name="Cidade Teste",
+        owner=p,
+        level=1,
+        size=1,
+        x=1,
+        y=2,
+    )
     cities = {(c.coor.x, c.coor.y): c}
-    world = World(name="Mundo Teste", cities=cities)
+    world = World(name="Mundo Teste", chat_id=-1, cities=cities)
 
     print("\nWORLD")
     print(world)
@@ -400,8 +407,8 @@ if __name__ == "__main__":
     print("\nWORLD.TO_DICT")
     print(world.to_dict())
 
-    print("\nWORLD.RENDER_BASE_MAP")
-    img = world.render_base_map()
+    print("\nWORLD.RENDER_MAP")
+    img = world.render_map()
     img.show()
 
     print(" END LOCAL TEST ".center(79, "="))
