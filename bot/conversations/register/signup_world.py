@@ -80,6 +80,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 update=update,
                 markdown=True,
             )
+        image = world.render_map()
     # TODO Adicionar error por quantidade de argumentos inválidos.
     else:
         ...
