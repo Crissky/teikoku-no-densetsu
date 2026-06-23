@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
+from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.command import SIGNUP_WORLD_COMMANDS, WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
@@ -13,8 +14,13 @@ from bot.constants.section import (
     WORLD_SECTION_NAME,
     WORLD_SUBSECTION_NAME,
 )
+from bot.decorators.player import alert_if_not_chat_owner, need_signedup_player
 from bot.functions.image import image_to_bytes_io
-from bot.functions.message import CHAT_TYPE_PRIVATE, reply_message, send_message_image
+from bot.functions.message import (
+    CHAT_TYPE_PRIVATE,
+    reply_message,
+    send_message_image,
+)
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.world import get_world_by_chat_id, save_world
 from teikoku.entity.world.coor import Coordinate
@@ -60,7 +66,9 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         markdown=True,
     )
 
-
+# TODO Criar need_signedup_world
+@need_signedup_player
+@alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update._effective_chat.id
     args = context.args if context.args else [0, 0]
@@ -93,7 +101,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 text=caption_text, section_name=section_name
             )
             await send_message_image(
-                function_caller='SHOW_WORLD()',
+                function_caller="SHOW_WORLD()",
                 photo=bimagem,
                 context=context,
                 caption=caption_text,
