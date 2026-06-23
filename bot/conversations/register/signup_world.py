@@ -10,11 +10,14 @@ from bot.constants.message import (
 from bot.constants.section import (
     FAIL_SHOW_WORLD_SECTION_NAME,
     FAIL_SIGNUP_WORLD_SECTION_NAME,
+    WORLD_SECTION_NAME,
     WORLD_SUBSECTION_NAME,
 )
-from bot.functions.message import CHAT_TYPE_PRIVATE, reply_message
+from bot.functions.image import image_to_bytes_io
+from bot.functions.message import CHAT_TYPE_PRIVATE, reply_message, send_message_image
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.world import get_world_by_chat_id, save_world
+from teikoku.entity.world.coor import Coordinate
 from teikoku.entity.world.world import World
 
 
@@ -80,7 +83,21 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 update=update,
                 markdown=True,
             )
-        image = world.render_map()
+        else:
+            coordinate = Coordinate(x=x, y=y)
+            image = world.render_map(central_coor=coordinate)
+            bimagem = image_to_bytes_io(image=image)
+            section_name = WORLD_SECTION_NAME
+            caption_text = str(world)
+            caption_text = create_text_in_box(
+                text=caption_text, section_name=section_name
+            )
+            await send_message_image(
+                function_caller='SHOW_WORLD()',
+                photo=bimagem,
+                context=context,
+                caption=caption_text,
+            )
     # TODO Adicionar error por quantidade de argumentos inválidos.
     else:
         ...
