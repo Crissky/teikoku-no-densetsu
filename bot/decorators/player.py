@@ -26,6 +26,7 @@ def need_signedup_player(callback):
             logger.info("\tAUTORIZADO - USUÁRIO POSSUI CONTA.")
             return await callback(update, context)
         else:
+            logger.info("\tNEGADO - USUÁRIO NÃO POSSUI CONTA.")
             command = SIGNUP_COMMANDS[0]
             text = (
                 "Você precisa criar sua conta "
@@ -42,6 +43,7 @@ def need_signedup_player(callback):
                 skip_retry=False,
                 auto_delete_message=MIN_AUTODELETE_TIME,
             )
+
             return ConversationHandler.END
 
     return wrapper
@@ -61,6 +63,7 @@ def need_admin_player(callback):
                 f"Crie a conta com o comando /{command}."
             )
         elif not is_admin:
+            logger.info("\tNEGADO - ADMNISTRADOR NÃO POSSUI CONTA.")
             text = "Somente um Admnistrador do Grupo pode usar esse comando."
         else:
             logger.info("\tAUTORIZADO - ADMNISTRADOR POSSUI CONTA.")
@@ -76,6 +79,7 @@ def need_admin_player(callback):
             skip_retry=False,
             auto_delete_message=MIN_AUTODELETE_TIME,
         )
+
         return ConversationHandler.END
 
     return wrapper
@@ -93,6 +97,7 @@ def skip_if_no_signedup_player(callback):
             logger.info(
                 f"\tUSER: {user_id} SKIPPED in CHAT: {chat_id} - NO ACCOUNT"
             )
+
             return ConversationHandler.END
 
     return wrapper
@@ -108,7 +113,7 @@ def alert_if_not_chat_owner(
 
     def decorator(callback):
         async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-            logger.info("@SKIP_IF_NOT_CHAT_OWNER")
+            logger.info("@ALERT_IF_NOT_CHAT_OWNER")
             user_id = update.effective_user.id
             query = update.callback_query
 
@@ -144,7 +149,7 @@ def alert_if_not_is_message_owner(
 
     def decorator(callback):
         async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
-            logger.info("@alert_if_not_is_message_owner")
+            logger.info("@ALERT_IF_NOT_IS_MESSAGE_OWNER")
             user_id = update.effective_user.id
             query = update.callback_query
 

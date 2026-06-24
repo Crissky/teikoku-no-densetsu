@@ -15,21 +15,22 @@ def only_group(callback):
         is_group = chat_is_group(update=update)
 
         if not is_group:
+            logger.info("\tNEGADO - USUÁRIO NÃO POSSUI CONTA.")
             text = "Esse comando só pode ser usado em um grupo."
+            await reply_message(
+                function_caller="ONLY_GROUP()",
+                text=text,
+                context=context,
+                update=update,
+                allow_sending_without_reply=True,
+                need_response=False,
+                skip_retry=False,
+                auto_delete_message=MIN_AUTODELETE_TIME,
+            )
+
+            return ConversationHandler.END
         else:
             logger.info("\tAUTORIZADO - USUÁRIO POSSUI CONTA.")
             return await callback(update, context)
-
-        await reply_message(
-            function_caller="ADMIN.NEED_ADMIN_PLAYER()",
-            text=text,
-            context=context,
-            update=update,
-            allow_sending_without_reply=True,
-            need_response=False,
-            skip_retry=False,
-            auto_delete_message=MIN_AUTODELETE_TIME,
-        )
-        return ConversationHandler.END
 
     return wrapper
