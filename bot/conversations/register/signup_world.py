@@ -15,6 +15,7 @@ from bot.constants.section import (
     WORLD_SUBSECTION_NAME,
 )
 from bot.decorators.player import alert_if_not_chat_owner, need_signedup_player
+from bot.decorators.world import need_signedup_world
 from bot.functions.image import image_to_bytes_io
 from bot.functions.message import (
     CHAT_TYPE_PRIVATE,
@@ -67,6 +68,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 # TODO Criar need_signedup_world
+@need_signedup_world
 @need_signedup_player
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
