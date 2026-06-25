@@ -67,7 +67,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         markdown=True,
     )
 
-# TODO Criar need_signedup_world
+
 @need_signedup_world
 @need_signedup_player
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
