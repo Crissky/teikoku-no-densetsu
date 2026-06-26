@@ -5,6 +5,7 @@ from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.command import SIGNUP_WORLD_COMMANDS, WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
+    WORLD_ARGS_COUNT_ERROR,
     WORLD_ARGS_TYPE_ERROR,
     WORLD_SUCCESSFULLY_REGISTERED_FORMAT,
 )
@@ -110,7 +111,18 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
     # TODO Adicionar error por quantidade de argumentos inválidos.
     else:
-        ...
+        command = WORLD_COMMANDS[0]
+        reply_text = WORLD_ARGS_COUNT_ERROR.format(command=command)
+        reply_text = create_text_in_box(
+            text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
+        )
+        await reply_message(
+            function_caller="SHOW_WORLD()",
+            text=reply_text,
+            context=context,
+            update=update,
+            markdown=True,
+        )
 
 
 SIGNUP_WORLD_HANDLERS = [

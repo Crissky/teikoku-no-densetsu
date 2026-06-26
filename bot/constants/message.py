@@ -55,3 +55,9 @@ WORLD_ARGS_TYPE_ERROR = (
     "representando as coordenadas X e Y do mundo.\n\n"
     "Exemplo: `/{command} 10 -20`\n\n"
 )
+WORLD_ARGS_COUNT_ERROR = (
+    "⚠️ *NÚMERO DE ARGUMENTOS INCORRETO*.\n\n"
+    "É preciso informar *NENHUM* ou *DOIS* argumentos separados por "
+    "um espaço, representando as coordenadas X e Y do mundo.\n\n"
+    "Exemplo: `/{command} 10 -20`\n\n"
+)
