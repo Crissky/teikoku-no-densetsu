@@ -49,8 +49,9 @@ WORLD_SUCCESSFULLY_REGISTERED_FORMAT = (
     "{subsection}"
     "{telegram_text}"
 )
-WORLD_FAIL_SHOW_ARGS = (
-    "Os argumentos precisam ser dois valores separados por um espaço, "
+WORLD_ARGS_TYPE_ERROR = (
+    "⚠️ *TIPO DE ARGUMENTO INCORRETO*.\n\n"
+    "Os argumentos precisam ser *DOIS NÚMEROS* separados por um espaço, "
     "representando as coordenadas X e Y do mundo.\n\n"
     "Exemplo: `/{command} 10 -20`\n\n"
 )

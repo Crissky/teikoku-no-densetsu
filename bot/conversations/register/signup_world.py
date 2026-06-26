@@ -5,7 +5,7 @@ from bot.constants.alert import ALERT_TEXT_ACCESS_DENIED
 from bot.constants.command import SIGNUP_WORLD_COMMANDS, WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
-    WORLD_FAIL_SHOW_ARGS,
+    WORLD_ARGS_TYPE_ERROR,
     WORLD_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.section import (
@@ -82,7 +82,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             y = int(args[1])
         except ValueError:
             command = WORLD_COMMANDS[0]
-            reply_text = WORLD_FAIL_SHOW_ARGS.format(command=command)
+            reply_text = WORLD_ARGS_TYPE_ERROR.format(command=command)
             reply_text = create_text_in_box(
                 text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
             )
