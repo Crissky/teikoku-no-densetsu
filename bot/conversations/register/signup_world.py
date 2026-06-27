@@ -7,6 +7,7 @@ from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     WORLD_ARGS_COUNT_ERROR,
     WORLD_ARGS_TYPE_ERROR,
+    WORLD_NOT_FOUND_ERROR,
     WORLD_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.section import (
@@ -77,7 +78,24 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args if context.args else [0, 0]
     world = get_world_by_chat_id(chat_id=chat_id)
 
-    if len(args) == 2:
+    if not world:
+        command = SIGNUP_WORLD_COMMANDS[0]
+        reply_text = WORLD_NOT_FOUND_ERROR.format(
+            chat_id=chat_id, command=command
+        )
+        reply_text = create_text_in_box(
+            text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
+        )
+        await reply_message(
+            function_caller="SHOW_WORLD()",
+            text=reply_text,
+            context=context,
+            update=update,
+            markdown=True,
+        )
+    elif len(args) == 0:
+        ...
+    elif len(args) == 2:
         try:
             x = int(args[0])
             y = int(args[1])

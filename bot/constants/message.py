@@ -61,3 +61,9 @@ WORLD_ARGS_COUNT_ERROR = (
     "um espaço, representando as coordenadas X e Y do mundo.\n\n"
     "Exemplo: `/{command} 10 -20`"
 )
+WORLD_NOT_FOUND_ERROR = (
+    "⚠️ *MUNDO NÃO ENCONTRADO*.\n\n"
+    'Não há nenhum mundo cadastrado para o grupo "{chat_id}". '
+    "Use o comando /{command} para cadastrar um novo mundo vinculado a "
+    "esse chat."
+)
