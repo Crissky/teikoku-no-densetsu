@@ -139,8 +139,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 context=context,
                 caption=caption_text,
             )
-    # TODO Adicionar error por quantidade de argumentos inválidos.
-    else:
+    elif len(args) not in (0, 2):
         command = WORLD_COMMANDS[0]
         reply_text = WORLD_ARGS_COUNT_ERROR.format(command=command)
         reply_text = create_text_in_box(
