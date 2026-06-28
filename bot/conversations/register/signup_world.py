@@ -94,7 +94,19 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             markdown=True,
         )
     elif len(args) == 0:
-        ...
+        image = world.render_map()
+        bimagem = image_to_bytes_io(image=image)
+        section_name = WORLD_SECTION_NAME
+        caption_text = str(world)
+        caption_text = create_text_in_box(
+            text=caption_text, section_name=section_name
+        )
+        await send_message_image(
+            function_caller="SHOW_WORLD()",
+            photo=bimagem,
+            context=context,
+            caption=caption_text,
+        )
     elif len(args) == 2:
         try:
             x = int(args[0])
