@@ -67,3 +67,9 @@ WORLD_NOT_FOUND_ERROR = (
     "Use o comando /{command} para cadastrar um novo mundo vinculado a "
     "esse chat."
 )
+WORLD_UNKNOWN_ERROR = (
+    "⚠️ *ERRO NÃO INDENTIICADO AO CARREGAR O MUNDO*.\n\n"
+    "Chat ID: {chat_id}\n"
+    "ARGS: {args}\n"
+    "MUNDO: {wolrd}"
+)
