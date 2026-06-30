@@ -23,7 +23,7 @@ def need_signedup_world(callback):
             logger.info("\tNEGADO - CHAT NÃO POSSUI MUNDO.")
             command = SIGNUP_WORLD_COMMANDS[0]
             text = (
-                "Este grupo ainda não possui um mundo."
+                "Este grupo ainda não possui um mundo. "
                 f"Crie UM MUNDO com o comando /{command}."
             )
             await reply_message(
