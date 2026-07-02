@@ -98,7 +98,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         image = world.render_map()
         bimagem = image_to_bytes_io(image=image)
         section_name = WORLD_SECTION_NAME
-        caption_text = str(world)
+        caption_text = world.telegram_text
         caption_text = create_text_in_box(
             text=caption_text, section_name=section_name
         )
@@ -107,6 +107,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             photo=bimagem,
             context=context,
             caption=caption_text,
+            markdown=True,
         )
     elif len(args) == 2:
         try:
@@ -130,7 +131,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             image = world.render_map(central_coor=coordinate)
             bimagem = image_to_bytes_io(image=image)
             section_name = WORLD_SECTION_NAME
-            caption_text = str(world)
+            caption_text = world.telegram_text
             caption_text = create_text_in_box(
                 text=caption_text, section_name=section_name
             )
@@ -139,6 +140,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 photo=bimagem,
                 context=context,
                 caption=caption_text,
+                markdown=True,
             )
     elif len(args) not in (0, 2):
         command = WORLD_COMMANDS[0]
