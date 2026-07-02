@@ -53,6 +53,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         world = World(name=chat_name, chat_id=chat_id)
         new_world = save_world(world=world)
+        section_name = WORLD_SECTION_NAME
         world_telegram_text = new_world.telegram_text
         subsection = format_subsection(text=WORLD_SUBSECTION_NAME)
         reply_text = WORLD_SUCCESSFULLY_REGISTERED_FORMAT.format(
@@ -71,7 +72,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-@need_signedup_world
+# @need_signedup_world
 @need_signedup_player
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
