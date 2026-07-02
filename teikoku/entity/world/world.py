@@ -376,7 +376,9 @@ class World(MongoBase):
 
     @property
     def telegram_text(self):
-        text = f"*Mundo*: {self.name}\n"
+        text = ""
+        text += f"*Mundo*: {self.name}\n"
+        text += f"*Chat ID*: {self.chat_id}\n"
         text += f"*Total de Cidades*: {self.total_cities}\n"
 
         return text
