@@ -76,7 +76,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
 @alert_if_not_chat_owner(alert_text=ALERT_TEXT_ACCESS_DENIED)
 async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update._effective_chat.id
-    args = context.args if context.args else [0, 0]
+    args = context.args
     world = get_world_by_chat_id(chat_id=chat_id)
 
     if not world:
