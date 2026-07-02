@@ -64,14 +64,12 @@ class World(MongoBase):
         size: Optional[int] = None,
         central_coor: Optional[Coordinate] = None,
         scale: Optional[float] = None,
-        seed: Optional[int] = None,
     ) -> Image.Image:
-        terrain_map = TerrainMap() if terrain_map is None else terrain_map
+        terrain_map = self.terrain if terrain_map is None else terrain_map
         terrain_map.generate_terrain_map(
             size=size,
             central_coor=central_coor,
             scale=scale,
-            seed=seed,
         )
 
         # 1. Gera os dados de pixels do mapa original
@@ -294,16 +292,14 @@ class World(MongoBase):
         size: Optional[int] = None,
         central_coor: Optional[Coordinate] = None,
         scale: Optional[float] = None,
-        seed: Optional[int] = None,
     ) -> Image.Image:
-        terrain_map = TerrainMap() if terrain_map is None else terrain_map
+        terrain_map = self.terrain if terrain_map is None else terrain_map
 
         map_img = self.render_base_map(
             terrain_map=terrain_map,
             size=size,
             central_coor=central_coor,
             scale=scale,
-            seed=seed,
         )
         map_img = self.render_map_coordinates(map_img, terrain_map)
         map_img = self.render_map_legend(map_img)
