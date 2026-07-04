@@ -68,6 +68,7 @@ class TerrainMap:
         if seed is None:
             seed = self.seed
 
+        seed = seed % 512
         half_size1 = size // 2
         half_size2 = half_size1 if size % 2 == 0 else half_size1 + 1
         x1 = central_coor.x - half_size1
