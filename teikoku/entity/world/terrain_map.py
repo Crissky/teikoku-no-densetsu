@@ -8,6 +8,7 @@ import noise
 from teikoku.data.world import (
     DEFAULT_TERRAIN_SIZE,
     DEFAULT_TERRAIN_SEED,
+    IGNORE_SEEDS,
     PNOISE2_CONFIG,
     PNOISE2_SCALE,
 )
@@ -68,7 +69,7 @@ class TerrainMap:
         if seed is None:
             seed = self.seed
 
-        seed = seed % 512
+        seed = self.normalize_seed(seed)
         half_size1 = size // 2
         half_size2 = half_size1 if size % 2 == 0 else half_size1 + 1
         x1 = central_coor.x - half_size1
@@ -112,6 +113,13 @@ class TerrainMap:
                 self.map[-1].append(terrain)
 
         return self.map
+
+    def normalize_seed(self, seed):
+        seed = seed % 512
+        if seed in IGNORE_SEEDS:
+            seed = self.normalize_seed(seed)
+
+        return seed
 
     @property
     def flatten(self) -> Iterable:
