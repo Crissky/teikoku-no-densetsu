@@ -9,6 +9,7 @@ from teikoku.data.world import (
     DEFAULT_TERRAIN_SIZE,
     DEFAULT_TERRAIN_SEED,
     IGNORE_SEEDS,
+    MAX_SEEDS,
     PNOISE2_CONFIG,
     PNOISE2_SCALE,
 )
@@ -115,7 +116,7 @@ class TerrainMap:
         return self.map
 
     def normalize_seed(self, seed):
-        seed = seed % 512
+        seed = seed % MAX_SEEDS
         if seed in IGNORE_SEEDS:
             seed = self.normalize_seed(seed)
 
