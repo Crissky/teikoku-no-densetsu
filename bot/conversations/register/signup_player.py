@@ -172,7 +172,7 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
 
 
-SIGNUP_HANDLERS = [
+SIGNUP_PLAYER_HANDLERS = [
     # SIGNUP
     PrefixHandler(
         PREFIX_COMMANDS, SIGNUP_COMMANDS, signup, BASIC_COMMAND_FILTER
