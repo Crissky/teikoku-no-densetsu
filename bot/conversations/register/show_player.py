@@ -81,7 +81,7 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await func_message(**func_message_kwargs)
 
 
-SIGNUP_PLAYER_HANDLERS = [
+SHOW_PLAYER_HANDLERS = [
     # SHOW_PLAYER
     PrefixHandler(
         PREFIX_COMMANDS, PLAYER_COMMANDS, show_player, BASIC_COMMAND_FILTER
