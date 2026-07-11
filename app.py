@@ -4,10 +4,12 @@ from decouple import config
 from bot import (
     CLOSE_MSG_HANDLER,
     SET_GROUP_HANDLERS,
+    SET_PLAYER_HANDLERS,
     SIGNUP_GROUP_HANDLERS,
     SIGNUP_PLAYER_HANDLERS,
     SIGNUP_WORLD_HANDLERS,
     SHOW_GROUP_HANDLERS,
+    SHOW_PLAYER_HANDLERS,
     WORLD_HANDLERS,
 )
 
@@ -56,10 +58,12 @@ def main() -> None:
 
     # Add Multiple Handlers ==================================================
     application.add_handlers(SET_GROUP_HANDLERS)
+    application.add_handlers(SET_PLAYER_HANDLERS)
     application.add_handlers(SIGNUP_PLAYER_HANDLERS)
     application.add_handlers(SIGNUP_GROUP_HANDLERS)
     application.add_handlers(SIGNUP_WORLD_HANDLERS)
     application.add_handlers(SHOW_GROUP_HANDLERS)
+    application.add_handlers(SHOW_PLAYER_HANDLERS)
     application.add_handlers(WORLD_HANDLERS)
 
     logger.info("Iniciando run_polling() Teikoku no Densetshu!")
