@@ -118,7 +118,7 @@ class TerrainMap:
     def normalize_seed(self, seed):
         seed = seed % MAX_SEEDS
         if seed in IGNORE_SEEDS:
-            seed = self.normalize_seed(seed)
+            seed = self.normalize_seed(seed + 1)
 
         return seed
 
