@@ -10,6 +10,7 @@ from bot import (
     SIGNUP_WORLD_HANDLERS,
     SHOW_GROUP_HANDLERS,
     SHOW_PLAYER_HANDLERS,
+    SHOW_WORLD_HANDLERS,
     WORLD_HANDLERS,
 )
 
@@ -64,6 +65,7 @@ def main() -> None:
     application.add_handlers(SIGNUP_WORLD_HANDLERS)
     application.add_handlers(SHOW_GROUP_HANDLERS)
     application.add_handlers(SHOW_PLAYER_HANDLERS)
+    application.add_handlers(SHOW_WORLD_HANDLERS)
     application.add_handlers(WORLD_HANDLERS)
 
     logger.info("Iniciando run_polling() Teikoku no Densetshu!")

@@ -7,5 +7,6 @@ from bot.conversations.register.signup_player import SIGNUP_PLAYER_HANDLERS  # n
 from bot.conversations.register.signup_world import SIGNUP_WORLD_HANDLERS  # noqa
 from bot.conversations.register.show_group import SHOW_GROUP_HANDLERS  # noqa
 from bot.conversations.register.show_player import SHOW_PLAYER_HANDLERS  # noqa
+from bot.conversations.register.show_world import SHOW_WORLD_HANDLERS  # noqa
 
 from bot.conversations.game.world import WORLD_HANDLERS  # noqa
