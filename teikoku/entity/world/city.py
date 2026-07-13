@@ -9,6 +9,7 @@ from teikoku.entity.world.coor import Coordinate
 @dataclass
 class City(MongoBase):
     name: str
+    chat_id: int
     owner: Player
     level: int
     size: int
