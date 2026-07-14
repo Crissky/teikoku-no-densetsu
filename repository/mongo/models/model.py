@@ -335,7 +335,7 @@ class Model(ABC):
         field_name: Nome do campo que será populado ao criar o objeto.
 
             PopulateFieldEnum.INITIATOR (Callable): Callable que usa os dados
-            de do campo para populá-lo com um novo objeto.
+            do campo para populá-lo com um novo objeto.
 
             PopulateFieldEnum.CALLBACK (Callable): Se CALLBACK for definido,
             somente o "_id" será usado no INITIATOR e o valor retornado
