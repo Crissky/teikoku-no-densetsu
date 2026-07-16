@@ -268,7 +268,7 @@ class Model(ABC):
             )
 
         if hasattr(initiator, "get"):
-            initiator_call = initiator.get
+            initiator_call = initiator().get
         elif callable(initiator):
             initiator_call = initiator
         else:
