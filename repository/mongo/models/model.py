@@ -309,6 +309,9 @@ class Model(ABC):
         Retorna um dicionário com os campos (e suas definições) que precisam
         de algum tratamento para serem salvos no banco de dados. Esse campo
         será salvo no banco como um object ou uma lista de objects.
+        Não é necessário para objetos que herdam de `MongoBase`, pois o
+        `to_dict` já usa a property `persisted_fields` (que por padrão é o _id)
+        para fazer isso.
 
         field_name: Nome do campo que precisa de tratamento especial
             para ser salvo.
@@ -318,7 +321,7 @@ class Model(ABC):
 
         save_fields = {
             'cities': {
-                SaveFieldEnum.ATTRIBUTES: ["_id"]
+                SaveFieldEnum.ATTRIBUTES: ["_id", "total"]
             }
             ...
         }
