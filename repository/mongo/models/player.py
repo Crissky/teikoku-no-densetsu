@@ -16,7 +16,7 @@ class PlayerModel(Model):
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
-    player = Player(user_id=123456789, name="Player Teste")
+    player = Player(user_id=987654321, name="Player Teste")
     player_model = PlayerModel()
 
     print("COLLECTION NAME:")
@@ -26,7 +26,7 @@ if __name__ == "__main__":
     player_model.save(player)
 
     print("\nRETRIEVING SAVED PLAYER...")
-    retrieved_player = player_model.get(123456789)
+    retrieved_player = player_model.get(987654321)
     if retrieved_player is None:
         raise ValueError(f"retrieved_player é None ({retrieved_player}).")
     print("\nRETRIEVED PLAYER:")
