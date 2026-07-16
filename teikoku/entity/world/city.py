@@ -41,11 +41,19 @@ class City(MongoBase):
     @property
     def telegram_text(self) -> str:
         text = f"*Cidade*: {self.name}\n"
-        text += f"*Governante*: {self.owner.effective_name} "
-        text += f"({self.owner.user_id})\n"
+        text += f"*Governante*: {self.user_name} "
+        text += f"({self.user_id})\n"
         text += f"*Coordenadas*: {self.coor.show}\n"
 
         return text
+
+    @property
+    def user_id(self) -> int:
+        return self.owner.user_id
+
+    @property
+    def user_name(self) -> str:
+        self.owner.effective_name
 
     @property
     def extra_attr(self) -> dict:
