@@ -83,6 +83,12 @@ class City(MongoBase):
         """Tuple(x1, y1, x2, y2)"""
         return (self.x1, self.y1, self.x2, self.y2)
 
+    def to_dict(self) -> dict:
+        d = super().to_dict()
+        d["owner"] = self.user_id
+
+        return d
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
