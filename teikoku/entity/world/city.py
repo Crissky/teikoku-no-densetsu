@@ -25,6 +25,19 @@ class City(MongoBase):
         self.coor = Coordinate(x=x, y=y)
         super().__post_init__()
 
+    def __eq__(self, value):
+        result = False
+        if isinstance(value, City):
+            result = (
+                self.user_id == value.user_id and self.chat_id == value.chat_id
+            )
+        elif isinstance(value, str) and value.isnumeric():
+            result = self.user_id == int(value)
+        elif isinstance(value, int):
+            result = self.user_id == value
+
+        return result
+
     @property
     def telegram_text(self) -> str:
         text = f"*Cidade*: {self.name}\n"
