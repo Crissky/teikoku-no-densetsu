@@ -7,7 +7,7 @@ from bson import ObjectId
 
 from general.functions.date_time import get_brazil_time_now
 from repository.mongo.database import Database
-from repository.mongo.enums.field import PopulateFieldEnum
+from repository.mongo.enums.field import PopulateFieldEnum, SaveFieldEnum
 
 # from teikoku.entity.register.group import Group  # noqa
 # from teikoku.entity.register.player import Player  # noqa
@@ -31,14 +31,14 @@ class Model(ABC):
 
     def _extract_attributes(self, data: dict, definition: dict) -> dict:
         new_data = {}
-        for attribute_name in definition["attributes"]:
+        for attribute_name in definition[SaveFieldEnum.ATTRIBUTES]:
             new_data[attribute_name] = data[attribute_name]
 
         return new_data
 
     def _object_to_dict(self, obj: Any) -> dict:
         obj_dict: dict = obj.to_dict()
-        for field_name, definition in self.save_fields:
+        for field_name, definition in self.save_fields.items():
             new_data = {}
             field_data = obj_dict[field_name]
             if isinstance(field_data, list):
