@@ -12,20 +12,28 @@ from teikoku.entity.world.city import City
 class CityModel(Model):
     _class = property(lambda self: City)
     collection = property(lambda self: CollectionEnum.CITY.value)
-    alternative_id: str = property(lambda self: AltIdEnum.PLAYER.value)
-    save_fields: dict = property(
-        lambda self: {
-            "owner": {SaveFieldEnum.ATTRIBUTES: ["_id"]},
-        }
-    )
+    alternative_id: str = property(lambda self: AltIdEnum.CITY.value)
     populate_fields: dict = property(
-        lambda self: {"owner": {PopulateFieldEnum.INITIATOR: PlayerModel}}
+        lambda self: {
+            AltIdEnum.CITY.value: {PopulateFieldEnum.INITIATOR: PlayerModel}
+        }
     )
 
 
 if __name__ == "__main__":
+    from teikoku.entity.register.player import Player
+
     print(" START LOCAL TEST ".center(79, "="))
-    city = City()
+    player = Player(user_id=987654321, name="Player Teste")
+    city = City(
+        name="Cidade Teste",
+        chat_id=123456789,
+        owner=player,
+        level=1,
+        size=3,
+        x=1,
+        y=2,
+    )
     city_model = CityModel()
 
     print("COLLECTION NAME:")
@@ -35,7 +43,7 @@ if __name__ == "__main__":
     city_model.save(city)
 
     print("\nRETRIEVING SAVED CITY...")
-    retrieved_city = city_model.get(123456789)
+    retrieved_city = city_model.get(987654321)
     if retrieved_city is None:
         raise ValueError(f"retrieved_city é None ({retrieved_city}).")
     print("\nRETRIEVED CITY:")
