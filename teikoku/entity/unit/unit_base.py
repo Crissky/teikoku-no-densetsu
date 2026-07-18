@@ -4,7 +4,7 @@ from typing import Dict, List
 from repository.mongo.base import MongoBase
 from teikoku.data.unit import DEFAULT_BAG_CAPACITY
 from teikoku.entity.unit.stats_modifier import StatModifier
-from teikoku.entity.unit.unit_bag import UnitBag
+from teikoku.entity.utils.bag import Bag
 from teikoku.entity.unit.unit_stats import Stats
 from teikoku.entity.world.coor import Coordinate
 from teikoku.enum.resource import CollectibleResourceEnum
@@ -71,6 +71,6 @@ class UnitBase(MongoBase):
         if self.bag_capacity < 0:
             e = f"bag_size deve ser um inteiro positivo ({self.bag_capacity})"
             raise ValueError(e)
-        self.bag = UnitBag(capacity=bag_capacity, items=bag_items)
+        self.bag = Bag(capacity=bag_capacity, items=bag_items)
 
         super().__post_init__()
