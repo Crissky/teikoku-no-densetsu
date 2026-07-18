@@ -6,7 +6,7 @@ from repository.mongo.enums.field import (
 )
 from repository.mongo.models.model import Model
 from repository.mongo.models.player import PlayerModel
-from teikoku.entity.world.city import City
+from teikoku.entity.city.city_base import City
 
 
 class CityModel(Model):

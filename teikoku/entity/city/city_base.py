@@ -1,8 +1,10 @@
 from dataclasses import dataclass, InitVar
-from typing import Tuple
+from typing import List, Tuple
 
 from repository.mongo.base import MongoBase
+from repository.mongo.enums import field
 from teikoku.entity.register.player import Player
+from teikoku.entity.unit.stats_modifier import StatModifier
 from teikoku.entity.world.coor import Coordinate
 
 
@@ -15,10 +17,15 @@ class City(MongoBase):
     size: int
     x: InitVar[int]
     y: InitVar[int]
+    stat_modifier_list: InitVar[List[StatModifier]] = field(default=None)
 
     UPDATABLE_ATTR_LIST = ()
 
     def __post_init__(self, x: int, y: int):
+        self.hp = 1000
+        self.attack = 10
+        self.defense = 10
+
         if self.size % 2 == 0:
             raise ValueError(f"size deve ser ímpar ({self.size}).")
 

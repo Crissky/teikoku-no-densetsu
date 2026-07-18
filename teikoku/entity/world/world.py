@@ -20,7 +20,7 @@ from teikoku.data.world import (
     LEGEND_TITLE_SIZE,
 )
 from teikoku.entity.unit.unit_base import UnitBase
-from teikoku.entity.world.city import City
+from teikoku.entity.city.city_base import City
 from teikoku.entity.world.coor import Coordinate
 from teikoku.entity.world.terrain_map import TerrainMap
 from teikoku.enum.terrain import (
