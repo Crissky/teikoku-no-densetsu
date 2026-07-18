@@ -13,7 +13,7 @@ LEVEL_GROWUP = MappingProxyType(
 CITY_LEVEL_GROWUP = MappingProxyType(
     dict(
         hp=1000,
-        attack=100,
-        defense=100,
+        attack=10,
+        defense=10,
     )
 )
