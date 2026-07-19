@@ -122,7 +122,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-SHOW_WORLD_HANDLERS = [
+INFO_WORLD_HANDLERS = [
     # SIGNUP_GROUP
     PrefixHandler(
         PREFIX_COMMANDS,

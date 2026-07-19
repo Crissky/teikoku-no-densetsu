@@ -80,7 +80,7 @@ async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await func_message(**func_message_kwargs)
 
 
-SHOW_GROUP_HANDLERS = [
+INFO_GROUP_HANDLERS = [
     # SHOW_GROUP
     PrefixHandler(
         PREFIX_COMMANDS, GROUP_COMMANDS, show_group, BASIC_COMMAND_FILTER
