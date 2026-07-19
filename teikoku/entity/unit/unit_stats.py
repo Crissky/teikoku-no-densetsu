@@ -1,9 +1,10 @@
 from dataclasses import dataclass, field, fields
-from typing import List, Literal
+from typing import List
 
 from repository.mongo.base import MongoBase
 from teikoku.data.stats import LEVEL_GROWUP
 from teikoku.entity.unit.stats_modifier import StatModifier
+from teikoku.enum.stats import UnitStatsEnum
 
 
 @dataclass
@@ -55,18 +56,13 @@ class Stats(MongoBase):
         self.damaged -= heal
         self.damaged = max(self.damaged, 0)
 
-    def get_modified_stat(
+    def _get_modified_stat(
         self,
-        attr: Literal[
-            "hp",
-            "strength",
-            "mind",
-            "defense",
-            "speed",
-        ],
+        attr_enum: UnitStatsEnum,
     ) -> int:
         """Retorna o valor modificado de um atributo base."""
 
+        attr = attr_enum.lower_name
         base_attr_value = getattr(self, f"base_{attr}")
         adder_value = 0
         multiplier_value = 1.0
@@ -87,23 +83,23 @@ class Stats(MongoBase):
     # REAL STATS
     @property
     def hp(self) -> int:
-        return self.get_modified_stat("hp")
+        return self._get_modified_stat(UnitStatsEnum.HP)
 
     @property
     def strength(self) -> int:
-        return self.get_modified_stat("strength")
+        return self._get_modified_stat(UnitStatsEnum.STRENGTH)
 
     @property
     def mind(self) -> int:
-        return self.get_modified_stat("mind")
+        return self._get_modified_stat(UnitStatsEnum.MIND)
 
     @property
     def defense(self) -> int:
-        return self.get_modified_stat("defense")
+        return self._get_modified_stat(UnitStatsEnum.DEFENSE)
 
     @property
     def speed(self) -> int:
-        return self.get_modified_stat("speed")
+        return self._get_modified_stat(UnitStatsEnum.SPEED)
 
     @property
     def current_hp(self) -> int:
