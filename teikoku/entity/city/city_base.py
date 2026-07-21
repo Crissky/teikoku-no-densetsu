@@ -3,6 +3,7 @@ from typing import List, Tuple
 
 from repository.mongo.base import MongoBase
 from repository.mongo.enums import field
+from teikoku.entity.city.city_stats import CityStats
 from teikoku.entity.register.player import Player
 from teikoku.entity.unit.stats_modifier import StatModifier
 from teikoku.entity.world.coor import Coordinate
@@ -13,23 +14,49 @@ class City(MongoBase):
     name: str
     chat_id: int
     owner: Player
-    level: int
-    size: int
     x: InitVar[int]
     y: InitVar[int]
+    level: InitVar[int]
+    damaged: InitVar[int]
+    hp: InitVar[int]
+    attack: InitVar[int]
+    defense: InitVar[int]
+    size: int
     stat_modifier_list: InitVar[List[StatModifier]] = field(default=None)
 
     UPDATABLE_ATTR_LIST = ()
 
-    def __post_init__(self, x: int, y: int):
+    def __post_init__(
+        self,
+        x: int,
+        y: int,
+        level: int,
+        damaged: int,
+        hp: int,
+        attack: int,
+        defense: int,
+        stat_modifier_list: List[StatModifier],
+    ):
         self.hp = 1000
         self.attack = 10
         self.defense = 10
 
+        # COORDINATE
+        self.coor = Coordinate(x=x, y=y)
+
+        # STATS
+        self.stats = CityStats(
+            level=level,
+            damaged=damaged,
+            base_hp=hp,
+            base_attack=attack,
+            base_defense=defense,
+            stat_modifier_list=stat_modifier_list,
+        )
+
         if self.size % 2 == 0:
             raise ValueError(f"size deve ser ímpar ({self.size}).")
 
-        self.coor = Coordinate(x=x, y=y)
         super().__post_init__()
 
     def __eq__(self, value):
