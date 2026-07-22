@@ -13,7 +13,7 @@ from teikoku.data.world import (
     PNOISE2_CONFIG,
     PNOISE2_SCALE,
 )
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 from teikoku.entity.world.terrain_info import TerrainInfo
 from teikoku.enum.terrain import TerrainNumberEnum
 

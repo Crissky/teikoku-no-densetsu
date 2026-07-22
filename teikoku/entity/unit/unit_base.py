@@ -6,7 +6,7 @@ from teikoku.data.unit import DEFAULT_BAG_CAPACITY
 from teikoku.entity.unit.stats_modifier import StatModifier
 from teikoku.entity.utils.bag import Bag
 from teikoku.entity.unit.unit_stats import Stats
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 from teikoku.enum.resource import CollectibleResourceEnum
 from teikoku.enum.unit import UnitCategoryEnum
 

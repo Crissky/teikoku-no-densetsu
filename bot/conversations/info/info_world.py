@@ -17,7 +17,7 @@ from bot.functions.image import image_to_bytes_io
 from bot.functions.message import reply_message, send_message_image
 from general.functions.text import create_text_in_box
 from repository.mongo.functions.world import get_world_by_chat_id
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 
 
 from telegram import Update

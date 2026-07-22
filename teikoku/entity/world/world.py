@@ -21,7 +21,7 @@ from teikoku.data.world import (
 )
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.city.city_base import City
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 from teikoku.entity.world.terrain_map import TerrainMap
 from teikoku.enum.terrain import (
     TerrainColorEnum,

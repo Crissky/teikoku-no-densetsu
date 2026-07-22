@@ -8,7 +8,7 @@ from teikoku.enum.resource import (
     CollectibleResourceEnum,
     LocationResourceTypeEnum,
 )
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 
 
 @dataclass

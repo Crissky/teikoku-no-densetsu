@@ -1,5 +1,5 @@
 import unittest
-from teikoku.entity.world.coor import Coordinate
+from teikoku.util.coor import Coordinate
 
 
 class TestCoordinate(unittest.TestCase):
