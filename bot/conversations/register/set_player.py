@@ -2,7 +2,7 @@ from bot.constants.command import SET_ATTR_PLAYER_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     FAIL_UPDATE_NOT_ARGS_FORMAT,
-    NO_CHANGE_IN_PLAYER,
+    NO_CHANGE_IN_PLAYER_MSG,
 )
 from bot.constants.section import (
     FAIL_UPDATE_PLAYER_SECTION_NAME,
@@ -45,7 +45,7 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
             subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
             reply_text = f"{subsection}" f"{player_telegram_text}"
         else:  # UPDATE SEM SUCESSO
-            reply_text = f"{NO_CHANGE_IN_PLAYER}"
+            reply_text = f"{NO_CHANGE_IN_PLAYER_MSG}"
 
     reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(

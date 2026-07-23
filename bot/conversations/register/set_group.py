@@ -2,7 +2,7 @@ from bot.constants.command import SET_ATTR_GROUP_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     FAIL_UPDATE_NOT_ARGS_FORMAT,
-    NO_CHANGE_IN_GROUP,
+    NO_CHANGE_IN_GROUP_MSG,
 )
 from bot.constants.section import (
     FAIL_UPDATE_GROUP_SECTION_NAME,
@@ -53,7 +53,7 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
             subsection = format_subsection(text=GROUP_SUBSECTION_NAME)
             reply_text = f"{subsection}" f"{group_telegram_text}"
         else:  # UPDATE SEM SUCESSO
-            reply_text = f"{NO_CHANGE_IN_GROUP}"
+            reply_text = f"{NO_CHANGE_IN_GROUP_MSG}"
 
     reply_text = create_text_in_box(text=reply_text, section_name=section_name)
     await reply_message(

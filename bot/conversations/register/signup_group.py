@@ -10,7 +10,7 @@ from bot.constants.command import (
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
-    GROUP_ALREADY_REGISTERED_FORMAT,
+    GROUP_ALREADY_REGISTERED_ERROR,
     GROUP_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.section import (
@@ -43,7 +43,7 @@ async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if exists_group(chat_id=chat_id):
         section_name = FAIL_SIGNUP_GROUP_SECTION_NAME
-        reply_text = GROUP_ALREADY_REGISTERED_FORMAT.format(id=chat_id)
+        reply_text = GROUP_ALREADY_REGISTERED_ERROR.format(id=chat_id)
     else:
         section_name = SIGNUP_GROUP_SECTION_NAME
         new_group = save_group(group=group)

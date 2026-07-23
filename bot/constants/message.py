@@ -14,40 +14,50 @@ FAIL_UPDATE_NOT_ARGS_FORMAT = (
 )
 
 # PLAYER
-PLAYER_ALREADY_REGISTERED_FORMAT = (
-    "*Player* com *USER ID*: *{id}* já está cadastrado."
-)
 PLAYER_SUCCESSFULLY_REGISTERED_FORMAT = (
     "Olá {name}!\n"
     "Você foi cadastrado com sucesso!\n\n"
     "{subsection}"
     "{telegram_text}"
 )
-NO_CHANGE_IN_PLAYER = (
+PLAYER_ALREADY_REGISTERED_ERROR = (
+    "⚠️ *PLAYER JÁ CADASTRADO*.\n\n"
+    "*Player* com *USER ID*: *{id}* já foi cadastrado."
+)
+NO_CHANGE_IN_PLAYER_MSG = (
     "*Nenhuma alteração* foi feita no jogador. "
     "Nenhum *atributo* ou *valor* válido foi informado."
 )
 
 # GROUP
-GROUP_ALREADY_REGISTERED_FORMAT = (
-    "*Grupo* com *CHAT ID*: *{id}*, já está cadastrado."
-)
 GROUP_SUCCESSFULLY_REGISTERED_FORMAT = (
     "Grupo *{name}* cadastrado com sucesso!\n\n"
     "{subsection}"
     "{telegram_text}"
 )
-NO_CHANGE_IN_GROUP = (
+GROUP_ALREADY_REGISTERED_ERROR = (
+    "⚠️ *GRUPO JÁ CADASTRADO*.\n\n"
+    "*Grupo* com *CHAT ID*: *{id}*, já foi cadastrado."
+)
+NO_CHANGE_IN_GROUP_MSG = (
     "*Nenhuma alteração* foi feita no grupo. "
     "Nenhum *atributo* ou *valor* válido foi informado."
 )
-
 
 # WORLD
 WORLD_SUCCESSFULLY_REGISTERED_FORMAT = (
     "Mundo *{name}* cadastrado com sucesso!\n\n"
     "{subsection}"
     "{telegram_text}"
+)
+WORLD_ALREADY_REGISTERED_ERROR = (
+    "⚠️ *MUNDO JÁ CADASTRADO*.\n\n"
+    'O mundo com o nome "{world_name}" já foi cadastrado.'
+)
+WORLD_PRIVATE_CHAT_ERROR = (
+    "⚠️ *CHAT PRIVADO*.\n\n"
+    "Não é possível criar um mundo em um chat privado. "
+    "Use o comando /{command} no grupo que deseja cadastrar."
 )
 WORLD_ARGS_TYPE_ERROR = (
     "⚠️ *TIPO DE ARGUMENTO INCORRETO*.\n\n"
@@ -68,8 +78,17 @@ WORLD_NOT_FOUND_ERROR = (
     "esse chat."
 )
 WORLD_UNKNOWN_ERROR = (
-    "⚠️ *ERRO NÃO INDENTIICADO AO CARREGAR O MUNDO*.\n\n"
+    "⚠️ *ERRO NÃO IDENTIICADO AO CARREGAR O MUNDO*.\n\n"
     "Chat ID: {chat_id}\n"
     "ARGS: {args}\n"
     "MUNDO: {wolrd}"
+)
+
+# CITY
+CITY_NO_ARGS_ERROR = (
+    "⚠️ *NÃO FOI INFORMADO ARGUMENTO*.\n\n"
+    "Para adicionar uma cidade, utilize o comando /{command} "
+    "seguido do nome desejado.\n\n"
+    "📝 Exemplo de uso:\n"
+    "/{command} Recife Medieval"
 )

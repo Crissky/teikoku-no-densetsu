@@ -10,7 +10,7 @@ from bot.constants.command import (
 )
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
-    PLAYER_ALREADY_REGISTERED_FORMAT,
+    PLAYER_ALREADY_REGISTERED_ERROR,
     PLAYER_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.section import (
@@ -41,7 +41,7 @@ async def signup(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if exists_player(player.user_id):  # JÁ CADASTRADO
         section_name = FAIL_SIGNUP_SECTION_NAME
-        reply_text = PLAYER_ALREADY_REGISTERED_FORMAT.format(id=player.user_id)
+        reply_text = PLAYER_ALREADY_REGISTERED_ERROR.format(id=player.user_id)
     else:  # CADASTRO
         section_name = SIGNUP_SECTION_NAME
         new_player = save_player(player)
