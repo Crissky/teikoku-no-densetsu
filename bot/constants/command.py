@@ -20,3 +20,11 @@ SET_ATTR_PLAYER_COMMANDS = [
     "set_attr_player",
     "atualizar_jogador",
 ]
+
+# PUT
+PUT_CITY = [
+    "put_city",
+    "create_city",
+    "colocar_cidade",
+    "criar_cidade",
+]
