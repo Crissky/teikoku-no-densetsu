@@ -54,7 +54,7 @@ def update_world(
             Exemplo: [("level", 10), ("hp", 200)]
         world: Objeto World a ser atualizado. Se None, tenta recuperar do
             banco.
-        update: Objeto Update do Telegram para obter o chat_id se world=None.
+        update: Objeto Update do Telegram para obter o world se world=None.
 
     Returns:
         Optional[World]: Objeto World atualizado, ou None se não houve
