@@ -48,8 +48,55 @@ def update_world(
 ) -> Optional[World]:
     """Atualiza os atributos do world com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
-    Exemplo: [("level", 10), ("hp", 200)]
+
+    Args:
+        args: Iterável de tuplas no formato (atributo, valor) para atualização.
+            Exemplo: [("level", 10), ("hp", 200)]
+        world: Objeto World a ser atualizado. Se None, tenta recuperar do
+            banco.
+        update: Objeto Update do Telegram para obter o chat_id se world=None.
+
+    Returns:
+        Optional[World]: Objeto World atualizado, ou None se não houve
+            atualização.
+
+    Raises:
+        TypeError: Se world não for do tipo World.
+        ValueError: Se nem update nem world forem fornecidos.
     """
+
+    if isinstance(update, Update) and world is None:
+        world = get_world(update=update)
+
+    if not isinstance(world, World):
+        raise TypeError(f"world precisa ser do tipo World ({type(world)}).")
+
+    is_updated = False
+    retrieved_world = None
+    world_type_hints = get_type_hints(world)
+    for attr, value in args:
+        if world.has_updatable_attr(attr):
+            world_attr_type = world_type_hints[attr]
+            if world_attr_type == type(value):
+                setattr(world, attr, value)
+                is_updated = True
+            else:
+                logger.warning(
+                    f"O atributo '{attr}' não pode ser atualizado com o valor "
+                    f"do tipo {type(value)}, pois o tipo esperado é "
+                    f"{type(world_attr_type)}."
+                )
+        else:
+            logger.warning(
+                f"Player não possui ou não pode alterar o atributo '{attr}'."
+            )
+
+    if is_updated:
+        world_model = WorldModel()
+        world_model.save(world)
+        retrieved_world = get_world_by_chat_id(world.chat_id)
+
+        return retrieved_world
 
 
 def get_world_by_chat_id(chat_id: int) -> World:
