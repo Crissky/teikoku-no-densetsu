@@ -44,6 +44,7 @@ def update_group(
         raise TypeError(f"group precisa ser do tipo Group ({type(group)}).")
 
     is_updated = False
+    retrieved_group = None
     group_type_hints = get_type_hints(group)
     for attr, value in args:
         if group.has_updatable_attr(attr):
