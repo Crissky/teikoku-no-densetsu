@@ -44,6 +44,7 @@ def update_player(
         raise TypeError(f"player precisa ser do tipo Player ({type(player)}).")
 
     is_updated = False
+    retrieved_player = None
     player_type_hints = get_type_hints(player)
     for attr, value in args:
         if player.has_updatable_attr(attr):
