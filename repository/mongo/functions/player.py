@@ -13,6 +13,21 @@ logger = logging.getLogger(__name__)
 
 
 def save_player(player: Player) -> Player:
+    """Salva um player no banco de dados e retorna o player recuperado.
+
+    Persiste um objeto Player no banco de dados através do PlayerModel e
+    em seguida recupera o player salvo para confirmar a operação.
+
+    Args:
+        player: Objeto Player a ser salvo no banco de dados.
+
+    Returns:
+        Player: Objeto Player recuperado do banco de dados após o salvamento.
+
+    Raises:
+        TypeError: Se player não for do tipo Player.
+    """
+
     if not isinstance(player, Player):
         raise TypeError(f"player precisa ser do tipo Player ({type(player)}).")
 
@@ -34,7 +49,21 @@ def update_player(
 ) -> Optional[Player]:
     """Atualiza os atributos do player com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
-    Exemplo: [("name", "João"), ("username", "@joaozinho")]
+
+    Args:
+        args: Iterável de tuplas no formato (atributo, valor) para atualização.
+            Exemplo: [("name", "João"), ("username", "@joaozinho")]
+        player: Objeto Player a ser atualizado. Se None, tenta recuperar do
+            banco.
+        update: Objeto Update do Telegram para obter o player se player=None.
+
+    Returns:
+        Optional[Player]: Objeto Player atualizado, ou None se não houve
+            atualização.
+
+    Raises:
+        TypeError: Se player não for do tipo Player.
+        ValueError: Se nem update nem player forem fornecidos.
     """
 
     if isinstance(update, Update) and player is None:
@@ -72,6 +101,18 @@ def update_player(
 
 
 def get_player_by_user_id(user_id: int) -> Player:
+    """Recupera um player do banco de dados pelo ID do chat.
+
+    Args:
+        user_id: ID do chat do Telegram associado ao player.
+
+    Returns:
+        Player: Objeto Player correspondente ao user_id fornecido.
+
+    Raises:
+        TypeError: Se user_id não for do tipo int.
+    """
+
     if not isinstance(user_id, int):
         raise TypeError(f"user_id precisa ser um int ({type(user_id)}).")
 
@@ -86,6 +127,23 @@ def get_player(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> Player:
+    """Recupera um player a partir de um Update ou CallbackContext do Telegram.
+
+    Extrai o user_id do objeto Update ou CallbackContext fornecido e busca
+    o player correspondente no banco de dados.
+
+    Args:
+        update: Objeto Update do Telegram contendo informações da mensagem.
+        context: Objeto CallbackContext do Telegram contendo o contexto da
+            callback.
+
+    Returns:
+        Player: Objeto Player correspondente ao user_id extraído.
+
+    Raises:
+        ValueError: Se nem update nem context forem fornecidos.
+    """
+
     if isinstance(update, Update):
         user_id = update.effective_user.id
     elif isinstance(context, CallbackContext):
@@ -101,6 +159,23 @@ def exists_player(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
+    """Verifica se existe um player no banco de dados.
+
+    Pode verificar a existência usando diretamente um user_id ou extraindo-o
+    de um objeto Update ou CallbackContext do Telegram.
+
+    Args:
+        user_id: ID do chat do Telegram a ser verificado.
+        update: Objeto Update do Telegram para extrair o user_id.
+        context: Objeto CallbackContext do Telegram para extrair o user_id.
+
+    Returns:
+        bool: True se o player existe, False caso contrário.
+
+    Raises:
+        TypeError: Se user_id não for do tipo int após extração.
+    """
+
     if isinstance(update, Update) and user_id is None:
         user_id = update.effective_user.id
     elif isinstance(context, CallbackContext) and user_id is None:

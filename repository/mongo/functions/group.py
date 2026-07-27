@@ -13,6 +13,21 @@ logger = logging.getLogger(__name__)
 
 
 def save_group(group: Group) -> Group:
+    """Salva um group no banco de dados e retorna o group recuperado.
+
+    Persiste um objeto Group no banco de dados através do GroupModel e
+    em seguida recupera o group salvo para confirmar a operação.
+
+    Args:
+        group: Objeto Group a ser salvo no banco de dados.
+
+    Returns:
+        Group: Objeto Group recuperado do banco de dados após o salvamento.
+
+    Raises:
+        TypeError: Se group não for do tipo Group.
+    """
+
     if not isinstance(group, Group):
         raise TypeError(f"group precisa ser do tipo Group ({type(group)}).")
 
@@ -34,7 +49,21 @@ def update_group(
 ) -> Optional[Group]:
     """Atualiza os atributos do group com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
-    Exemplo: [("name", "Grupo Master"), ("silent", True)]
+
+    Args:
+        args: Iterável de tuplas no formato (atributo, valor) para atualização.
+            Exemplo: [("name", "Grupo Master"), ("silent", True)]
+        group: Objeto Group a ser atualizado. Se None, tenta recuperar do
+            banco.
+        update: Objeto Update do Telegram para obter o group se group=None.
+
+    Returns:
+        Optional[Group]: Objeto Group atualizado, ou None se não houve
+            atualização.
+
+    Raises:
+        TypeError: Se group não for do tipo Group.
+        ValueError: Se nem update nem group forem fornecidos.
     """
 
     if isinstance(update, Update) and group is None:
@@ -72,6 +101,18 @@ def update_group(
 
 
 def get_group_by_chat_id(chat_id: int) -> Group:
+    """Recupera um group do banco de dados pelo ID do chat.
+
+    Args:
+        chat_id: ID do chat do Telegram associado ao group.
+
+    Returns:
+        Group: Objeto Group correspondente ao chat_id fornecido.
+
+    Raises:
+        TypeError: Se chat_id não for do tipo int.
+    """
+
     if not isinstance(chat_id, int):
         raise TypeError(f"chat_id precisa ser um int ({type(chat_id)}).")
 
@@ -86,6 +127,23 @@ def get_group(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> Group:
+    """Recupera um group a partir de um Update ou CallbackContext do Telegram.
+
+    Extrai o chat_id do objeto Update ou CallbackContext fornecido e busca
+    o group correspondente no banco de dados.
+
+    Args:
+        update: Objeto Update do Telegram contendo informações da mensagem.
+        context: Objeto CallbackContext do Telegram contendo o contexto da
+            callback.
+
+    Returns:
+        Group: Objeto Group correspondente ao chat_id extraído.
+
+    Raises:
+        ValueError: Se nem update nem context forem fornecidos.
+    """
+
     if isinstance(update, Update):
         chat_id = update.effective_chat.id
     elif isinstance(context, CallbackContext):
@@ -101,6 +159,23 @@ def exists_group(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
+    """Verifica se existe um group no banco de dados.
+
+    Pode verificar a existência usando diretamente um chat_id ou extraindo-o
+    de um objeto Update ou CallbackContext do Telegram.
+
+    Args:
+        chat_id: ID do chat do Telegram a ser verificado.
+        update: Objeto Update do Telegram para extrair o chat_id.
+        context: Objeto CallbackContext do Telegram para extrair o chat_id.
+
+    Returns:
+        bool: True se o group existe, False caso contrário.
+
+    Raises:
+        TypeError: Se chat_id não for do tipo int após extração.
+    """
+
     if isinstance(update, Update) and chat_id is None:
         chat_id = update.effective_chat.id
     elif isinstance(context, CallbackContext) and chat_id is None:
