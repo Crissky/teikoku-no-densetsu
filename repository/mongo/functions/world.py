@@ -88,7 +88,7 @@ def update_world(
                 )
         else:
             logger.warning(
-                f"Player não possui ou não pode alterar o atributo '{attr}'."
+                f"World não possui ou não pode alterar o atributo '{attr}'."
             )
 
     if is_updated:
