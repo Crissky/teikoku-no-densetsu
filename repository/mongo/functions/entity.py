@@ -5,6 +5,7 @@ from typing import Any, Iterable, Optional, Tuple, Type, TypeVar
 from telegram import Update
 from telegram.ext import CallbackContext
 
+from repository.mongo.base import MongoBase
 from repository.mongo.enums.field import (
     AltIdEnum,
     ContextAltIdEnum,
@@ -12,17 +13,16 @@ from repository.mongo.enums.field import (
 )
 from repository.mongo.models.model import Model
 
-T = TypeVar("T")
 logger = logging.getLogger(__name__)
 
 
 def save_entity(
-    entity: T,
-    entity_type: Type[T],
+    entity: MongoBase,
+    entity_type: Type[MongoBase],
     model_type: Type[Model],
     key_value_type: Type[Any],
     key_field_enum: AltIdEnum,
-) -> T:
+) -> MongoBase:
     if not isinstance(entity, entity_type):
         raise TypeError(
             f"entity precisa ser do tipo {entity_type} ({type(entity)})."
@@ -60,7 +60,7 @@ def get_entity_by_alt_id(
     key_value: Any,
     key_value_type: Type[Any],
     key_field_enum: AltIdEnum,
-) -> T:
+) -> MongoBase:
     if not isinstance(key_value, key_value_type):
         raise TypeError(
             f"key_value precisa ser um {key_value_type} ({type(key_value)})."
@@ -82,7 +82,7 @@ def get_entity(
     context_key_field_enum: ContextAltIdEnum,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
-) -> T:
+) -> MongoBase:
     if isinstance(update, Update):
         update_key_field = update_key_field_enum.value
         key_value = getattr(update, update_key_field).id
