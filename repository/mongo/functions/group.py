@@ -5,6 +5,8 @@ from telegram import Update
 from telegram.constants import ChatType
 from telegram.ext import CallbackContext
 
+from repository.mongo.enums.field import AltIdEnum
+from repository.mongo.functions.entity import save_entity
 from repository.mongo.models.group import GroupModel
 from teikoku.entity.register.group import Group
 
@@ -13,33 +15,15 @@ logger = logging.getLogger(__name__)
 
 
 def save_group(group: Group) -> Group:
-    """Salva um group no banco de dados e retorna o group recuperado.
+    """Salva um group no banco de dados e retorna o group recuperado."""
 
-    Persiste um objeto Group no banco de dados através do GroupModel e
-    em seguida recupera o group salvo para confirmar a operação.
-
-    Args:
-        group: Objeto Group a ser salvo no banco de dados.
-
-    Returns:
-        Group: Objeto Group recuperado do banco de dados após o salvamento.
-
-    Raises:
-        TypeError: Se group não for do tipo Group.
-    """
-
-    if not isinstance(group, Group):
-        raise TypeError(f"group precisa ser do tipo Group ({type(group)}).")
-
-    group_model = GroupModel()
-    group_model.save(group)
-    retrieved_group = get_group_by_chat_id(group.chat_id)
-    logger.info(
-        f"Group '{retrieved_group.name}' salvo com "
-        f"CHAT ID '{retrieved_group.chat_id}'"
+    return save_entity(
+        entity=group,
+        entity_type=Group,
+        model_type=GroupModel,
+        key_value_type=int,
+        key_field_enum=AltIdEnum.GROUP,
     )
-
-    return retrieved_group
 
 
 def update_group(
