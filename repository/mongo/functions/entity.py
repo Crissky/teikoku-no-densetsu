@@ -1,6 +1,6 @@
 import logging
 
-from typing import Any, Iterable, Optional, Tuple, Type, TypeVar
+from typing import Any, Iterable, Optional, Tuple, Type, get_type_hints
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -45,14 +45,56 @@ def save_entity(
     return retrieved_entity
 
 
-# TODO
 def update_entity(
     args: Iterable[Tuple[str, Any]],
-    entity: Optional[T] = None,
+    entity_type: Type[MongoBase],
+    model_type: Type[Model],
+    key_value_type: Type[Any],
+    key_field_enum: AltIdEnum,
+    entity: Optional[MongoBase] = None,
     update: Optional[Update] = None,
-) -> Optional[T]:
+) -> Optional[MongoBase]:
     if isinstance(update, Update) and entity is None:
         entity = get_entity(update=update)
+
+    if not isinstance(entity, entity_type):
+        raise TypeError(
+            f"entity precisa ser do tipo {entity_type} ({type(entity)})."
+        )
+
+    is_updated = False
+    retrieved_entity = None
+    group_type_hints = get_type_hints(entity)
+    for attr, value in args:
+        if entity.has_updatable_attr(attr):
+            group_attr_type = group_type_hints[attr]
+            if group_attr_type == type(value):
+                setattr(entity, attr, value)
+                is_updated = True
+            else:
+                logger.warning(
+                    f"O atributo '{attr}' não pode ser atualizado com o valor "
+                    f"do tipo {type(value)}, pois o tipo esperado é "
+                    f"{type(group_attr_type)}."
+                )
+        else:
+            logger.warning(
+                f"Group não possui ou não pode alterar o atributo '{attr}'."
+            )
+
+    if is_updated:
+        model = model_type()
+        model.save(entity)
+        key_field = key_field_enum.value
+        key_value = getattr(entity, key_field)
+        retrieved_entity = get_entity_by_alt_id(
+            model_type=model_type,
+            key_value=key_value,
+            key_value_type=key_value_type,
+            key_field_enum=key_field_enum,
+        )
+
+        return retrieved_entity
 
 
 def get_entity_by_alt_id(
