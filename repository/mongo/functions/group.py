@@ -43,8 +43,8 @@ def update_group(
         args=args,
         entity_type=GROUP_ENTITY_TYPE,
         model_type=GROUP_MODEL_TYPE,
-        key_value_type=int,
-        key_field_enum=GROUP_KEY_VALUE_TYPE,
+        key_value_type=GROUP_KEY_VALUE_TYPE,
+        key_field_enum=GROUP_KEY_FIELD_ENUM,
         entity=group,
         update=update,
     )
