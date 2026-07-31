@@ -6,11 +6,15 @@ from telegram.constants import ChatType
 from telegram.ext import CallbackContext
 
 from repository.mongo.enums.field import AltIdEnum
-from repository.mongo.functions.entity import save_entity
+from repository.mongo.functions.entity import save_entity, update_entity
 from repository.mongo.models.group import GroupModel
 from teikoku.entity.register.group import Group
 
 GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
+GROUP_ENTITY_TYPE = Group
+GROUP_MODEL_TYPE = GroupModel
+GROUP_KEY_VALUE_TYPE = int
+GROUP_KEY_FIELD_ENUM = AltIdEnum.GROUP
 logger = logging.getLogger(__name__)
 
 
@@ -19,10 +23,10 @@ def save_group(group: Group) -> Group:
 
     return save_entity(
         entity=group,
-        entity_type=Group,
-        model_type=GroupModel,
-        key_value_type=int,
-        key_field_enum=AltIdEnum.GROUP,
+        entity_type=GROUP_ENTITY_TYPE,
+        model_type=GROUP_MODEL_TYPE,
+        key_value_type=GROUP_KEY_VALUE_TYPE,
+        key_field_enum=GROUP_KEY_FIELD_ENUM,
     )
 
 
@@ -33,55 +37,17 @@ def update_group(
 ) -> Optional[Group]:
     """Atualiza os atributos do group com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
-
-    Args:
-        args: Iterável de tuplas no formato (atributo, valor) para atualização.
-            Exemplo: [("name", "Grupo Master"), ("silent", True)]
-        group: Objeto Group a ser atualizado. Se None, tenta recuperar do
-            banco.
-        update: Objeto Update do Telegram para obter o group se group=None.
-
-    Returns:
-        Optional[Group]: Objeto Group atualizado, ou None se não houve
-            atualização.
-
-    Raises:
-        TypeError: Se group não for do tipo Group.
-        ValueError: Se nem update nem group forem fornecidos.
     """
 
-    if isinstance(update, Update) and group is None:
-        group = get_group(update=update)
-
-    if not isinstance(group, Group):
-        raise TypeError(f"group precisa ser do tipo Group ({type(group)}).")
-
-    is_updated = False
-    retrieved_group = None
-    group_type_hints = get_type_hints(group)
-    for attr, value in args:
-        if group.has_updatable_attr(attr):
-            group_attr_type = group_type_hints[attr]
-            if group_attr_type == type(value):
-                setattr(group, attr, value)
-                is_updated = True
-            else:
-                logger.warning(
-                    f"O atributo '{attr}' não pode ser atualizado com o valor "
-                    f"do tipo {type(value)}, pois o tipo esperado é "
-                    f"{type(group_attr_type)}."
-                )
-        else:
-            logger.warning(
-                f"Group não possui ou não pode alterar o atributo '{attr}'."
-            )
-
-    if is_updated:
-        group_model = GroupModel()
-        group_model.save(group)
-        retrieved_group = get_group_by_chat_id(group.chat_id)
-
-        return retrieved_group
+    return update_entity(
+        args=args,
+        entity_type=GROUP_ENTITY_TYPE,
+        model_type=GROUP_MODEL_TYPE,
+        key_value_type=int,
+        key_field_enum=GROUP_KEY_VALUE_TYPE,
+        entity=group,
+        update=update,
+    )
 
 
 def get_group_by_chat_id(chat_id: int) -> Group:
