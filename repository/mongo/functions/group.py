@@ -1,12 +1,22 @@
 import logging
-from typing import Any, Iterable, Optional, Tuple, get_type_hints
+from typing import Any, Iterable, Optional, Tuple
 
 from telegram import Update
 from telegram.constants import ChatType
 from telegram.ext import CallbackContext
 
-from repository.mongo.enums.field import AltIdEnum, ContextAltIdEnum, UpdateAltIdEnum
-from repository.mongo.functions.entity import exists_entity, get_entity, get_entity_by_alt_id, save_entity, update_entity
+from repository.mongo.enums.field import (
+    AltIdEnum,
+    ContextAltIdEnum,
+    UpdateAltIdEnum,
+)
+from repository.mongo.functions.entity import (
+    exists_entity,
+    get_entity,
+    get_entity_by_alt_id,
+    save_entity,
+    update_entity,
+)
 from repository.mongo.models.group import GroupModel
 from teikoku.entity.register.group import Group
 
@@ -67,8 +77,7 @@ def get_group(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> Group:
-    """Recupera um group a partir de um Update ou CallbackContext do Telegram.
-    """
+    """Recupera um group a partir de um Update ou CallbackContext do Telegram."""
 
     return get_entity(
         model_type=GROUP_MODEL_TYPE,
