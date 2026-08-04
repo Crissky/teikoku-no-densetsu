@@ -38,9 +38,11 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = context.args
     section_name = FAIL_UPDATE_GROUP_SECTION_NAME
     if not args:  # SEM ARGUMENTOS
+        updatable_attr_types = Group.updatable_attr_types()
         reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
-            attrs=(
-                f"{', '.join((f'`{a}`' for a in Group.UPDATABLE_ATTR_LIST))}"
+            attrs=", ".join(
+                f"`{a}` ({t.__name__})"
+                for a, t in updatable_attr_types.items()
             )
         )
     else:  # UPDATE COM ARGUMENTOS
