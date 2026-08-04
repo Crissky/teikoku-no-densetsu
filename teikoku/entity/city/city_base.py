@@ -1,8 +1,8 @@
-from dataclasses import dataclass, InitVar
+from dataclasses import dataclass, InitVar, field
 from typing import List, Tuple
 
 from repository.mongo.base import MongoBase
-from repository.mongo.enums import field
+
 from teikoku.entity.city.city_stats import CityStats
 from teikoku.entity.register.player import Player
 from teikoku.entity.unit.stats_modifier import StatModifier
