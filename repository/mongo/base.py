@@ -228,3 +228,14 @@ class MongoBase(ABC):
         """
 
         return {}
+
+    @classmethod
+    def updatable_attr_types(cls) -> dict[str, type]:
+        """Retorna os atributos atualizáveis e seus respectivos tipos."""
+        hints = get_type_hints(cls)
+
+        return {
+            attr: hints[attr]
+            for attr in cls.UPDATABLE_ATTR_LIST
+            if attr in hints
+        }

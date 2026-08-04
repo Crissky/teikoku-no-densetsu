@@ -45,4 +45,7 @@ if __name__ == "__main__":
     print("\nGROUP.TO_DICT:")
     print(group.to_dict())
 
+    print("\nGROUP.UPDATABLE_ATTR_TYPES:")
+    print(Group.updatable_attr_types())
+
     print(" END LOCAL TEST ".center(79, "="))

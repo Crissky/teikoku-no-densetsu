@@ -63,4 +63,7 @@ if __name__ == "__main__":
     print("\nPLAYER.TO_DICT:")
     print(player.to_dict())
 
+    print("\nPLAYER.UPDATABLE_ATTR_TYPES:")
+    print(Player.updatable_attr_types())
+
     print(" END LOCAL TEST ".center(79, "="))
