@@ -51,11 +51,20 @@ def update_entity(
     model_type: Type[Model],
     key_value_type: Type[Any],
     key_field_enum: AltIdEnum,
+    update_key_field_enum: UpdateAltIdEnum,
     entity: Optional[MongoBase] = None,
     update: Optional[Update] = None,
 ) -> Optional[MongoBase]:
     if isinstance(update, Update) and entity is None:
-        entity = get_entity(update=update)
+        entity = get_entity(
+            model_type=model_type,
+            key_value_type=key_value_type,
+            key_field_enum=key_field_enum,
+            update_key_field_enum=update_key_field_enum,
+            context_key_field_enum=None,
+            update=update,
+            context=None,
+        )
 
     if not isinstance(entity, entity_type):
         raise TypeError(
