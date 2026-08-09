@@ -7,6 +7,7 @@ SIGNUP_WORLD_COMMANDS = ["signup_world", "cadastrar_mundo"]
 GROUP_COMMANDS = ["group", "grupo"]
 PLAYER_COMMANDS = ["player", "jogador"]
 WORLD_COMMANDS = ["world", "mundo", "w", "m"]
+CITY_COMMANDS = ["city", "cidade", "c"]
 
 # UPDATE COMMANDS
 SET_ATTR_GROUP_COMMANDS = [
