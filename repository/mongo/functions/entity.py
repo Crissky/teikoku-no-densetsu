@@ -155,6 +155,7 @@ def exists_entity(
     model_type: Type[Model],
     update_key_field_enum: UpdateAltIdEnum,
     context_key_field_enum: ContextAltIdEnum,
+    key_value_type: Type[Any],
     key_value: Any = None,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
@@ -165,8 +166,10 @@ def exists_entity(
     elif isinstance(context, CallbackContext):
         context_key_field = context_key_field_enum.value
         key_value = getattr(context, context_key_field)
-    else:
-        raise ValueError("É preciso informar ou update ou context.")
+    if not isinstance(key_value, key_value_type):
+        raise TypeError(
+            f"key_value precisa ser um {key_value_type} ({type(key_value)})."
+        )
 
     model = model_type()
 

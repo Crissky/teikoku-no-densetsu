@@ -102,6 +102,7 @@ def exists_group(
         model_type=GROUP_MODEL_TYPE,
         update_key_field_enum=GROUP_UPDATE_KEY_FIELD_ENUM,
         context_key_field_enum=GROUP_CONTEXT_KEY_FIELD_ENUM,
+        key_value_type=GROUP_KEY_VALUE_TYPE,
         key_value=chat_id,
         update=update,
         context=context,
