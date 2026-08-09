@@ -94,7 +94,7 @@ WORLD_UNKNOWN_ERROR = (
     "⚠️ *ERRO NÃO IDENTIICADO AO CARREGAR O MUNDO*.\n\n"
     "Chat ID: {chat_id}\n"
     "ARGS: {args}\n"
-    "MUNDO: {wolrd}"
+    "MUNDO: {world}"
 )
 
 # CITY
