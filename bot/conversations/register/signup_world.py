@@ -39,8 +39,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
     if chat.type in CHAT_TYPE_PRIVATE:
         section_name = FAIL_SIGNUP_WORLD_SECTION_NAME
-        command = SIGNUP_WORLD_COMMANDS[0]
-        reply_text = WORLD_PRIVATE_CHAT_ERROR.format(command=command)
+        reply_text = WORLD_PRIVATE_CHAT_ERROR
     else:
         world = World(name=chat_name, chat_id=chat_id)
         new_world = save_world(world=world)

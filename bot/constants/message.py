@@ -1,3 +1,15 @@
+from bot.constants.command import (
+    CITY_COMMAND,
+    GROUP_COMMAND,
+    PLAYER_COMMAND,
+    SET_ATTR_GROUP_COMMAND,
+    SET_ATTR_PLAYER_COMMAND,
+    SIGNUP_COMMAND,
+    SIGNUP_GROUP_COMMAND,
+    SIGNUP_WORLD_COMMAND,
+    WORLD_COMMAND,
+)
+
 # GENERAL
 FAIL_UPDATE_NOT_ARGS_FORMAT = (
     "⚠️ Este comando requer *argumentos* para funcionar.\n\n"
@@ -57,25 +69,26 @@ WORLD_ALREADY_REGISTERED_ERROR = (
 WORLD_PRIVATE_CHAT_ERROR = (
     "⚠️ *CHAT PRIVADO*.\n\n"
     "Não é possível criar um mundo em um chat privado. "
-    "Use o comando /{command} no grupo que deseja cadastrar."
+    f"Use o comando /{SIGNUP_WORLD_COMMAND} no grupo que deseja cadastrar "
+    "o novo mundo."
 )
 WORLD_ARGS_TYPE_ERROR = (
     "⚠️ *TIPO DE ARGUMENTO INCORRETO*.\n\n"
     "Os argumentos precisam ser *DOIS NÚMEROS* separados por um espaço, "
     "representando as coordenadas X e Y do mundo.\n\n"
-    "Exemplo: `/{command} 10 -20`"
+    f"Exemplo: `/{WORLD_COMMAND} 10 -20`"
 )
 WORLD_ARGS_COUNT_ERROR = (
     "⚠️ *NÚMERO DE ARGUMENTOS INCORRETO*.\n\n"
     "É preciso informar *NENHUM* ou *DOIS* argumentos separados por "
     "um espaço, representando as coordenadas X e Y do mundo.\n\n"
-    "Exemplo: `/{command} 10 -20`"
+    f"Exemplo: `/{WORLD_COMMAND} 10 -20`"
 )
 WORLD_NOT_FOUND_ERROR = (
     "⚠️ *MUNDO NÃO ENCONTRADO*.\n\n"
     'Não há nenhum mundo cadastrado para o grupo "{chat_id}". '
-    "Use o comando /{command} para cadastrar um novo mundo vinculado a "
-    "esse chat."
+    f"Use o comando /{SIGNUP_WORLD_COMMAND} para cadastrar um novo mundo "
+    "vinculado a esse chat."
 )
 WORLD_UNKNOWN_ERROR = (
     "⚠️ *ERRO NÃO IDENTIICADO AO CARREGAR O MUNDO*.\n\n"
@@ -87,8 +100,8 @@ WORLD_UNKNOWN_ERROR = (
 # CITY
 CITY_NO_ARGS_ERROR = (
     "⚠️ *NÃO FOI INFORMADO ARGUMENTO*.\n\n"
-    "Para adicionar uma cidade, utilize o comando /{command} "
+    f"Para adicionar uma cidade, utilize o comando /{CITY_COMMAND} "
     "seguido do nome desejado.\n\n"
     "📝 Exemplo de uso:\n"
-    "/{command} Recife Medieval"
+    f"/{CITY_COMMAND} Recife Medieval"
 )

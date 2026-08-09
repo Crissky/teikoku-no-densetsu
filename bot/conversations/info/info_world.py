@@ -33,10 +33,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     world = get_world_by_chat_id(chat_id=chat_id)
 
     if not world:
-        command = SIGNUP_WORLD_COMMANDS[0]
-        reply_text = WORLD_NOT_FOUND_ERROR.format(
-            chat_id=chat_id, command=command
-        )
+        reply_text = WORLD_NOT_FOUND_ERROR.format(chat_id=chat_id)
         reply_text = create_text_in_box(
             text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
         )
@@ -67,8 +64,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
             x = int(args[0])
             y = int(args[1])
         except ValueError:
-            command = WORLD_COMMANDS[0]
-            reply_text = WORLD_ARGS_TYPE_ERROR.format(command=command)
+            reply_text = WORLD_ARGS_TYPE_ERROR
             reply_text = create_text_in_box(
                 text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
             )
@@ -96,8 +92,7 @@ async def show_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 markdown=True,
             )
     elif len(args) not in (0, 2):
-        command = WORLD_COMMANDS[0]
-        reply_text = WORLD_ARGS_COUNT_ERROR.format(command=command)
+        reply_text = WORLD_ARGS_COUNT_ERROR
         reply_text = create_text_in_box(
             text=reply_text, section_name=FAIL_SHOW_WORLD_SECTION_NAME
         )
