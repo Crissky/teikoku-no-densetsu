@@ -51,6 +51,11 @@ GROUP_ALREADY_REGISTERED_ERROR = (
     "⚠️ *GRUPO JÁ CADASTRADO*.\n\n"
     "*Grupo* com *CHAT ID*: *{id}*, já foi cadastrado."
 )
+GROUP_NOT_FOUND_ERROR = (
+    "⚠️ *GRUPO NÃO ENCONTRADO*.\n\n"
+    "Não há nenhum grupo cadastrado com o ID *{id}*. "
+    f"Use o comando /{SIGNUP_GROUP_COMMAND} no grupo que deseja cadastrar."
+)
 NO_CHANGE_IN_GROUP_MSG = (
     "*Nenhuma alteração* foi feita no grupo. "
     "Nenhum *atributo* ou *valor* válido foi informado."

@@ -40,6 +40,7 @@ async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
 
     query = update.callback_query
+    chat_id = update.effective_message.chat_id
     group = get_group(update=update)
     func_message = reply_message
     section_name = GROUP_SECTION_NAME
@@ -64,7 +65,9 @@ async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
             group.name = chat.full_name or chat.title
             group = save_group(group)
 
-    reply_text = group_telegram_text(group=group, section_name=section_name)
+    reply_text = group_telegram_text(
+        group=group, chat_id=chat_id, section_name=section_name
+    )
     reply_markup = get_refresh_update_close_keyboard(
         user_id=update.effective_user.id,
         refresh_command=CALLBACK_COMMAND_REFRESH_GROUP,
