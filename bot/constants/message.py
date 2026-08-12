@@ -36,6 +36,11 @@ PLAYER_ALREADY_REGISTERED_ERROR = (
     "⚠️ *PLAYER JÁ CADASTRADO*.\n\n"
     "*Player* com *USER ID*: *{id}* já foi cadastrado."
 )
+PLAYER_NOT_FOUND_ERROR = (
+    "⚠️ *PLAYER NÃO ENCONTRADO*.\n\n"
+    "Não há nenhum player cadastrado com o ID *{id}*. "
+    f"Use o comando /{SIGNUP_COMMAND} para se cadastrar."
+)
 NO_CHANGE_IN_PLAYER_MSG = (
     "*Nenhuma alteração* foi feita no jogador. "
     "Nenhum *atributo* ou *valor* válido foi informado."

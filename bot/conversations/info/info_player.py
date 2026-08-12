@@ -41,6 +41,7 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
 
     query = update.callback_query
+    user_id = update.effective_user.id
     player = get_player(update=update)
     func_message = reply_message
     section_name = PLAYER_SECTION_NAME
@@ -65,7 +66,9 @@ async def show_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
             player.username = get_username(update=update)
             player = save_player(player)
 
-    reply_text = player_telegram_text(player=player, section_name=section_name)
+    reply_text = player_telegram_text(
+        player=player, user_id=user_id, section_name=section_name
+    )
     reply_markup = get_refresh_update_close_keyboard(
         user_id=player.user_id,
         refresh_command=CALLBACK_COMMAND_REFRESH_PLAYER,
