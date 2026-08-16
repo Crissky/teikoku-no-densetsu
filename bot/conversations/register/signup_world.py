@@ -13,6 +13,8 @@ from bot.constants.section import (
     WORLD_SECTION_NAME,
     WORLD_SUBSECTION_NAME,
 )
+from bot.decorators.group import only_group
+from bot.decorators.player import need_admin_player
 from bot.functions.message import (
     CHAT_TYPE_PRIVATE,
     reply_message,
@@ -22,6 +24,8 @@ from repository.mongo.functions.world import get_world_by_chat_id, save_world
 from teikoku.entity.world.world import World
 
 
+@only_group
+@need_admin_player
 async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Cadastra Mundo"""
 
@@ -63,7 +67,7 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 SIGNUP_WORLD_HANDLERS = [
-    # SIGNUP_GROUP
+    # SIGNUP_WORLD
     PrefixHandler(
         PREFIX_COMMANDS,
         SIGNUP_WORLD_COMMANDS,
