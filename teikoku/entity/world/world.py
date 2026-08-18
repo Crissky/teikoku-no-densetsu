@@ -327,12 +327,15 @@ class World(MongoBase):
         return title_font
 
     # CITIES =================================================================
-    def add_city(self, city: City):
+    def add_city(self, city: City) -> City:
         if not isinstance(city, City):
             raise TypeError(f"city precisa ser do tipo City ({type(city)}).")
 
         x = city.coor.x
         y = city.coor.y
+        if not isinstance(x, int) or not isinstance(y, int):
+            x, y = self.generate_randon_coor()
+
         coor = (x, y)
         existing_city = self.cities.get(coor)
 
@@ -345,6 +348,8 @@ class World(MongoBase):
                 f"por já existir a cidade {existing_city.name} na posição "
                 f"{city.coor.show}."
             )
+
+        return city
 
     def get_city(
         self,
