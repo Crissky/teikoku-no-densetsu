@@ -82,36 +82,63 @@ class TerrainMap:
         for y in range(y1, y2):
             self.map.append([])
             for x in range(x1, x2):
-                value = noise.pnoise2(
-                    x * scale + seed,
-                    y * scale + seed,
-                    base=seed,
-                    **PNOISE2_CONFIG,
+                terrain = self.get_terrain_value(
+                    x=x, y=y, scale=scale, seed=seed
                 )
-
-                # --- ÁREA DA ÁGUA (Abaixo de -0.12) ---
-                terrain = TerrainNumberEnum.GRASSLAND.value
-                if value < -0.32:
-                    terrain = TerrainNumberEnum.DEEP_SEA.value
-                elif value < -0.2:
-                    terrain = TerrainNumberEnum.SHALLOW_WATER.value
-                elif value < -0.12:
-                    terrain = TerrainNumberEnum.BEACH.value
-
-                # --- ÁREA DA TERRA PLANA E BIOMAS (Entre -0.12 e 0.25) ---
-                elif value < -0.05:
-                    terrain = TerrainNumberEnum.SWAMP_FOREST.value
-                elif value < 0.18:
-                    terrain = TerrainNumberEnum.GRASSLAND.value
-                elif value < 0.25:
-                    terrain = TerrainNumberEnum.HILLS.value
-
-                # --- ÁREA DAS ALTITUDES (Acima de 0.25) ---
-                elif value < 0.36:
-                    terrain = TerrainNumberEnum.MOUNTAIN.value
-                else:
-                    terrain = TerrainNumberEnum.SNOW_PEAK.value
                 self.map[-1].append(terrain)
+
+        return self.map
+
+    def normalize_seed(self, seed):
+        seed = seed % MAX_SEEDS
+        if seed in IGNORE_SEEDS:
+            seed = self.normalize_seed(seed + 1)
+
+        return seed
+
+    def get_terrain_value(
+        self,
+        x: int,
+        y: int,
+        scale: Optional[float] = None,
+        seed: Optional[int] = None,
+    ) -> int:
+        if scale is None:
+            scale = self.scale
+        if seed is None:
+            seed = self.seed
+
+        value = noise.pnoise2(
+            x * scale + seed,
+            y * scale + seed,
+            base=seed,
+            **PNOISE2_CONFIG,
+        )
+
+        terrain = TerrainNumberEnum.GRASSLAND.value
+        # --- ÁREA DA ÁGUA (Abaixo de -0.12) ---
+        if value < -0.32:
+            terrain = TerrainNumberEnum.DEEP_SEA.value
+        elif value < -0.20:
+            terrain = TerrainNumberEnum.SHALLOW_WATER.value
+        elif value < -0.12:
+            terrain = TerrainNumberEnum.BEACH.value
+
+        # --- ÁREA DA TERRA PLANA E BIOMAS (Entre -0.12 e 0.25) ---
+        elif value < -0.05:
+            terrain = TerrainNumberEnum.SWAMP_FOREST.value
+        elif value < 0.18:
+            terrain = TerrainNumberEnum.GRASSLAND.value
+        elif value < 0.25:
+            terrain = TerrainNumberEnum.HILLS.value
+
+        # --- ÁREA DAS ALTITUDES (Acima de 0.25) ---
+        elif value < 0.36:
+            terrain = TerrainNumberEnum.MOUNTAIN.value
+        else:
+            terrain = TerrainNumberEnum.SNOW_PEAK.value
+
+        return terrain
 
         return self.map
 
