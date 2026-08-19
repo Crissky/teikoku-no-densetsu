@@ -75,7 +75,7 @@ class World(MongoBase):
         # 1. Gera os dados de pixels do mapa original
         pixel_data = []
         for terrain_value in terrain_map.flatten:
-            color = terrain_map.value_to_color(terrain_value=terrain_value)
+            color = terrain_map.terrain_value_to_color(terrain_value=terrain_value)
             pixel_data.append(color)
 
         # 2. Cria imagem do mapa base

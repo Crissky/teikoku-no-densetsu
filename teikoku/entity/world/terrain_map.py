@@ -150,22 +150,24 @@ class TerrainMap:
         terrain_value = self.get_terrain_value(x, y, scale, seed)
         return TerrainInfo(terrain_value)
 
-    def value_to_info(self, terrain_value: int) -> TerrainInfo:
+    def terrain_value_to_info(self, terrain_value: int) -> TerrainInfo:
         return TerrainInfo(terrain_value)
 
-    def value_to_color(self, terrain_value: int) -> Tuple[int, int, int]:
-        terrain_info = self.value_to_info(terrain_value)
+    def terrain_value_to_color(
+        self, terrain_value: int
+    ) -> Tuple[int, int, int]:
+        terrain_info = self.terrain_value_to_info(terrain_value)
         terrain_color = terrain_info.color
 
         return terrain_color
 
-    def value_to_text(self, terrain_value: int) -> str:
-        terrain_info = self.value_to_info(terrain_value)
+    def terrain_value_to_text(self, terrain_value: int) -> str:
+        terrain_info = self.terrain_value_to_info(terrain_value)
         terrain_text = terrain_info.text
 
         return terrain_text
 
-    def get_value(
+    def get_terrain_value_from_map(
         self, x: int = None, y: int = None, coordinate: Coordinate = None
     ) -> int:
         if isinstance(coordinate, Coordinate):
@@ -177,19 +179,19 @@ class TerrainMap:
         terrain_value = self[x, y]
         return terrain_value
 
-    def get_color(
+    def get_terrain_color_from_map(
         self, x: int = None, y: int = None, coordinate: Coordinate = None
     ) -> Tuple[int, int, int]:
-        terrain_value = self.get_value(x, y, coordinate)
-        terrain_color = self.value_to_color(terrain_value)
+        terrain_value = self.get_terrain_value_from_map(x, y, coordinate)
+        terrain_color = self.terrain_value_to_color(terrain_value)
 
         return terrain_color
 
-    def get_text(
+    def get_terrain_text_from_map(
         self, x: int = None, y: int = None, coordinate: Coordinate = None
     ) -> str:
-        terrain_value = self.get_value(x, y, coordinate)
-        terrain_text = self.value_to_text(terrain_value)
+        terrain_value = self.get_terrain_value_from_map(x, y, coordinate)
+        terrain_text = self.terrain_value_to_text(terrain_value)
 
         return terrain_text
 
@@ -219,10 +221,10 @@ if __name__ == "__main__":
     print(map.generate_terrain_map(size=10))
 
     print("\nTERRAINMAP.GET_COLOR")
-    print(map.get_color(0, 0))
+    print(map.get_terrain_color_from_map(0, 0))
 
     print("\nTERRAINMAP.GET_TEXT")
-    print(map.get_text(0, 0))
+    print(map.get_terrain_text_from_map(0, 0))
 
     print("\nTERRAINMAP.LEN")
     print(len(map))
