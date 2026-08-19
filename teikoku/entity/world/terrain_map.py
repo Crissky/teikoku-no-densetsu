@@ -140,27 +140,15 @@ class TerrainMap:
 
         return terrain
 
-        return self.map
-
-    def normalize_seed(self, seed):
-        seed = seed % MAX_SEEDS
-        if seed in IGNORE_SEEDS:
-            seed = self.normalize_seed(seed + 1)
-
-        return seed
-
-    @property
-    def flatten(self) -> Iterable:
-        for row in self.map:
-            yield from row
-
-    @property
-    def size_x(self):
-        return len(self.map[0]) if self.map else 0
-
-    @property
-    def size_y(self):
-        return len(self.map)
+    def get_terrain_info(
+        self,
+        x: int,
+        y: int,
+        scale: Optional[float] = None,
+        seed: Optional[int] = None,
+    ) -> TerrainInfo:
+        terrain_value = self.get_terrain_value(x, y, scale, seed)
+        return TerrainInfo(terrain_value)
 
     def value_to_info(self, terrain_value: int) -> TerrainInfo:
         return TerrainInfo(terrain_value)
@@ -204,6 +192,19 @@ class TerrainMap:
         terrain_text = self.value_to_text(terrain_value)
 
         return terrain_text
+
+    @property
+    def flatten(self) -> Iterable:
+        for row in self.map:
+            yield from row
+
+    @property
+    def size_x(self):
+        return len(self.map[0]) if self.map else 0
+
+    @property
+    def size_y(self):
+        return len(self.map)
 
 
 if __name__ == "__main__":
