@@ -18,6 +18,11 @@ class TerrainInfo:
             raise TypeError("terrain_value deve ser um inteiro")
 
     @cached_property
+    def enum(self) -> TerrainNumberEnum:
+        enum = TerrainNumberEnum(self.terrain_value)
+        return enum
+
+    @cached_property
     def enum_name(self) -> str:
         enum_name = TerrainNumberEnum(self.terrain_value).name
         return enum_name
