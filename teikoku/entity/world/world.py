@@ -371,6 +371,9 @@ class World(MongoBase):
 
         return self.cities.get(coor, None)
 
+    def city_in_world(self, city: City) -> bool:
+        return city in self.cities.values()
+
     @property
     def total_cities(self) -> int:
         return len(self.cities)
