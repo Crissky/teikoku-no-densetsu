@@ -37,6 +37,13 @@ class TerrainInfo:
         text = TerrainTextEnum[self.enum_name].value
         return text
 
+    @property
+    def is_buildable_terrain(self) -> bool:
+        return self.enum in [
+            TerrainNumberEnum.GRASSLAND,
+            TerrainNumberEnum.HILLS,
+        ]
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
