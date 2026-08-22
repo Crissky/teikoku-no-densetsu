@@ -44,6 +44,15 @@ class TerrainInfo:
             TerrainNumberEnum.HILLS,
         ]
 
+    @property
+    def is_walkable_terrain(self) -> bool:
+        return self.enum in [
+            TerrainNumberEnum.GRASSLAND,
+            TerrainNumberEnum.BEACH,
+            TerrainNumberEnum.SWAMP_FOREST,
+            TerrainNumberEnum.HILLS,
+        ]
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
