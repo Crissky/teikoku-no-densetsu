@@ -3,6 +3,7 @@ import logging
 import os
 
 from dataclasses import dataclass, field
+from random import randint
 from typing import Dict, Optional, Tuple
 
 from PIL import Image, ImageDraw, ImageFont
@@ -373,6 +374,20 @@ class World(MongoBase):
 
     def city_in_world(self, city: City) -> bool:
         return city in self.cities.values()
+
+    def generate_random_coor(self) -> Tuple[int, int]:
+        min_x = -(MIN_MAP_SIZE[0])
+        max_x = MIN_MAP_SIZE[0]
+        min_y = -(MIN_MAP_SIZE[1])
+        max_y = MIN_MAP_SIZE[1]
+        for _ in range(1000):
+            x = randint(min_x, max_x)
+            y = randint(min_y, max_y)
+
+            if not self.is_buildable_land(x=x, y=y):
+                continue
+            if (x, y) not in self.cities.keys():
+                return (x, y)
 
     @property
     def total_cities(self) -> int:
