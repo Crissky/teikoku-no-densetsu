@@ -384,18 +384,17 @@ class World(MongoBase):
             x = randint(min_x, max_x)
             y = randint(min_y, max_y)
 
-            if not self.is_buildable_land(x=x, y=y):
+            if not self.is_buildable_terrain(x=x, y=y):
                 continue
             if (x, y) not in self.cities.keys():
                 return (x, y)
 
-    def is_buildable_land(self, x: int, y: int) -> bool:
+    def is_buildable_terrain(self, x: int, y: int) -> bool:
         """Verifica se é terra e não está ocupada por uma cidade."""
-        terrain_value = self.terrain.get_terrain_at(x=x, y=y)
-        is_terrain_buildable = terrain_value in BUILDABLE_TERRAIN_VALUES
-        is_city_occupied = (x, y) in self.cities
 
-        return is_terrain_buildable and not is_city_occupied
+        terrain_info = self.terrain.get_terrain_info(x=x, y=y)
+
+        return terrain_info.is_buildable_terrain
 
     @property
     def total_cities(self) -> int:
