@@ -377,7 +377,7 @@ class World(MongoBase):
     def city_in_world(self, city: City) -> bool:
         return city in self.cities.values()
 
-    def generate_random_coor(self) -> Tuple[int, int]:
+    def generate_random_coor(self) -> Optional[Tuple[int, int]]:
         min_x = -(MIN_MAP_SIZE[0])
         max_x = MIN_MAP_SIZE[0]
         min_y = -(MIN_MAP_SIZE[1])
