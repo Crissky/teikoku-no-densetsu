@@ -22,12 +22,14 @@ from teikoku.data.world import (
 )
 from teikoku.entity.unit.unit_base import UnitBase
 from teikoku.entity.city.city_base import City
+from teikoku.enum.reporting import ReportingStatusEnum
 from teikoku.util.coor import Coordinate
 from teikoku.entity.world.terrain_map import TerrainMap
 from teikoku.enum.terrain import (
     TerrainColorEnum,
     TerrainTextEnum,
 )
+from teikoku.util.reporting.base import ReportingBase
 
 logger = logging.getLogger(__name__)
 
@@ -330,7 +332,7 @@ class World(MongoBase):
         return title_font
 
     # CITIES =================================================================
-    def add_city(self, city: City) -> dict:
+    def add_city(self, city: City) -> ReportingBase:
         if not isinstance(city, City):
             raise TypeError(f"city precisa ser do tipo City ({type(city)}).")
 
@@ -339,35 +341,42 @@ class World(MongoBase):
         if not isinstance(x, int) or not isinstance(y, int):
             random_coor = self.generate_random_coor()
             if not random_coor:
-                return {
-                    "message": (
-                        f"Não foi pssivel adicionar a cidade em {random_coor}."
-                    ),
-                    "city": None,
-                }
+                message = (
+                    f"Não foi possível adicionar a cidade em {random_coor}."
+                )
+                return ReportingBase(
+                    message=message,
+                    status=ReportingStatusEnum.FAILED,
+                    city=None,
+                )
             x, y = random_coor
 
         coor = (x, y)
         existing_city = self.cities.get(coor)
-
         if existing_city is None:
             self.cities[coor] = city
-            logger.info(f"Cidade {city.name} adicionada ao Mundo {self.name}.")
-            return {
-                "message": f"Cidade adicionada em {city.coor.show}.",
-                "city": city,
-            }
+            message = (
+                f"Cidade {city.name} adicionada ao Mundo {self.name} "
+                f"na posição {city.coor.show}."
+            )
+            logger.info(message)
+            return ReportingBase(
+                message=message,
+                status=ReportingStatusEnum.SUCCESS,
+                city=city,
+            )
         else:
-            warning_text = (
-                f"Cidade {city.name} NÃO foi adicionada ao Mundo {self.name}, "
+            message = (
+                f"Cidade {city.name} NÃO foi adicionada no Mundo {self.name}, "
                 f"por já existir a cidade {existing_city.name} na posição "
                 f"{city.coor.show}."
             )
-            logger.warning(warning_text)
-            return {
-                "message": warning_text,
-                "city": city,
-            }
+            logger.warning(message)
+            return ReportingBase(
+                message=message,
+                status=ReportingStatusEnum.WARNING,
+                city=city,
+            )
 
     def get_city(
         self,
