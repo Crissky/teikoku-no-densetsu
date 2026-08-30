@@ -8,6 +8,7 @@ from bot.decorators.player import need_signedup_player
 from repository.mongo.functions.player import get_player_by_user_id
 from repository.mongo.functions.world import get_world_by_chat_id
 from teikoku.entity.city.city_base import City
+from teikoku.enum.reporting import ReportingStatusEnum
 
 
 @only_group
@@ -26,6 +27,11 @@ async def signup_city(update: Update, context: ContextTypes.DEFAULT_TYPE):
         chat_id=chat_id,
         owner=player,
     )
+    report = world.add_city(city=city)
+    new_city = report.city
+    if report.status == ReportingStatusEnum.FAILED: ...
+    elif report.status == ReportingStatusEnum.SUCCESS: ...
+    elif report.status == ReportingStatusEnum.WARNING: ...
 
 
 SIGNUP_CITY_HANDLERS = [
