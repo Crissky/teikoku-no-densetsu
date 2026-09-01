@@ -11,9 +11,12 @@ class ReportingBase:
     status: ReportingStatusEnum
 
     def __post_init__(self):
-        type_hints = get_type_hints(type(self))
 
-        # INSTANCIA ENUMS ATRAVÉS DE SEU NOME (STRING)
+        self._load_enums()
+        # self._check_init_types() # TODO copiar e adaptar do `MongoBase`
+
+    def _load_enums(self):
+        type_hints = get_type_hints(type(self))
         for field in fields(self):
             if not field.init:
                 continue
@@ -29,8 +32,6 @@ class ReportingBase:
                     field.name,
                     field_type(getattr(self, field.name)),
                 )
-
-        # self._check_init_types() # TODO copiar e adaptar do `MongoBase`
 
     def __str__(self):
         return ", ".join(f"{a}={getattr(self, a)}" for a in self.kwargs)
