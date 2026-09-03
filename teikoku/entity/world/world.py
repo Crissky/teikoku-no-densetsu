@@ -338,6 +338,7 @@ class World(MongoBase):
 
         x = city.coor.x
         y = city.coor.y
+        # NÃO CONSEGUIU UMA COORDENADA VÁLIDA
         if not isinstance(x, int) or not isinstance(y, int):
             random_coor = self.generate_random_coor()
             if not random_coor:
@@ -353,7 +354,8 @@ class World(MongoBase):
 
         coor = (x, y)
         existing_city = self.cities.get(coor)
-        if existing_city is None:
+        # ADICIONA CIDADE CASO NÃO EXISTA CIDADE NA COORDENADA
+        if existing_city is None and not self.city_in_world(city=city):
             self.cities[coor] = city
             message = (
                 f"Cidade {city.name} adicionada ao Mundo {self.name} "
