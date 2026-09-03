@@ -1,0 +1,24 @@
+from enum import Enum
+from typing import Any, Type, Union
+
+
+class QueryField:
+    def __init__(
+        self, field: Union[str, Enum], value: Any, value_type: Type[Any] = None
+    ):
+        self.field = field.value if isinstance(field, Enum) else str(field)
+        self.value = value
+        self.value_type = value_type
+        self.check_value()
+
+    def check_value(self):
+        if self.value_type is not None:
+            if not isinstance(self.value, self.value_type):
+                raise TypeError(
+                    f"Valor do campo '{self.field}' precisa ser do tipo "
+                    f"{self.value_type} ({type(self.value)})."
+                )
+
+    @property
+    def query(self) -> dict:
+        return {self.field: self.value}
