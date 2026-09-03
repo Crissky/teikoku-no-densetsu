@@ -9,9 +9,9 @@ class QueryField:
         self.field = field.value if isinstance(field, Enum) else str(field)
         self.value = value
         self.value_type = value_type
-        self.check_value()
+        self.check_value_type()
 
-    def check_value(self):
+    def check_value_type(self):
         if self.value_type is not None:
             if not isinstance(self.value, self.value_type):
                 raise TypeError(
@@ -22,3 +22,8 @@ class QueryField:
     @property
     def query(self) -> dict:
         return {self.field: self.value}
+
+
+if __name__ == "__main__":
+    qf = QueryField("test", 123, int)
+    print(qf.query)
