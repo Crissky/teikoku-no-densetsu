@@ -5,7 +5,6 @@ from bot.constants.command import PUT_CITY
 from bot.constants.message import CITY_NO_ARGS_ERROR
 from bot.constants.section import FAIL_PUT_CITY_SECTION_NAME
 from bot.decorators.player import need_signedup_player
-from bot.decorators.world import need_signedup_world
 from bot.functions.message import reply_message
 from general.functions.text import create_text_in_box
 

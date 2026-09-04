@@ -1,6 +1,6 @@
 import logging
 
-from typing import Any, Iterable, Optional, Tuple, get_type_hints
+from typing import Any, Iterable, Optional, Tuple
 
 from telegram import Update
 from telegram.ext import CallbackContext

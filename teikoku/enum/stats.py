@@ -1,5 +1,3 @@
-from enum import Enum
-
 from teikoku.enum.generic import GenericEnum
 
 

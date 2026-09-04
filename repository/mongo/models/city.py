@@ -2,7 +2,6 @@ from repository.mongo.enums.collection import CollectionEnum
 from repository.mongo.enums.field import (
     AltIdEnum,
     PopulateFieldEnum,
-    SaveFieldEnum,
 )
 from repository.mongo.models.model import Model
 from repository.mongo.models.player import PlayerModel
