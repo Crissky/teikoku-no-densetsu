@@ -19,6 +19,14 @@ class QueryField:
                     f"{self.value_type} ({type(self.value)})."
                 )
 
+    def load_value(self, obj: Any):
+        if not hasattr(obj, self.field):
+            raise AttributeError(
+                f"Objeto não possui o atributo {self.field!r}."
+            )
+        else:
+            self.value = getattr(obj, self.field)
+
     @property
     def query(self) -> dict:
         return {self.field: self.value}
