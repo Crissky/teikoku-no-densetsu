@@ -11,11 +11,20 @@ class QueryField:
         self.value_type = value_type
         self.check_value_type()
 
+    def __str__(self):
+        return f"{{{self.field!r}: {self.value!r}}}"
+
+    def __repr__(self):
+        return (
+            f"{self.__class__.__name__}"
+            f"({self.field!r}={self.value!r} {self.value_type})"
+        )
+
     def check_value_type(self):
         if self.value_type is not None:
             if not isinstance(self.value, self.value_type):
                 raise TypeError(
-                    f"Valor do campo '{self.field}' precisa ser do tipo "
+                    f"Valor do campo {self.field!r} precisa ser do tipo "
                     f"{self.value_type} ({type(self.value)})."
                 )
 
@@ -33,5 +42,11 @@ class QueryField:
 
 
 if __name__ == "__main__":
+    print(" START LOCAL TEST ".center(79, "="))
+
     qf = QueryField("test", 123, int)
-    print(qf.query)
+    print("STR:", qf)
+    print("REPR:", repr(qf))
+    print("QUERY:", qf.query)
+
+    print(" END LOCAL TEST ".center(79, "="))

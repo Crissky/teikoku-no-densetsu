@@ -46,3 +46,21 @@ class TestQueryField(unittest.TestCase):
         with self.assertRaises(AttributeError):
             qf.load_value(object())
 
+    def test_str_format(self):
+        qf = QueryField("level", 5)
+        self.assertEqual(str(qf), "{'level': 5}")
+
+    def test_repr_format(self):
+        qf = QueryField("level", 5, int)
+        self.assertEqual(repr(qf), "QueryField('level'=5 <class 'int'>)")
+
+    def test_no_value_type_skips_type_check(self):
+        qf = QueryField("x", None)
+        self.assertIsNone(qf.value_type)
+
+    def test_load_value_with_enum_field(self):
+        class Obj:
+            sample_name = "loaded"
+        qf = QueryField(SampleEnum.NAME, None)
+        qf.load_value(Obj())
+        self.assertEqual(qf.value, "loaded")
