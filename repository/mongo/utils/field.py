@@ -23,6 +23,26 @@ class QueryField:
             f"({self.field!r}={self.value!r} {self.value_type})"
         )
 
+    def __eq__(self, other):
+        if not isinstance(other, QueryField):
+            return False
+        return (
+            self.field == other.field
+            and self.value == other.value
+            and self.value_type == other.value_type
+        )
+
+
+    def equal_field(self, field: Union[str, Enum]) -> bool:
+        field = self.normalize_field(field)
+        return self.field == field
+
+    def equal_value(self, value: Any) -> bool:
+        return self.value == value
+
+    def equal_value_type(self, value_type: Type[Any]) -> bool:
+        return self.value_type == value_type
+
     def check_value_type(self):
         if self.value_type is not None and self.value is not None:
             if not isinstance(self.value, self.value_type):
