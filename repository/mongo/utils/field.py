@@ -4,7 +4,10 @@ from typing import Any, Type, Union
 
 class QueryField:
     def __init__(
-        self, field: Union[str, Enum], value: Any, value_type: Type[Any] = None
+        self,
+        field: Union[str, Enum],
+        value: Any = None,
+        value_type: Type[Any] = None,
     ):
         self.field = field.value if isinstance(field, Enum) else str(field)
         self.value = value
@@ -21,7 +24,7 @@ class QueryField:
         )
 
     def check_value_type(self):
-        if self.value_type is not None:
+        if self.value_type is not None and self.value is not None:
             if not isinstance(self.value, self.value_type):
                 raise TypeError(
                     f"Valor do campo {self.field!r} precisa ser do tipo "
