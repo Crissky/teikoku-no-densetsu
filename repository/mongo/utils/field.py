@@ -39,6 +39,9 @@ class QueryField:
         else:
             self.value = getattr(obj, self.field)
 
+    def clear_value(self):
+        self.value = None
+
     @property
     def query(self) -> dict:
         return {self.field: self.value}
