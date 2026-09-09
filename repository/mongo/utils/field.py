@@ -9,7 +9,7 @@ class QueryField:
         value: Any = None,
         value_type: Type[Any] = None,
     ):
-        self.field = field.value if isinstance(field, Enum) else str(field)
+        self.field = self.normalize_field(field)
         self.value = value
         self.value_type = value_type
         self.check_value_type()
@@ -32,6 +32,8 @@ class QueryField:
             and self.value_type == other.value_type
         )
 
+    def normalize_field(self, field: Union[str, Enum]):
+        return field.value if isinstance(field, Enum) else str(field)
 
     def equal_field(self, field: Union[str, Enum]) -> bool:
         field = self.normalize_field(field)
