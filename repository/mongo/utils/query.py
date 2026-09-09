@@ -1,11 +1,15 @@
-from typing import Any
+from enum import Enum
+from typing import Any, List, Type, Union
 
 from repository.mongo.utils.field import QueryField
 
 
 class Query:
     def __init__(self, *query_fields: QueryField):
-        self.query_fields = query_fields
+        self.query_fields: List[QueryField] = []
+        for qf in query_fields:
+            if isinstance(qf, QueryField):
+                self.add_field(query_field=qf)
 
     def __iter__(self):
         return iter(self.query_fields)
@@ -21,6 +25,24 @@ class Query:
     def load_values(self, obj: Any):
         for qf in self.query_fields:
             qf.load_value(obj)
+
+    def add_field(
+        self,
+        field: Union[str, Enum] = None,
+        value: Any = None,
+        value_type: Type[Any] = None,
+        query_field: QueryField = None,
+    ):
+        if field is not None:
+            qf = QueryField(field, value, value_type)
+        elif query_field is not None:
+            qf = query_field
+        else:
+            raise ValueError("É preciso informar field ou query_field.")
+
+        qf.check_value_type()
+        self.check_duplicate_field(qf)
+        self.query_fields.append(qf)
 
     @property
     def query(self) -> dict:
