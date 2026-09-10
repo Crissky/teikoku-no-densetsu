@@ -26,6 +26,10 @@ class Query:
         for qf in self.query_fields:
             qf.load_value(obj)
 
+    def clear_values(self):
+        for qf in self.query_fields:
+            qf.clear_value()
+
     def add_field(
         self,
         field: Union[str, Enum] = None,
