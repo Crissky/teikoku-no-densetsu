@@ -22,6 +22,12 @@ class Query:
         text = ", ".join((repr(qf) for qf in self))
         return f"{self.__class__.__name__}([{text}])"
 
+    def check_duplicate_field(self, query_field: QueryField):
+        if (count := self.fields.count(query_field.field)) > 1:
+            raise ValueError(
+                f"Campo {query_field.field!r} duplicado ({count})."
+            )
+
     def load_values(self, obj: Any):
         for qf in self.query_fields:
             qf.load_value(obj)
