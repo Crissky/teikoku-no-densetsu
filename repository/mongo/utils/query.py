@@ -54,6 +54,18 @@ class Query:
 
         return query
 
+    @property
+    def fields(self) -> list:
+        return [qf.field for qf in self.query_fields]
+
+    @property
+    def values(self) -> list:
+        return [qf.value for qf in self.query_fields]
+
+    @property
+    def value_types(self) -> list:
+        return [qf.value_type for qf in self.query_fields]
+
 
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
