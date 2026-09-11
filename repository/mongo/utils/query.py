@@ -22,6 +22,11 @@ class Query:
         text = ", ".join(repr(qf) for qf in self.query_fields)
         return f"{self.__class__.__name__}([{text}])"
 
+    def _check_queries(self):
+        for qf in self.query_fields:
+            qf.check_value_type()
+            self.check_duplicate_field(qf)
+
     def check_duplicate_field(self, query_field: QueryField):
         if (count := self.fields.count(query_field.field)) > 1:
             raise ValueError(
