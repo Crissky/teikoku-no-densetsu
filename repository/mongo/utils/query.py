@@ -19,7 +19,7 @@ class Query:
         return f"[{text}]"
 
     def __repr__(self):
-        text = ", ".join((repr(qf) for qf in self))
+        text = ", ".join(repr(qf) for qf in self.query_fields)
         return f"{self.__class__.__name__}([{text}])"
 
     def check_duplicate_field(self, query_field: QueryField):
