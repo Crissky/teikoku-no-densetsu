@@ -58,8 +58,7 @@ class Query:
     def query(self) -> dict:
         query = {}
         for qf in self.query_fields:
-            if qf.field in query:
-                raise ValueError(f"Campo {qf.field!r} duplicado.")
+            self.check_duplicate_field(qf)
             query.update(qf.query)
 
         return query
