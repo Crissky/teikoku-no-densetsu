@@ -48,12 +48,15 @@ class Query:
         value_type: Type[Any] = None,
         query_field: QueryField = None,
     ):
-        if field is not None:
+        if isinstance(field, (str, Enum)):
             qf = QueryField(field, value, value_type)
-        elif query_field is not None:
+        elif isinstance(query_field, QueryField):
             qf = query_field
         else:
-            raise ValueError("É preciso informar field ou query_field.")
+            raise ValueError(
+                "É preciso informar field (str | Enum) ou "
+                "query_field (QueryField)."
+            )
 
         qf.check_value_type()
         self.check_duplicate_field(qf)
