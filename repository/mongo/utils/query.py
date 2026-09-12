@@ -9,7 +9,7 @@ class Query:
         self.query_fields: List[QueryField] = []
         for qf in query_fields:
             if isinstance(qf, QueryField):
-                self.add_field(query_field=qf)
+                self.add_query_field(query_field=qf)
 
     def __iter__(self):
         return iter(self.query_fields)
@@ -41,7 +41,7 @@ class Query:
         for qf in self.query_fields:
             qf.clear_value()
 
-    def add_field(
+    def add_query_field(
         self,
         field: Union[str, Enum] = None,
         value: Any = None,
