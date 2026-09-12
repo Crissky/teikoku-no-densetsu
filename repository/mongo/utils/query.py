@@ -58,9 +58,11 @@ class Query:
                 "query_field (QueryField)."
             )
 
-        qf.check_value_type()
-        self.check_duplicate_field(qf)
-        self.query_fields.append(qf)
+        if qf.field in self.fields:
+            raise ValueError(f"Campo {qf.field!r} já adicionado.")
+        else:
+            qf.check_value_type()
+            self.query_fields.append(qf)
 
     @property
     def query(self) -> dict:
