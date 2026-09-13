@@ -22,7 +22,7 @@ class Query:
         text = ", ".join(repr(qf) for qf in self.query_fields)
         return f"{self.__class__.__name__}([{text}])"
 
-    def _check_query_fields(self):
+    def check_query_fields(self):
         for qf in self.query_fields:
             qf.check_value_type()
             self.check_duplicate_field(qf)
