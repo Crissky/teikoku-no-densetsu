@@ -64,6 +64,13 @@ class Query:
             qf.check_value_type()
             self.query_fields.append(qf)
 
+    def get_query_field(self, field: Union[str, Enum]) -> QueryField:
+        if isinstance(field, Enum):
+            field = field.value
+        for qf in self.query_fields:
+            if qf.field == field:
+                return qf
+
     @property
     def query(self) -> dict:
         self.check_query_fields()
