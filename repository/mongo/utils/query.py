@@ -71,6 +71,12 @@ class Query:
             if qf.field == field:
                 return qf
 
+    def set_query_field_value(self, field: Union[str, Enum], value: Any):
+        qf = self.get_query_field(field)
+        if qf is None:
+            raise ValueError(f"Campo {field!r} não existe.")
+        qf.value = value
+
     @property
     def query(self) -> dict:
         self.check_query_fields()
