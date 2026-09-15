@@ -12,8 +12,17 @@ from repository.mongo.enums.field import (
     UpdateAltIdEnum,
 )
 from repository.mongo.models.model import Model
+from repository.mongo.utils.query import Query
 
 logger = logging.getLogger(__name__)
+
+
+def get_entity_by_alt_id(model_type: Type[Model], query: Query) -> MongoBase:
+    model = model_type()
+    query_dict = query.query
+    entity = model.get(query=query_dict)
+
+    return entity
 
 
 def save_entity(
@@ -104,25 +113,6 @@ def update_entity(
         )
 
         return retrieved_entity
-
-
-def get_entity_by_alt_id(
-    model_type: Type[Model],
-    key_value: Any,
-    key_value_type: Type[Any],
-    key_field_enum: AltIdEnum,
-) -> MongoBase:
-    if not isinstance(key_value, key_value_type):
-        raise TypeError(
-            f"key_value precisa ser um {key_value_type} ({type(key_value)})."
-        )
-
-    model = model_type()
-    key_field = key_field_enum.value
-    query = {key_field: key_value}
-    entity = model.get(query=query)
-
-    return entity
 
 
 def get_entity(
