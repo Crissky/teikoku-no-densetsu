@@ -29,8 +29,7 @@ def save_entity(
     entity: MongoBase,
     entity_type: Type[MongoBase],
     model_type: Type[Model],
-    key_value_type: Type[Any],
-    key_field_enum: AltIdEnum,
+    query: Query,
 ) -> MongoBase:
     if not isinstance(entity, entity_type):
         raise TypeError(
@@ -39,17 +38,10 @@ def save_entity(
 
     model = model_type()
     model.save(entity)
-    key_field = key_field_enum.value
-    key_value = getattr(entity, key_field)
-    retrieved_entity = get_entity_by_alt_id(
-        model_type=model_type,
-        key_value=key_value,
-        key_value_type=key_value_type,
-        key_field_enum=key_field_enum,
-    )
-    logger.info(
-        f"{entity_type.__name__} salvo com " f"{key_field}='{key_value}'"
-    )
+    query.clear_values()
+    query.load_values(entity)
+    retrieved_entity = get_entity_by_alt_id(model_type=model_type, query=query)
+    logger.info(f"{entity_type.__name__} salvo com " f"{query}'")
 
     return retrieved_entity
 
