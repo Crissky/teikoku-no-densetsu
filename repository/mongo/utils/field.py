@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, Type, Union
+from typing import Any, Optional, Type, Union
 
 
 class QueryField:
@@ -8,10 +8,12 @@ class QueryField:
         field: Union[str, Enum],
         value: Any = None,
         value_type: Type[Any] = None,
+        field_aliases: Optional[Union[Enum, str, tuple]] = None,
     ):
         self.field = self.normalize_field(field)
         self.value = value
         self.value_type = value_type
+        self.field_aliases = self.normalize_field_aliases(field_aliases)
         self.check_value_type()
 
     def __str__(self):
@@ -35,6 +37,16 @@ class QueryField:
     def normalize_field(self, field: Union[str, Enum]):
         return field.value if isinstance(field, Enum) else str(field)
 
+    def normalize_field_aliases(
+        self, field_alias: Optional[Union[Enum, str, tuple]]
+    ):
+        if field_alias is None:
+            return tuple()
+        elif isinstance(field_alias, tuple):
+            return tuple(self.normalize_field(alias) for alias in field_alias)
+        else:
+            return (self.normalize_field(field_alias),)
+
     def equal_field(self, field: Union[str, Enum]) -> bool:
         field = self.normalize_field(field)
         return self.field == field
@@ -54,12 +66,18 @@ class QueryField:
                 )
 
     def load_value(self, obj: Any):
-        if not hasattr(obj, self.field):
+        updated = False
+        fields = (self.field, *self.field_aliases)
+        for field in fields:
+            if hasattr(obj, field):
+                self.value = getattr(obj, field)
+                updated = True
+                break
+
+        if updated is False:
             raise AttributeError(
                 f"Objeto não possui o atributo {self.field!r}."
             )
-        else:
-            self.value = getattr(obj, self.field)
 
     def clear_value(self):
         self.value = None
@@ -72,9 +90,10 @@ class QueryField:
 if __name__ == "__main__":
     print(" START LOCAL TEST ".center(79, "="))
 
-    qf = QueryField("test", 123, int)
+    qf = QueryField("test", 123, int, field_aliases="num")
     print("STR:", qf)
     print("REPR:", repr(qf))
     print("QUERY:", qf.query)
+    print("ALIASES:", qf.field_aliases)
 
     print(" END LOCAL TEST ".center(79, "="))
