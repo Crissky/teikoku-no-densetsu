@@ -17,6 +17,28 @@ from repository.mongo.utils.query import Query
 logger = logging.getLogger(__name__)
 
 
+def get_entity(
+    model_type: Type[Model],
+    update_query: Query,
+    context_query: Query,
+    update: Optional[Update] = None,
+    context: Optional[CallbackContext] = None,
+) -> MongoBase:
+    if isinstance(update, Update):
+        update_query.load_values(update)
+        query = update_query
+    elif isinstance(context, CallbackContext):
+        context_query.load_values(context)
+        query = context_query
+    else:
+        raise ValueError("É preciso informar ou update ou context.")
+
+    return get_entity_by_alt_id(
+        model_type=model_type,
+        query=query
+    )
+
+
 def get_entity_by_alt_id(model_type: Type[Model], query: Query) -> MongoBase:
     model = model_type()
     query_dict = query.query
@@ -105,32 +127,6 @@ def update_entity(
         )
 
         return retrieved_entity
-
-
-def get_entity(
-    model_type: Type[Model],
-    key_value_type: Type[Any],
-    key_field_enum: AltIdEnum,
-    update_key_field_enum: UpdateAltIdEnum,
-    context_key_field_enum: ContextAltIdEnum,
-    update: Optional[Update] = None,
-    context: Optional[CallbackContext] = None,
-) -> MongoBase:
-    if isinstance(update, Update):
-        update_key_field = update_key_field_enum.value
-        key_value = getattr(update, update_key_field).id
-    elif isinstance(context, CallbackContext):
-        context_key_field = context_key_field_enum.value
-        key_value = getattr(context, context_key_field)
-    else:
-        raise ValueError("É preciso informar ou update ou context.")
-
-    return get_entity_by_alt_id(
-        model_type=model_type,
-        key_value=key_value,
-        key_value_type=key_value_type,
-        key_field_enum=key_field_enum,
-    )
 
 
 def exists_entity(
