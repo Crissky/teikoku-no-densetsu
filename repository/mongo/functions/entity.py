@@ -19,17 +19,14 @@ logger = logging.getLogger(__name__)
 
 def get_entity(
     model_type: Type[Model],
-    update_query: Query,
-    context_query: Query,
+    query: Query,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> MongoBase:
     if isinstance(update, Update):
-        update_query.load_values(update)
-        query = update_query
+        query.load_values(update)
     elif isinstance(context, CallbackContext):
-        context_query.load_values(context)
-        query = context_query
+        query.load_values(context)
     else:
         raise ValueError("É preciso informar ou update ou context.")
 
