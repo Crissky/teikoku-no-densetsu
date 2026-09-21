@@ -30,10 +30,7 @@ def get_entity(
     else:
         raise ValueError("É preciso informar ou update ou context.")
 
-    return get_entity_by_alt_id(
-        model_type=model_type,
-        query=query
-    )
+    return get_entity_by_alt_id(model_type=model_type, query=query)
 
 
 def get_entity_by_alt_id(model_type: Type[Model], query: Query) -> MongoBase:
