@@ -66,19 +66,14 @@ def update_entity(
     args: Iterable[Tuple[str, Any]],
     entity_type: Type[MongoBase],
     model_type: Type[Model],
-    key_value_type: Type[Any],
-    key_field_enum: AltIdEnum,
-    update_key_field_enum: UpdateAltIdEnum,
+    query: Query,
     entity: Optional[MongoBase] = None,
     update: Optional[Update] = None,
 ) -> Optional[MongoBase]:
     if isinstance(update, Update) and entity is None:
         entity = get_entity(
             model_type=model_type,
-            key_value_type=key_value_type,
-            key_field_enum=key_field_enum,
-            update_key_field_enum=update_key_field_enum,
-            context_key_field_enum=None,
+            query=query,
             update=update,
             context=None,
         )
@@ -111,13 +106,8 @@ def update_entity(
     if is_updated:
         model = model_type()
         model.save(entity)
-        key_field = key_field_enum.value
-        key_value = getattr(entity, key_field)
         retrieved_entity = get_entity_by_alt_id(
-            model_type=model_type,
-            key_value=key_value,
-            key_value_type=key_value_type,
-            key_field_enum=key_field_enum,
+            model_type=model_type, query=query
         )
 
         return retrieved_entity
