@@ -136,3 +136,12 @@ def exists_entity(
     model = model_type()
 
     return model.exists(_id=key_value)
+
+
+def get_mongo_id(query: Query) -> Any:
+    query_dict = query.query
+    if "_id" in query_dict:
+        return query_dict["_id"]
+    else:
+        key = next(iter(query_dict.keys()))
+        return query_dict[key]
