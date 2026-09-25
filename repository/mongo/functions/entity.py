@@ -115,19 +115,18 @@ def update_entity(
 
 def exists_entity(
     model_type: Type[Model],
-    update_key_field_enum: UpdateAltIdEnum,
-    context_key_field_enum: ContextAltIdEnum,
+    query: Query,
     key_value_type: Type[Any],
     key_value: Any = None,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
     if isinstance(update, Update):
-        update_key_field = update_key_field_enum.value
-        key_value = getattr(update, update_key_field).id
+        query.load_values(update)
+        key_value = get_mongo_id(query=query)
     elif isinstance(context, CallbackContext):
-        context_key_field = context_key_field_enum.value
-        key_value = getattr(context, context_key_field)
+        query.load_values(context)
+        key_value = get_mongo_id(query=query)
     if not isinstance(key_value, key_value_type):
         raise TypeError(
             f"key_value precisa ser um {key_value_type} ({type(key_value)})."
