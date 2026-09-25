@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 
 def get_entity(
-    model_type: Type[Model],
+    model: Model,
     query: Query,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
@@ -25,11 +25,10 @@ def get_entity(
     else:
         raise ValueError("É preciso informar ou update ou context.")
 
-    return get_entity_by_alt_id(model_type=model_type, query=query)
+    return get_entity_by_alt_id(model=model, query=query)
 
 
-def get_entity_by_alt_id(model_type: Type[Model], query: Query) -> MongoBase:
-    model = model_type()
+def get_entity_by_alt_id(model: Model, query: Query) -> MongoBase:
     query_dict = query.query
     entity = model.get(query=query_dict)
 
@@ -39,7 +38,7 @@ def get_entity_by_alt_id(model_type: Type[Model], query: Query) -> MongoBase:
 def save_entity(
     entity: MongoBase,
     entity_type: Type[MongoBase],
-    model_type: Type[Model],
+    model: Model,
     query: Query,
 ) -> MongoBase:
     if not isinstance(entity, entity_type):
@@ -47,11 +46,10 @@ def save_entity(
             f"entity precisa ser do tipo {entity_type} ({type(entity)})."
         )
 
-    model = model_type()
     model.save(entity)
     query.clear_values()
     query.load_values(entity)
-    retrieved_entity = get_entity_by_alt_id(model_type=model_type, query=query)
+    retrieved_entity = get_entity_by_alt_id(model=model, query=query)
     logger.info(f"{entity_type.__name__} salvo com " f"{query}'")
 
     return retrieved_entity
@@ -60,14 +58,14 @@ def save_entity(
 def update_entity(
     args: Iterable[Tuple[str, Any]],
     entity_type: Type[MongoBase],
-    model_type: Type[Model],
+    model: Model,
     query: Query,
     entity: Optional[MongoBase] = None,
     update: Optional[Update] = None,
 ) -> Optional[MongoBase]:
     if isinstance(update, Update) and entity is None:
         entity = get_entity(
-            model_type=model_type,
+            model=model,
             query=query,
             update=update,
             context=None,
@@ -99,17 +97,14 @@ def update_entity(
             )
 
     if is_updated:
-        model = model_type()
         model.save(entity)
-        retrieved_entity = get_entity_by_alt_id(
-            model_type=model_type, query=query
-        )
+        retrieved_entity = get_entity_by_alt_id(model=model, query=query)
 
         return retrieved_entity
 
 
 def exists_entity(
-    model_type: Type[Model],
+    model: Model,
     query: Query,
     key_value_type: Type[Any],
     key_value: Any = None,
@@ -126,8 +121,6 @@ def exists_entity(
         raise TypeError(
             f"key_value precisa ser um {key_value_type} ({type(key_value)})."
         )
-
-    model = model_type()
 
     return model.exists(_id=key_value)
 
