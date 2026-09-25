@@ -6,11 +6,6 @@ from telegram import Update
 from telegram.ext import CallbackContext
 
 from repository.mongo.base import MongoBase
-from repository.mongo.enums.field import (
-    AltIdEnum,
-    ContextAltIdEnum,
-    UpdateAltIdEnum,
-)
 from repository.mongo.models.model import Model
 from repository.mongo.utils.query import Query
 
