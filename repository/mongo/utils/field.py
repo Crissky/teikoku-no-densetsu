@@ -69,10 +69,15 @@ class QueryField:
         updated = False
         fields = (self.field, *self.field_aliases)
         for field in fields:
-            if hasattr(obj, field):
-                self.value = getattr(obj, field)
+            value = obj
+            try:
+                for attr in field.split("."):
+                    value = getattr(value, attr)
+                self.value = value
                 updated = True
                 break
+            except AttributeError:
+                pass
 
         if updated is False:
             raise AttributeError(
