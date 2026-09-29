@@ -18,10 +18,10 @@ class AltIdEnum(Enum):
 
 
 class UpdateAltIdEnum(Enum):
-    GROUP = "effective_chat"
-    PLAYER = "effective_user"
-    WORLD = "effective_chat"
-    CITY = "effective_chat"
+    GROUP = "effective_chat.id"
+    PLAYER = "effective_user.id"
+    WORLD = "effective_chat.id"
+    CITY = "effective_chat.id"
 
 
 class ContextAltIdEnum(Enum):
