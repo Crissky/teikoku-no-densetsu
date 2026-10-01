@@ -113,11 +113,15 @@ def chat_is_group(update: Update) -> bool:
     return update.effective_chat.type in GROUP_TYPES
 
 
-def create_group_query():
-    return Query(
+def create_group_query(chat_id: int = None):
+    query = Query(
         QueryField(
             field=AltIdEnum.GROUP,
+            value=chat_id,
             value_type=int,
             field_aliases=(UpdateAltIdEnum.GROUP, ContextAltIdEnum.GROUP),
         )
     )
+    query.check_query_fields()
+
+    return query
