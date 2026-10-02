@@ -18,6 +18,8 @@ from repository.mongo.functions.entity import (
     update_entity,
 )
 from repository.mongo.models.group import GroupModel
+from repository.mongo.utils.field import QueryField
+from repository.mongo.utils.query import Query
 from teikoku.entity.register.group import Group
 
 GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
