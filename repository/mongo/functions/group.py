@@ -29,7 +29,24 @@ GROUP_KEY_VALUE_TYPE = int
 GROUP_KEY_FIELD_ENUM = AltIdEnum.GROUP
 GROUP_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.GROUP
 GROUP_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.GROUP
+
+MODEL = GroupModel()
 logger = logging.getLogger(__name__)
+
+
+def get_group(
+    update: Optional[Update] = None,
+    context: Optional[CallbackContext] = None,
+) -> Group:
+    """Recupera um group a partir de um Update ou CallbackContext do Telegram."""
+
+    query = create_group_query()
+    return get_entity(
+        model=MODEL,
+        query=query,
+        update=update,
+        context=context,
+    )
 
 
 def save_group(group: Group) -> Group:
