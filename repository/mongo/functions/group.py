@@ -49,6 +49,14 @@ def get_group(
     )
 
 
+def get_group_by_chat_id(chat_id: int) -> Group:
+    """Recupera um group do banco de dados pelo ID do chat."""
+
+    query = create_group_query()
+    query.load_values(obj={AltIdEnum.GROUP.value: chat_id})
+    return get_entity_by_alt_id(model=MODEL, query=query)
+
+
 def save_group(group: Group) -> Group:
     """Salva um group no banco de dados e retorna o group recuperado."""
 
@@ -79,34 +87,6 @@ def update_group(
         update_key_field_enum=GROUP_UPDATE_KEY_FIELD_ENUM,
         entity=group,
         update=update,
-    )
-
-
-def get_group_by_chat_id(chat_id: int) -> Group:
-    """Recupera um group do banco de dados pelo ID do chat."""
-
-    return get_entity_by_alt_id(
-        model_type=GROUP_MODEL_TYPE,
-        key_value=chat_id,
-        key_value_type=GROUP_KEY_VALUE_TYPE,
-        key_field_enum=GROUP_KEY_FIELD_ENUM,
-    )
-
-
-def get_group(
-    update: Optional[Update] = None,
-    context: Optional[CallbackContext] = None,
-) -> Group:
-    """Recupera um group a partir de um Update ou CallbackContext do Telegram."""
-
-    return get_entity(
-        model_type=GROUP_MODEL_TYPE,
-        key_value_type=GROUP_KEY_VALUE_TYPE,
-        key_field_enum=GROUP_KEY_FIELD_ENUM,
-        update_key_field_enum=GROUP_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=GROUP_CONTEXT_KEY_FIELD_ENUM,
-        update=update,
-        context=context,
     )
 
 
