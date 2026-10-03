@@ -60,12 +60,12 @@ def get_group_by_chat_id(chat_id: int) -> Group:
 def save_group(group: Group) -> Group:
     """Salva um group no banco de dados e retorna o group recuperado."""
 
+    query = create_group_query()
     return save_entity(
         entity=group,
-        entity_type=GROUP_ENTITY_TYPE,
-        model_type=GROUP_MODEL_TYPE,
-        key_value_type=GROUP_KEY_VALUE_TYPE,
-        key_field_enum=GROUP_KEY_FIELD_ENUM,
+        entity_type=Group,
+        model=MODEL,
+        query=query,
     )
 
 
