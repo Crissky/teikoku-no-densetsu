@@ -62,7 +62,7 @@ def save_group(group: Group) -> Group:
     query = create_group_query()
     return save_entity(
         entity=group,
-        entity_type=Group,
+        entity_type=GROUP_ENTITY_TYPE,
         model=MODEL,
         query=query,
     )
