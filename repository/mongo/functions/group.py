@@ -52,8 +52,7 @@ def get_group(
 def get_group_by_chat_id(chat_id: int) -> Group:
     """Recupera um group do banco de dados pelo ID do chat."""
 
-    query = create_group_query()
-    query.load_values(obj={AltIdEnum.GROUP.value: chat_id})
+    query = create_group_query(chat_id=chat_id)
     return get_entity_by_alt_id(model=MODEL, query=query)
 
 
