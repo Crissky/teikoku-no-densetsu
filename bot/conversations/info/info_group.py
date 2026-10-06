@@ -62,8 +62,9 @@ async def show_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
         elif command == CALLBACK_COMMAND_UPDATE_GROUP:
             section_name = UPDATE_GROUP_SECTION_NAME
             chat = update._effective_chat
-            group.name = chat.full_name or chat.title
-            group = save_group(group)
+            if group:
+                group.name = chat.full_name or chat.title
+                group = save_group(group)
 
     reply_text = group_telegram_text(
         group=group, chat_id=chat_id, section_name=section_name
