@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 def get_group(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
-) -> GROUP_ENTITY_TYPE:
+) -> Group:
     """Recupera um group a partir de um Update ou CallbackContext do Telegram."""
 
     query = create_group_query()
@@ -48,14 +48,14 @@ def get_group(
     )
 
 
-def get_group_by_chat_id(chat_id: GROUP_KEY_VALUE_TYPE) -> GROUP_ENTITY_TYPE:
+def get_group_by_chat_id(chat_id: int) -> Group:
     """Recupera um group do banco de dados pelo ID do chat."""
 
     query = create_group_query(chat_id=chat_id)
     return get_entity_by_alt_id(model=MODEL, query=query)
 
 
-def save_group(group: GROUP_ENTITY_TYPE) -> GROUP_ENTITY_TYPE:
+def save_group(group: Group) -> Group:
     """Salva um group no banco de dados e retorna o group recuperado."""
 
     query = create_group_query()
@@ -69,9 +69,9 @@ def save_group(group: GROUP_ENTITY_TYPE) -> GROUP_ENTITY_TYPE:
 
 def update_group(
     args: Iterable[Tuple[str, Any]],
-    group: Optional[GROUP_ENTITY_TYPE] = None,
+    group: Optional[Group] = None,
     update: Optional[Update] = None,
-) -> Optional[GROUP_ENTITY_TYPE]:
+) -> Optional[Group]:
     """Atualiza os atributos do group com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
     """
@@ -88,7 +88,7 @@ def update_group(
 
 
 def exists_group(
-    chat_id: Optional[GROUP_KEY_VALUE_TYPE] = None,
+    chat_id: Optional[int] = None,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
@@ -108,7 +108,7 @@ def chat_is_group(update: Update) -> bool:
     return update.effective_chat.type in GROUP_TYPES
 
 
-def create_group_query(chat_id: GROUP_KEY_VALUE_TYPE = None):
+def create_group_query(chat_id: int = None):
     query = Query(
         QueryField(
             field=GROUP_KEY_FIELD_ENUM,
