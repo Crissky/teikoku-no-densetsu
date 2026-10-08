@@ -24,7 +24,6 @@ from teikoku.entity.register.group import Group
 
 GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
 GROUP_ENTITY_TYPE = Group
-GROUP_MODEL_TYPE = GroupModel
 GROUP_KEY_VALUE_TYPE = int
 GROUP_KEY_FIELD_ENUM = AltIdEnum.GROUP
 GROUP_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.GROUP
@@ -37,7 +36,7 @@ logger = logging.getLogger(__name__)
 def get_group(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
-) -> Group:
+) -> GROUP_ENTITY_TYPE:
     """Recupera um group a partir de um Update ou CallbackContext do Telegram."""
 
     query = create_group_query()
@@ -49,14 +48,14 @@ def get_group(
     )
 
 
-def get_group_by_chat_id(chat_id: int) -> Group:
+def get_group_by_chat_id(chat_id: GROUP_KEY_VALUE_TYPE) -> GROUP_ENTITY_TYPE:
     """Recupera um group do banco de dados pelo ID do chat."""
 
     query = create_group_query(chat_id=chat_id)
     return get_entity_by_alt_id(model=MODEL, query=query)
 
 
-def save_group(group: Group) -> Group:
+def save_group(group: GROUP_ENTITY_TYPE) -> GROUP_ENTITY_TYPE:
     """Salva um group no banco de dados e retorna o group recuperado."""
 
     query = create_group_query()
@@ -70,9 +69,9 @@ def save_group(group: Group) -> Group:
 
 def update_group(
     args: Iterable[Tuple[str, Any]],
-    group: Optional[Group] = None,
+    group: Optional[GROUP_ENTITY_TYPE] = None,
     update: Optional[Update] = None,
-) -> Optional[Group]:
+) -> Optional[GROUP_ENTITY_TYPE]:
     """Atualiza os atributos do group com os valores passados em args.
     args deve ser um iterável de tuplas no formato (atributo, valor).
     """
@@ -89,7 +88,7 @@ def update_group(
 
 
 def exists_group(
-    chat_id: Optional[int] = None,
+    chat_id: Optional[GROUP_KEY_VALUE_TYPE] = None,
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
@@ -109,13 +108,16 @@ def chat_is_group(update: Update) -> bool:
     return update.effective_chat.type in GROUP_TYPES
 
 
-def create_group_query(chat_id: int = None):
+def create_group_query(chat_id: GROUP_KEY_VALUE_TYPE = None):
     query = Query(
         QueryField(
-            field=AltIdEnum.GROUP,
+            field=GROUP_KEY_FIELD_ENUM,
             value=chat_id,
-            value_type=int,
-            field_aliases=(UpdateAltIdEnum.GROUP, ContextAltIdEnum.GROUP),
+            value_type=GROUP_KEY_VALUE_TYPE,
+            field_aliases=(
+                GROUP_UPDATE_KEY_FIELD_ENUM,
+                GROUP_CONTEXT_KEY_FIELD_ENUM,
+            ),
         )
     )
     query.check_query_fields()
