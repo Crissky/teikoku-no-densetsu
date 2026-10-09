@@ -113,6 +113,23 @@ def exists_player(
     )
 
 
+def create_player_query(user_id: int = None):
+    query = Query(
+        QueryField(
+            field=PLAYER_KEY_FIELD_ENUM,
+            value=user_id,
+            value_type=PLAYER_KEY_VALUE_TYPE,
+            field_aliases=(
+                PLAYER_UPDATE_KEY_FIELD_ENUM,
+                PLAYER_CONTEXT_KEY_FIELD_ENUM,
+            ),
+        )
+    )
+    query.check_query_fields()
+
+    return query
+
+
 async def user_is_admin(update: Update) -> bool:
     chat_id = update.effective_chat.id
     user_id = update.effective_user.id
