@@ -18,60 +18,19 @@ from repository.mongo.functions.entity import (
     update_entity,
 )
 from repository.mongo.models.player import PlayerModel
+from repository.mongo.utils.field import QueryField
+from repository.mongo.utils.query import Query
 from teikoku.entity.register.player import Player
 
 ADMIN_TYPES = (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
 PLAYER_ENTITY_TYPE = Player
-PLAYER_MODEL_TYPE = PlayerModel
 PLAYER_KEY_VALUE_TYPE = int
 PLAYER_KEY_FIELD_ENUM = AltIdEnum.PLAYER
 PLAYER_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.PLAYER
 PLAYER_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.PLAYER
+
+MODEL = PlayerModel()
 logger = logging.getLogger(__name__)
-
-
-def save_player(player: Player) -> Player:
-    """Salva um player no banco de dados e retorna o player recuperado."""
-
-    return save_entity(
-        entity=player,
-        entity_type=PLAYER_ENTITY_TYPE,
-        model_type=PLAYER_MODEL_TYPE,
-        key_value_type=PLAYER_KEY_VALUE_TYPE,
-        key_field_enum=PLAYER_KEY_FIELD_ENUM,
-    )
-
-
-def update_player(
-    args: Iterable[Tuple[str, Any]],
-    player: Optional[Player] = None,
-    update: Optional[Update] = None,
-) -> Optional[Player]:
-    """Atualiza os atributos do player com os valores passados em args.
-    args deve ser um iterável de tuplas no formato (atributo, valor).
-    """
-
-    return update_entity(
-        args=args,
-        entity_type=PLAYER_ENTITY_TYPE,
-        model_type=PLAYER_MODEL_TYPE,
-        key_value_type=PLAYER_KEY_VALUE_TYPE,
-        key_field_enum=PLAYER_KEY_FIELD_ENUM,
-        update_key_field_enum=PLAYER_UPDATE_KEY_FIELD_ENUM,
-        entity=player,
-        update=update,
-    )
-
-
-def get_player_by_user_id(user_id: int) -> Player:
-    """Recupera um player do banco de dados pelo ID do usuário."""
-
-    return get_entity_by_alt_id(
-        model_type=PLAYER_MODEL_TYPE,
-        key_value=user_id,
-        key_value_type=PLAYER_KEY_VALUE_TYPE,
-        key_field_enum=PLAYER_KEY_FIELD_ENUM,
-    )
 
 
 def get_player(
@@ -84,14 +43,51 @@ def get_player(
     o player correspondente no banco de dados.
     """
 
+    query = create_player_query()
     return get_entity(
-        model_type=PLAYER_MODEL_TYPE,
-        key_value_type=PLAYER_KEY_VALUE_TYPE,
-        key_field_enum=PLAYER_KEY_FIELD_ENUM,
-        update_key_field_enum=PLAYER_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=PLAYER_CONTEXT_KEY_FIELD_ENUM,
+        model=MODEL,
+        query=query,
         update=update,
         context=context,
+    )
+
+
+def get_player_by_user_id(user_id: int) -> Player:
+    """Recupera um player do banco de dados pelo ID do usuário."""
+
+    query = create_player_query(user_id=user_id)
+    return get_entity_by_alt_id(model=MODEL, query=query)
+
+
+def save_player(player: Player) -> Player:
+    """Salva um player no banco de dados e retorna o player recuperado."""
+
+    query = create_player_query()
+    return save_entity(
+        entity=player,
+        entity_type=PLAYER_ENTITY_TYPE,
+        model=MODEL,
+        query=query,
+    )
+
+
+def update_player(
+    args: Iterable[Tuple[str, Any]],
+    player: Optional[Player] = None,
+    update: Optional[Update] = None,
+) -> Optional[Player]:
+    """Atualiza os atributos do player com os valores passados em args.
+    args deve ser um iterável de tuplas no formato (atributo, valor).
+    """
+
+    query = create_player_query()
+    return update_entity(
+        args=args,
+        entity_type=PLAYER_ENTITY_TYPE,
+        model=MODEL,
+        query=query,
+        entity=player,
+        update=update,
     )
 
 
@@ -102,12 +98,11 @@ def exists_player(
 ) -> bool:
     """Verifica se existe um player no banco de dados."""
 
+    query = create_player_query()
     return exists_entity(
-        model_type=PLAYER_MODEL_TYPE,
-        update_key_field_enum=PLAYER_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=PLAYER_CONTEXT_KEY_FIELD_ENUM,
-        key_value_type=PLAYER_KEY_VALUE_TYPE,
-        key_value=user_id,
+        model=MODEL,
+        query=query,
+        _id=user_id,
         update=update,
         context=context,
     )
