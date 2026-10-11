@@ -13,6 +13,8 @@ def player_telegram_text(
     user_id: int,
     section_name: str = PLAYER_SECTION_NAME,
     subsection_name: str = PLAYER_SUBSECTION_NAME,
+    previous_text: str = None,
+    next_text: str = None,
     use_emoji: bool = True,
 ) -> str:
     """Retorna uma string formatada com os dados de player."""
@@ -27,6 +29,8 @@ def player_telegram_text(
             obj=player,
             section_name=section_name,
             subsection_name=subsection_name,
+            previous_text=previous_text,
+            next_text=next_text,
             use_emoji=use_emoji,
         )
 

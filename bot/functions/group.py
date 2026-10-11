@@ -13,6 +13,8 @@ def group_telegram_text(
     chat_id: int,
     section_name: str = GROUP_SECTION_NAME,
     subsection_name: str = GROUP_SUBSECTION_NAME,
+    previous_text: str = None,
+    next_text: str = None,
     use_emoji: bool = True,
 ) -> str:
     """Retorna uma string formatada com os dados de group."""
@@ -27,6 +29,8 @@ def group_telegram_text(
             obj=group,
             section_name=section_name,
             subsection_name=subsection_name,
+            previous_text=previous_text,
+            next_text=next_text,
             use_emoji=use_emoji,
         )
 
