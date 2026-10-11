@@ -15,12 +15,18 @@ def group_telegram_text(
     subsection_name: str = GROUP_SUBSECTION_NAME,
     previous_text: str = None,
     next_text: str = None,
+    group_not_found_msg: str = None,
     use_emoji: bool = True,
 ) -> str:
     """Retorna uma string formatada com os dados de group."""
 
     if group is None:
-        telegram_text = GROUP_NOT_FOUND_ERROR.format(id=chat_id)
+        if group_not_found_msg:
+            telegram_text = group_not_found_msg
+        else:
+            telegram_text = GROUP_NOT_FOUND_ERROR
+
+        telegram_text = telegram_text.format(id=chat_id)
         telegram_text = create_text_in_box(
             text=telegram_text, section_name=NOT_FOUND_GROUP_SECTION_NAME
         )

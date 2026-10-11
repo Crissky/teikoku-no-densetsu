@@ -15,12 +15,18 @@ def player_telegram_text(
     subsection_name: str = PLAYER_SUBSECTION_NAME,
     previous_text: str = None,
     next_text: str = None,
+    player_not_found_msg: str = None,
     use_emoji: bool = True,
 ) -> str:
     """Retorna uma string formatada com os dados de player."""
 
     if player is None:
-        telegram_text = PLAYER_NOT_FOUND_ERROR.format(id=user_id)
+        if player_not_found_msg:
+            telegram_text = player_not_found_msg
+        else:
+            telegram_text = PLAYER_NOT_FOUND_ERROR
+
+        telegram_text = telegram_text.format(id=user_id)
         telegram_text = create_text_in_box(
             text=telegram_text, section_name=NOT_FOUND_PLAYER_SECTION_NAME
         )
