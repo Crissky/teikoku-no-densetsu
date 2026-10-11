@@ -13,10 +13,6 @@ def create_telegram_text(
 ) -> str:
     """Retorna uma string formatada com os dados de obj (MongoBase)."""
 
-    if use_emoji is True:
-        emoji = get_random_face_emoji()
-        section_name = emoji + section_name + emoji
-
     telegram_text = obj.telegram_text
     subsection = format_subsection(text=subsection_name)
     telegram_text = f"{subsection}" f"{telegram_text}"
@@ -27,7 +23,7 @@ def create_telegram_text(
         telegram_text = f"{telegram_text}\n{next_text}"
 
     telegram_text = create_text_in_box(
-        text=telegram_text, section_name=section_name
+        text=telegram_text, section_name=section_name, use_emoji=use_emoji
     )
 
     return telegram_text

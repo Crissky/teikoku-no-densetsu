@@ -10,6 +10,7 @@ from general.constants.text import (
     SUBSECTION_FILLCHAR,
     SUBSECTION_LINE_LENGTH,
 )
+from general.enums.emojis import get_random_face_emoji
 
 
 def escape_markdown_v2(text: str):
@@ -58,8 +59,14 @@ def create_text_in_box(
     section_end: str = SECTION_HEAD_GENERAL_END,
     fillchar: str = SECTION_FILLCHAR,
     clean_func: callable = escape_basic_markdown_v2,
+    use_emoji: bool = True,
 ) -> str:
+
     text = text.strip()
+    if use_emoji is True:
+        emoji = get_random_face_emoji()
+        section_name = emoji + section_name + emoji
+
     section_start = format_section(
         text=section_name, section=section_start, fillchar=fillchar
     )
@@ -80,7 +87,7 @@ def format_section(
     line_length: int = SECTION_LINE_LENGTH,
     text_position: Literal["left", "center", "right"] = "center",
 ) -> str:
-    result = ""
+
     if isinstance(section, str) and section.count("{}") == 1:
         result = section.format(text)
     else:
