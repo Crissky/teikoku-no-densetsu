@@ -98,7 +98,7 @@ def exists_player(
 ) -> bool:
     """Verifica se existe um player no banco de dados."""
 
-    query = create_player_query()
+    query = create_player_query(user_id=user_id)
     return exists_entity(
         model=MODEL,
         query=query,
