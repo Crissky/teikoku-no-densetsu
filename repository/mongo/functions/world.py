@@ -18,6 +18,8 @@ from repository.mongo.functions.entity import (
     update_entity,
 )
 from repository.mongo.models.world import WorldModel
+from repository.mongo.utils.field import QueryField
+from repository.mongo.utils.query import Query
 from teikoku.entity.world.world import World
 
 WORLD_ENTITY_TYPE = World
@@ -26,6 +28,8 @@ WORLD_KEY_VALUE_TYPE = int
 WORLD_KEY_FIELD_ENUM = AltIdEnum.WORLD
 WORLD_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.WORLD
 WORLD_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.WORLD
+
+MODEL = WorldModel()
 logger = logging.getLogger(__name__)
 
 
@@ -110,3 +114,20 @@ def exists_world(
         update=update,
         context=context,
     )
+
+
+def create_world_query(chat_id: int = None):
+    query = Query(
+        QueryField(
+            field=WORLD_KEY_FIELD_ENUM,
+            value=chat_id,
+            value_type=WORLD_KEY_VALUE_TYPE,
+            field_aliases=(
+                WORLD_UPDATE_KEY_FIELD_ENUM,
+                WORLD_CONTEXT_KEY_FIELD_ENUM,
+            ),
+        )
+    )
+    query.check_query_fields()
+
+    return query
