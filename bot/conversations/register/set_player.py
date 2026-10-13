@@ -6,13 +6,12 @@ from bot.constants.message import (
 )
 from bot.constants.section import (
     FAIL_UPDATE_PLAYER_SECTION_NAME,
-    PLAYER_SUBSECTION_NAME,
     UPDATE_PLAYER_SECTION_NAME,
 )
 from bot.decorators.player import need_signedup_player
 from bot.functions.arg import format_args
 from bot.functions.message import MIN_AUTODELETE_TIME, reply_message
-from general.functions.text import create_text_in_box, format_subsection
+from bot.functions.player import player_telegram_text
 from repository.mongo.functions.player import update_player
 from teikoku.entity.register.player import Player
 
@@ -27,11 +26,14 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensagem.
     """
 
+    user_id = update.effective_user.id
     args = context.args
     section_name = FAIL_UPDATE_PLAYER_SECTION_NAME
+    player = None
+    player_not_found_msg = None
     if not args:  # SEM ARGUMENTOS
         updatable_attr_types = Player.updatable_attr_types()
-        reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
+        player_not_found_msg = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
             attrs=", ".join(
                 f"`{a}` ({t.__name__})"
                 for a, t in updatable_attr_types.items()
@@ -43,13 +45,15 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if player:  # UPDATE COM SUCESSO
             section_name = UPDATE_PLAYER_SECTION_NAME
-            player_telegram_text = player.telegram_text
-            subsection = format_subsection(text=PLAYER_SUBSECTION_NAME)
-            reply_text = f"{subsection}" f"{player_telegram_text}"
         else:  # UPDATE SEM SUCESSO
-            reply_text = f"{NO_CHANGE_IN_PLAYER_MSG}"
+            player_not_found_msg = f"{NO_CHANGE_IN_PLAYER_MSG}"
 
-    reply_text = create_text_in_box(text=reply_text, section_name=section_name)
+    reply_text = player_telegram_text(
+        player=player,
+        user_id=user_id,
+        section_name=section_name,
+        player_not_found_msg=player_not_found_msg,
+    )
     await reply_message(
         function_caller="SET_ATTR_PLAYER()",
         text=reply_text,
