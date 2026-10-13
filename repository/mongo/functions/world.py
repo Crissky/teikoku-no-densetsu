@@ -29,6 +29,38 @@ WORLD_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.WORLD
 logger = logging.getLogger(__name__)
 
 
+def get_world(
+    update: Optional[Update] = None,
+    context: Optional[CallbackContext] = None,
+) -> World:
+    """Recupera um world a partir de um Update ou CallbackContext do Telegram.
+
+    Extrai o chat_id do objeto Update ou CallbackContext fornecido e busca
+    o world correspondente no banco de dados.
+    """
+
+    return get_entity(
+        model_type=WORLD_MODEL_TYPE,
+        key_value_type=WORLD_KEY_VALUE_TYPE,
+        key_field_enum=WORLD_KEY_FIELD_ENUM,
+        update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
+        context_key_field_enum=WORLD_CONTEXT_KEY_FIELD_ENUM,
+        update=update,
+        context=context,
+    )
+
+
+def get_world_by_chat_id(chat_id: int) -> World:
+    """Recupera um world do banco de dados pelo ID do chat."""
+
+    return get_entity_by_alt_id(
+        model_type=WORLD_MODEL_TYPE,
+        key_value=chat_id,
+        key_value_type=WORLD_KEY_VALUE_TYPE,
+        key_field_enum=WORLD_KEY_FIELD_ENUM,
+    )
+
+
 def save_world(world: World) -> World:
     """Salva um world no banco de dados e retorna o world recuperado."""
 
@@ -59,38 +91,6 @@ def update_world(
         update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
         entity=world,
         update=update,
-    )
-
-
-def get_world_by_chat_id(chat_id: int) -> World:
-    """Recupera um world do banco de dados pelo ID do chat."""
-
-    return get_entity_by_alt_id(
-        model_type=WORLD_MODEL_TYPE,
-        key_value=chat_id,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
-    )
-
-
-def get_world(
-    update: Optional[Update] = None,
-    context: Optional[CallbackContext] = None,
-) -> World:
-    """Recupera um world a partir de um Update ou CallbackContext do Telegram.
-
-    Extrai o chat_id do objeto Update ou CallbackContext fornecido e busca
-    o world correspondente no banco de dados.
-    """
-
-    return get_entity(
-        model_type=WORLD_MODEL_TYPE,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
-        update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=WORLD_CONTEXT_KEY_FIELD_ENUM,
-        update=update,
-        context=context,
     )
 
 
