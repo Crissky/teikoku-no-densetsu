@@ -43,12 +43,10 @@ def get_world(
     o world correspondente no banco de dados.
     """
 
+    query = create_world_query()
     return get_entity(
-        model_type=WORLD_MODEL_TYPE,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
-        update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=WORLD_CONTEXT_KEY_FIELD_ENUM,
+        model=MODEL,
+        query=query,
         update=update,
         context=context,
     )
@@ -57,12 +55,8 @@ def get_world(
 def get_world_by_chat_id(chat_id: int) -> World:
     """Recupera um world do banco de dados pelo ID do chat."""
 
-    return get_entity_by_alt_id(
-        model_type=WORLD_MODEL_TYPE,
-        key_value=chat_id,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
-    )
+    query = create_world_query(chat_id=chat_id)
+    return get_entity_by_alt_id(model=MODEL, query=query)
 
 
 def save_world(world: World) -> World:
