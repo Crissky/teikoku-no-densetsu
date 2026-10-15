@@ -11,7 +11,20 @@ def create_telegram_text(
     next_text: str = None,
     use_emoji: bool = True,
 ) -> str:
-    """Retorna uma string formatada com os dados de obj (MongoBase)."""
+    """
+    Cria um texto formatado para o Telegram a partir de um objeto MongoBase.
+
+    Args:
+        obj: Objeto MongoBase contendo os dados a serem formatados
+        section_name: Nome da seção principal
+        subsection_name: Nome da subseção
+        previous_text: Texto opcional adicionado antes do conteúdo principal
+        next_text: Texto opcional adicionado após o conteúdo principal
+        use_emoji: Se True, adiciona emojis aleatórios ao cabeçalho e rodapé
+
+    Returns:
+        str: Texto formatado e estruturado para envio no Telegram
+    """
 
     telegram_text = obj.telegram_text
     subsection = format_subsection(text=subsection_name)
