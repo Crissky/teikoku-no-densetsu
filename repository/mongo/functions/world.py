@@ -62,12 +62,12 @@ def get_world_by_chat_id(chat_id: int) -> World:
 def save_world(world: World) -> World:
     """Salva um world no banco de dados e retorna o world recuperado."""
 
+    query = create_world_query()
     return save_entity(
         entity=world,
         entity_type=WORLD_ENTITY_TYPE,
-        model_type=WORLD_MODEL_TYPE,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
+        model=MODEL,
+        query=query,
     )
 
 
