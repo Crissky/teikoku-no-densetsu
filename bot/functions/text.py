@@ -18,9 +18,9 @@ def create_telegram_text(
     telegram_text = f"{subsection}" f"{telegram_text}"
 
     if isinstance(previous_text, str) is True:
-        telegram_text = f"{previous_text}\n{telegram_text}"
+        telegram_text = f"{previous_text}\n\n{telegram_text}"
     if isinstance(next_text, str) is True:
-        telegram_text = f"{telegram_text}\n{next_text}"
+        telegram_text = f"{telegram_text}\n\n{next_text}"
 
     telegram_text = create_text_in_box(
         text=telegram_text, section_name=section_name, use_emoji=use_emoji
