@@ -24,6 +24,10 @@ def create_telegram_text(
 
     Returns:
         str: Texto formatado e estruturado para envio no Telegram
+
+    Example:
+        >>> create_telegram_text(obj, "Império", "Personagem", use_emoji=False)
+        '*∞ Império ∞*━━━━━━━━\n\n*Personagem ∞*──────────\nNome: Oda Nobunaga\n\n*∞ Império ∞*━━━━━━━━'
     """
 
     telegram_text = obj.telegram_text
