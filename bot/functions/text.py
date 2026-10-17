@@ -1,4 +1,3 @@
-from general.enums.emojis import get_random_face_emoji
 from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.base import MongoBase
 
