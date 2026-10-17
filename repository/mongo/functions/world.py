@@ -97,12 +97,11 @@ def exists_world(
 ) -> bool:
     """Verifica se existe um world no banco de dados."""
 
+    query = create_world_query()
     return exists_entity(
-        model_type=WORLD_MODEL_TYPE,
-        update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
-        context_key_field_enum=WORLD_CONTEXT_KEY_FIELD_ENUM,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_value=chat_id,
+        model=MODEL,
+        query=query,
+        _id=chat_id,
         update=update,
         context=context,
     )
