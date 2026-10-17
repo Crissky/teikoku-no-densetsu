@@ -27,7 +27,7 @@ def create_telegram_text(
     Example:
         >>> create_telegram_text(obj, "Império", "Personagem", use_emoji=False)
         '*∞ Império ∞*━━━━━━━━\n\n*Personagem ∞*──────────\nNome: Oda Nobunaga\n\n*∞ Império ∞*━━━━━━━━'
-    """
+    """  # noqa
 
     telegram_text = obj.telegram_text
     subsection = format_subsection(text=subsection_name)
