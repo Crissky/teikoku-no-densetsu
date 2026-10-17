@@ -98,7 +98,7 @@ def exists_group(
 ) -> bool:
     """Verifica se existe um group no banco de dados."""
 
-    query = create_group_query()
+    query = create_group_query(chat_id=chat_id)
     return exists_entity(
         model=MODEL,
         query=query,
