@@ -23,7 +23,6 @@ from repository.mongo.utils.query import Query
 from teikoku.entity.world.world import World
 
 WORLD_ENTITY_TYPE = World
-WORLD_MODEL_TYPE = WorldModel
 WORLD_KEY_VALUE_TYPE = int
 WORLD_KEY_FIELD_ENUM = AltIdEnum.WORLD
 WORLD_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.WORLD
@@ -80,13 +79,12 @@ def update_world(
     args deve ser um iterável de tuplas no formato (atributo, valor).
     """
 
+    query = create_world_query()
     return update_entity(
         args=args,
         entity_type=WORLD_ENTITY_TYPE,
-        model_type=WORLD_MODEL_TYPE,
-        key_value_type=WORLD_KEY_VALUE_TYPE,
-        key_field_enum=WORLD_KEY_FIELD_ENUM,
-        update_key_field_enum=WORLD_UPDATE_KEY_FIELD_ENUM,
+        model=MODEL,
+        query=query,
         entity=world,
         update=update,
     )
