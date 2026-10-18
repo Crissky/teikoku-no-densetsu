@@ -188,14 +188,16 @@ class Model(ABC):
 
         return result
 
-    def exists(self, _id: Union[int, ObjectId, str]) -> bool:
-        if isinstance(_id, ID_TYPE):
-            query = self.get_query_by_id(_id)
-        else:
-            raise TypeError(
-                f"Tipo incorreto do ID. Ele precisa ser {ID_TYPE}, "
-                f"não {type(_id)}."
+    def exists(
+        self, _id: Union[int, ObjectId, str] = None, query: dict = None
+    ) -> bool:
+        if not isinstance(_id, ID_TYPE) and not query:
+            raise ValueError(
+                "É necessário informar o parâmetro query ou um _id do tipo "
+                f"{ID_TYPE}."
             )
+        elif not query:
+            query = self.get_query_by_id(_id)
         self.check_query(query)
 
         return bool(self.database.count(self.collection, query, limit=1))
