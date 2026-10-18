@@ -14,6 +14,7 @@ from repository.mongo.enums.field import PopulateFieldEnum, SaveFieldEnum
 # from teikoku.entity.world.world import World  # noqa
 
 logger = logging.getLogger(__name__)
+ID_TYPE = (int, ObjectId, str)
 
 
 class Model(ABC):
@@ -188,8 +189,13 @@ class Model(ABC):
         return result
 
     def exists(self, _id: Union[int, ObjectId, str]) -> bool:
-        if _id:
+        if isinstance(_id, ID_TYPE):
             query = self.get_query_by_id(_id)
+        else:
+            raise TypeError(
+                f"Tipo incorreto do ID. Ele precisa ser {ID_TYPE}, "
+                f"não {type(_id)}."
+            )
         self.check_query(query)
 
         return bool(self.database.count(self.collection, query, limit=1))
