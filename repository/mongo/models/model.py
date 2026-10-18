@@ -211,7 +211,6 @@ class Model(ABC):
         self.check_query(query)
         return self.database.length(self.collection, query, field)
 
-    # TODO Refatorar para não precisar mais salvar o _class no Banco
     def _populate_load(self, dict_obj: dict):
         """
         Popula campos do objeto que referenciam outras classes que podem estar
