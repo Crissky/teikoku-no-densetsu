@@ -72,10 +72,10 @@ class Model(ABC):
         return query
 
     def check_query(self, query: dict):
-        if not query:
-            raise ValueError("Query esta vazia.")
         if not isinstance(query, dict):
             raise ValueError("Query precisa ser um dicionário.")
+        if not query:
+            raise ValueError("Query esta vazia.")
 
     def delete(
         self, _id: Union[int, ObjectId, str] = None, query: dict = None
