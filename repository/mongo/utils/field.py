@@ -74,6 +74,7 @@ class QueryField:
                 for attr in field.split("."):
                     value = getattr(value, attr)
                 self.value = value
+                self.check_value_type()
                 updated = True
                 break
             except AttributeError:
