@@ -110,14 +110,21 @@ def exists_entity(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
-    if isinstance(update, Update):
-        query.load_values(update)
-    elif isinstance(context, CallbackContext):
-        query.load_values(context)
+    if not bool(query.values):
+        if isinstance(update, Update):
+            query.load_values(update)
+    if not bool(query.values):
+        if isinstance(context, CallbackContext):
+            query.load_values(context)
+    if not bool(query.values) and _id is None:
+        raise ValueError(
+            "A query possui valores inválidos que não foram carregados "
+            f"com o update e context e o _id não foi informado ({_id}). "
+            f"Valores de query: {query.values}."
+        )
 
-    _id = get_mongo_id(query=query)
-
-    return model.exists(_id=_id)
+    query_dict = query.query
+    return model.exists(_id=_id, query=query_dict)
 
 
 def get_mongo_id(query: Query) -> Any:
