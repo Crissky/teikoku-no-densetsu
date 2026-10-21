@@ -37,6 +37,11 @@ class Query:
         for qf in self.query_fields:
             qf.load_value(obj)
 
+    def load_values_if_none(self, obj: Any):
+        for qf in self.query_fields:
+            if qf.value is None:
+                qf.load_value(obj)
+
     def clear_values(self):
         for qf in self.query_fields:
             qf.clear_value()
