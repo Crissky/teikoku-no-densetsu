@@ -110,16 +110,15 @@ def exists_entity(
     update: Optional[Update] = None,
     context: Optional[CallbackContext] = None,
 ) -> bool:
-    if not all(query.values):
-        if isinstance(update, Update):
-            query.load_values(update)
-    if not all(query.values):
-        if isinstance(context, CallbackContext):
-            query.load_values(context)
-    if not all(query.values) and _id is None:
+    if isinstance(update, Update):
+        query.load_values_if_none(update)
+    if isinstance(context, CallbackContext):
+        query.load_values_if_none(context)
+    if None in query.values and _id is None:
         raise ValueError(
-            "A query possui valores inválidos que não foram carregados "
-            f"com o update e context e o _id não foi informado ({_id}). "
+            "A query possui valores None que não foram carregados "
+            "com o update e o context. "
+            f"O _id também não foi informado ({_id}). "
             f"Valores de query: {query.values}."
         )
 
