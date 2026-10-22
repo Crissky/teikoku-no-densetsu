@@ -144,7 +144,6 @@ class Model(ABC):
 
         return result
 
-    # TODO Usar o alternative_id como primeira alternativa da query
     def save(self, obj: Any, replace=False):
         if not isinstance(obj, self._class):
             raise ValueError(
