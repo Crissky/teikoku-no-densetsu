@@ -88,6 +88,14 @@ class Model(ABC):
         if not query:
             raise ValueError("Query esta vazia.")
 
+    def query_to_dict(self, query: Query) -> dict:
+        """Transforma uma Query em um dicionário."""
+
+        if isinstance(query, Query):
+            query = query.query
+
+        return query
+
     def delete(
         self, _id: Union[int, ObjectId, str] = None, query: dict = None
     ) -> Any:
