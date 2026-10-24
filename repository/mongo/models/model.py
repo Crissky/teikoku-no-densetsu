@@ -82,9 +82,13 @@ class Model(ABC):
 
         return query
 
-    def check_query(self, query: dict):
-        if not isinstance(query, dict):
-            raise ValueError("Query precisa ser um dicionário.")
+    def check_query(self, query: Union[dict, Query]):
+        """Checa se a query está correta."""
+
+        if not isinstance(query, (dict, Query)):
+            raise ValueError(
+                f"Query precisa ser um dicionário ou Query ({type(query)})."
+            )
         if not query:
             raise ValueError("Query esta vazia.")
 
