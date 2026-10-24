@@ -101,20 +101,24 @@ class Model(ABC):
         return query
 
     def delete(
-        self, _id: Union[int, ObjectId, str] = None, query: dict = None
+        self,
+        _id: Union[int, ObjectId, str] = None,
+        query: Union[dict, Query] = None,
     ) -> Any:
         """Deleta um documento do Banco de Dados."""
 
+        query = self.query_to_dict(query)
         if _id:
             query = self.get_query_by_id(_id)
         self.check_query(query)
+
         return self.database.delete(self.collection, query)
 
     def get(
         self,
         _id: Union[int, ObjectId, str] = None,
-        query: dict = None,
-        fields: Union[dict, list, str] = None,
+        query: Union[dict, Query] = None,
+        fields: Union[dict, List[str], str] = None,
         partial: bool = True,
     ) -> Union[Any, dict]:
         """Retorna um objeto instanciado com os dados oriundos do
@@ -128,6 +132,7 @@ class Model(ABC):
         argumentos e os demais usarão o default da classe.
         """
 
+        query = self.query_to_dict(query)
         if _id:
             query = self.get_query_by_id(_id)
         self.check_query(query)
@@ -140,7 +145,9 @@ class Model(ABC):
             return self.instanciate_class(populate_result)
 
     def get_all(
-        self, query: dict = None, fields: Union[dict, list, str] = None
+        self,
+        query: Union[dict, Query] = None,
+        fields: Union[dict, List[str], str] = None,
     ) -> List[Union[Any, dict]]:
         """Retorna uma lista de objetos instanciados com os dados
         oriundos do Banco de Dados.
@@ -152,6 +159,7 @@ class Model(ABC):
         os campos em fields.
         """
 
+        query = self.query_to_dict(query)
         if isinstance(fields, str):
             fields = [fields]
 
@@ -215,10 +223,13 @@ class Model(ABC):
         return result
 
     def exists(
-        self, _id: Union[int, ObjectId, str] = None, query: dict = None
+        self,
+        _id: Union[int, ObjectId, str] = None,
+        query: Union[dict, Query] = None,
     ) -> bool:
         """Verifica se um documento existe no Banco de Dados."""
 
+        query = self.query_to_dict(query)
         if not isinstance(_id, ID_TYPE) and not query:
             raise ValueError(
                 "É necessário informar o parâmetro query ou um _id do tipo "
@@ -234,12 +245,13 @@ class Model(ABC):
         self,
         field: str,
         _id: Union[int, ObjectId, str] = None,
-        query: dict = None,
+        query: Union[dict, Query] = None,
     ) -> int:
         """Retorna o tamanho de um campo lista de um documento no
         Banco de Dados.
         """
 
+        query = self.query_to_dict(query)
         if _id:
             query = self.get_query_by_id(_id)
         self.check_query(query)
