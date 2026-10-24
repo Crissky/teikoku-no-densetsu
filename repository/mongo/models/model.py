@@ -352,7 +352,7 @@ class Model(ABC):
 
     @property
     @abstractmethod
-    def _class(self) -> Any: ...
+    def _class(self) -> type: ...
 
     @property
     def save_fields(self) -> Dict[str, Dict[PopulateFieldEnum, Any]]:
