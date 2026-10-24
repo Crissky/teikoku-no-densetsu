@@ -33,6 +33,8 @@ class Model(ABC):
         return isinstance(self.alternative_id, str)
 
     def _extract_attributes(self, data: dict, definition: dict) -> dict:
+        """Extrai os atributos do objeto que serão salvos no banco de dados."""
+
         new_data = {}
         for attribute_name in definition[SaveFieldEnum.ATTRIBUTES]:
             new_data[attribute_name] = data[attribute_name]
