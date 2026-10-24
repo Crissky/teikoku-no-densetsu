@@ -6,8 +6,10 @@ from typing import Dict, Union, Any, List
 from bson import ObjectId
 
 from general.functions.date_time import get_brazil_time_now
+from repository.mongo.base import MongoBase
 from repository.mongo.database import Database
 from repository.mongo.enums.field import PopulateFieldEnum, SaveFieldEnum
+from repository.mongo.utils.query import Query
 
 # from teikoku.entity.register.group import Group  # noqa
 # from teikoku.entity.register.player import Player  # noqa
