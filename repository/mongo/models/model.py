@@ -27,7 +27,9 @@ class Model(ABC):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __alt_id_is_valid(self):
+    def __alt_id_is_valid(self) -> bool:
+        """Verifica se o alternative_id é válido."""
+
         return isinstance(self.alternative_id, str)
 
     def _extract_attributes(self, data: dict, definition: dict) -> dict:
