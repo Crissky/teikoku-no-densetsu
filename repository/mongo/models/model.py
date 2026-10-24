@@ -99,6 +99,8 @@ class Model(ABC):
     def delete(
         self, _id: Union[int, ObjectId, str] = None, query: dict = None
     ) -> Any:
+        """Deleta um documento do Banco de Dados."""
+
         if _id:
             query = self.get_query_by_id(_id)
         self.check_query(query)
@@ -164,6 +166,8 @@ class Model(ABC):
         return result
 
     def save(self, obj: Any, replace=False):
+        """Salva um objeto no Banco de Dados."""
+
         if not isinstance(obj, self._class):
             raise ValueError(
                 f"Objeto inválido. Precisa ser {self._class} não {type(obj)}"
@@ -209,6 +213,8 @@ class Model(ABC):
     def exists(
         self, _id: Union[int, ObjectId, str] = None, query: dict = None
     ) -> bool:
+        """Verifica se um documento existe no Banco de Dados."""
+
         if not isinstance(_id, ID_TYPE) and not query:
             raise ValueError(
                 "É necessário informar o parâmetro query ou um _id do tipo "
@@ -226,6 +232,10 @@ class Model(ABC):
         _id: Union[int, ObjectId, str] = None,
         query: dict = None,
     ) -> int:
+        """Retorna o tamanho de um campo lista de um documento no
+        Banco de Dados.
+        """
+
         if _id:
             query = self.get_query_by_id(_id)
         self.check_query(query)
