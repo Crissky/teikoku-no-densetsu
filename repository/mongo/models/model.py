@@ -41,7 +41,11 @@ class Model(ABC):
 
         return new_data
 
-    def _object_to_dict(self, obj: Any) -> dict:
+    def _object_to_dict(self, obj: MongoBase) -> dict:
+        """Converte um objeto em um dicionário com os dados que serão salvos no
+        banco de dados.
+        """
+
         obj_dict: dict = obj.to_dict()
         for field_name, definition in self.save_fields.items():
             new_data = {}
@@ -59,7 +63,9 @@ class Model(ABC):
 
         return obj_dict
 
-    def get_query_by_id(self, _id: Union[int, ObjectId, str]):
+    def get_query_by_id(self, _id: Union[int, ObjectId, str]) -> dict:
+        """Transforma um _id em um dicionário."""
+
         query = None
         if isinstance(_id, ObjectId):
             query = {"_id": _id}
@@ -73,6 +79,7 @@ class Model(ABC):
                 "uma string com 24 caracteres que representa um ObjectId."
                 f"ID: {_id}, Tipo: {type(_id)}"
             )
+
         return query
 
     def check_query(self, query: dict):
