@@ -1,6 +1,15 @@
 import logging
 
-from typing import Any, Iterable, Optional, Tuple, Type, get_type_hints
+from typing import (
+    Any,
+    Iterable,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    Union,
+    get_type_hints,
+)
 
 from telegram import Update
 from telegram.ext import CallbackContext
@@ -124,6 +133,16 @@ def exists_entity(
 
     query_dict = query.query
     return model.exists(_id=_id, query=query_dict)
+
+
+def get_entity_fields(
+    model: Model, query: Query, fields: Union[dict, List[str], str]
+) -> Union[dict, Any]:
+    retrieve = model.get(query=query, fields=fields)
+    if isinstance(fields, str):
+        return retrieve[fields]
+    if isinstance(fields, (dict, list)):
+        return {field: retrieve.get(field) for field in fields}
 
 
 def get_mongo_id(query: Query) -> Any:
