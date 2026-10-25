@@ -14,6 +14,7 @@ from repository.mongo.functions.entity import (
     exists_entity,
     get_entity,
     get_entity_by_alt_id,
+    get_entity_fields,
     save_entity,
     update_entity,
 )
@@ -123,6 +124,25 @@ def create_player_query(user_id: int = None):
     query.check_query_fields()
 
     return query
+
+
+def get_player_attribute_by_id(user_id: int, field: str) -> Any:
+    """Retorna um atributo específico de um player a partir do user_id."""
+
+    if not isinstance(user_id, int):
+        raise TypeError("user_id precisa ser interio.")
+    if not isinstance(field, str):
+        raise TypeError("field precisa ser string.")
+
+    alternative_id = AltIdEnum.PLAYER.value
+    query = Query(
+        QueryField(
+            field=alternative_id,
+            value=user_id,
+            value_type=int,
+        )
+    )
+    return get_entity_fields(model=MODEL, query=query, fields=field)
 
 
 async def user_is_admin(update: Update) -> bool:
