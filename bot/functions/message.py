@@ -21,6 +21,8 @@ from telegram.ext import ContextTypes, ConversationHandler
 from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
+from repository.mongo.functions.general import get_attribute_group_or_player
+from repository.mongo.functions.player import get_player_attribute_by_id
 
 logger = logging.getLogger(__name__)
 
@@ -195,13 +197,11 @@ async def send_message_text(
         else get_close_keyboard(user_id=owner_id)
     )
 
-    # TODO implementar atributo `silence` em Player e na class que for
-    # representar o grupo
-    # if silent is None:
-    #     if isinstance(chat_id, int):
-    #         silent = get_attribute_group_or_player(chat_id, "silent")
-    #     elif isinstance(user_id, int):
-    #         silent = get_player_attribute_by_id(user_id, "silent")
+    if silent is None:
+        if isinstance(chat_id, int):
+            silent = get_attribute_group_or_player(_id=chat_id, field="silent")
+        elif isinstance(user_id, int):
+            silent = get_player_attribute_by_id(userid=user_id, field="silent")
 
     send_text_kwargs = dict(
         chat_id=chat_id,
@@ -360,13 +360,11 @@ async def reply_message(
         else get_close_keyboard(user_id=owner_id)
     )
 
-    # TODO implementar atributo `silence` em Player e na class que for
-    # representar o grupo
-    # if silent is None:
-    #     if isinstance(chat_id, int):
-    #         silent = get_attribute_group_or_player(chat_id, "silent")
-    #     elif isinstance(user_id, int):
-    #         silent = get_player_attribute_by_id(user_id, "silent")
+    if silent is None:
+        if isinstance(chat_id, int):
+            silent = get_attribute_group_or_player(_id=chat_id, field="silent")
+        elif isinstance(user_id, int):
+            silent = get_player_attribute_by_id(userid=user_id, field="silent")
 
     reply_text_kwargs = dict(
         chat_id=chat_id,
@@ -432,13 +430,11 @@ async def send_message_image(
         else get_close_keyboard(user_id=owner_id)
     )
 
-    # TODO implementar atributo `silence` em Player e na class que for
-    # representar o grupo
-    # if silent is None:
-    #     if isinstance(chat_id, int):
-    #         silent = get_attribute_group_or_player(chat_id, "silent")
-    #     elif isinstance(user_id, int):
-    #         silent = get_player_attribute_by_id(user_id, "silent")
+    if silent is None:
+        if isinstance(chat_id, int):
+            silent = get_attribute_group_or_player(_id=chat_id, field="silent")
+        elif isinstance(user_id, int):
+            silent = get_player_attribute_by_id(userid=user_id, field="silent")
 
     send_photo_kwargs = dict(
         chat_id=chat_id,
