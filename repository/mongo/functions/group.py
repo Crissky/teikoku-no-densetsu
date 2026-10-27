@@ -40,7 +40,7 @@ def get_group(
     """Recupera um group a partir de um Update ou CallbackContext do Telegram.
 
     Extrai o chat_id do objeto Update ou CallbackContext fornecido e busca
-    o player correspondente no banco de dados.
+    o group correspondente no banco de dados.
     """
 
     query = create_group_query()
