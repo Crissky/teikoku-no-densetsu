@@ -142,6 +142,7 @@ def get_player_attribute_by_id(user_id: int, field: str) -> Any:
             value_type=int,
         )
     )
+
     return get_entity_fields(model=MODEL, query=query, fields=field)
 
 
