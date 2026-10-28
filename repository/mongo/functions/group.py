@@ -14,6 +14,7 @@ from repository.mongo.functions.entity import (
     exists_entity,
     get_entity,
     get_entity_by_alt_id,
+    get_entity_fields,
     save_entity,
     update_entity,
 )
@@ -106,6 +107,26 @@ def exists_group(
         update=update,
         context=context,
     )
+
+
+def get_group_attribute_by_id(chat_id: int, field: str) -> Any:
+    """Retorna um atributo específico de um group a partir do chat_id."""
+
+    if not isinstance(chat_id, int):
+        raise TypeError("chat_id precisa ser interio.")
+    if not isinstance(field, str):
+        raise TypeError("field precisa ser string.")
+
+    alternative_id = AltIdEnum.GROUP.value
+    query = Query(
+        QueryField(
+            field=alternative_id,
+            value=chat_id,
+            value_type=int,
+        )
+    )
+
+    return get_entity_fields(model=MODEL, query=query, fields=field)
 
 
 def chat_is_group(update: Update) -> bool:
