@@ -22,6 +22,7 @@ from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
 from repository.mongo.functions.general import get_attribute_group_or_player
+from repository.mongo.functions.group import get_group_attribute_by_id
 from repository.mongo.functions.player import get_player_attribute_by_id
 
 logger = logging.getLogger(__name__)
@@ -653,8 +654,10 @@ def get_timedelta_from_chat(
 
     time_multiplier = 1
     if isinstance(chat_id, int):
-        # TODO alterar `time_multiplier` para o valor do grupo
-        ...
+        time_multiplier = get_group_attribute_by_id(
+            chat_id=chat_id, field="time_multiplier"
+        )
+        time_multiplier = float(time_multiplier)
 
     kwargs = dict(
         minutes=minutes * time_multiplier,
