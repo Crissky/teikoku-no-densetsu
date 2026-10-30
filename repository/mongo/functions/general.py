@@ -20,9 +20,9 @@ def get_attribute_group_or_player(_id: Any, field: Union[str, Enum]) -> Any:
     if not isinstance(field, str):
         raise TypeError("Field precisa ser do tipo str ou Enum.")
 
-    retrieve_value = group_model.get(_id=_id, field=field)
+    retrieve_value = group_model.get(_id=_id, fields=field)
     if retrieve_value is None:
-        retrieve_value = player_model.get(_id=_id, field=field)
+        retrieve_value = player_model.get(_id=_id, fields=field)
     if not isinstance(retrieve_value, (dict, type(None))):
         raise TypeError("O valor retornado não é um dicionário nem None.")
 
