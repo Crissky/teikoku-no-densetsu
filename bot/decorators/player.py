@@ -17,6 +17,12 @@ logger = logging.getLogger(__name__)
 
 
 def need_signedup_player(callback):
+    """Decorador para verificação de usuário cadastrado.
+
+    Não excuta a ação se o jogador não estiver cadastrado e
+    responde com mensagem informando a necessidade do cadastro.
+    """
+
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info("@NEED_SIGNEDUP_PLAYER")
         player_model = PlayerModel()
@@ -50,6 +56,15 @@ def need_signedup_player(callback):
 
 
 def need_admin_player(callback):
+    """Decorador para verificação de usuário é administrador.
+
+    Não executa a ação se o jogador não estiver cadastrado e
+    responde com mensagem informando a necessidade do cadastro.
+
+    Também não executa a ação se o jogador não for administrador do grupo.
+    Responde com mensagem informando a necessidade de ser administrador.
+    """
+
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info("@NEED_ADMIN_PLAYER")
         user_id = update.effective_user.id
@@ -86,6 +101,8 @@ def need_admin_player(callback):
 
 
 def skip_if_no_signedup_player(callback):
+    """Pula a ação se o usuário não estiver cadastrado."""
+
     async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
         logger.info("@SKIP_IF_NO_SIGNEDUP_PLAYER")
         chat_id = update.effective_chat.id
@@ -109,7 +126,8 @@ def alert_if_not_chat_owner(
 ):
     """Não executa a ação quando o botão é clicado por um usuário que não
     seja o dono da mensagem e envia um alerta para o usuário que clicou no
-    botão."""
+    botão.
+    """
 
     def decorator(callback):
         async def wrapper(update: Update, context: ContextTypes.DEFAULT_TYPE):
