@@ -4,12 +4,17 @@ from telegram import Update
 from telegram.ext import ContextTypes, ConversationHandler
 
 from bot.constants.command import SIGNUP_COMMANDS
+from bot.constants.section import (
+    NOT_FOUND_PLAYER_SECTION_NAME,
+    PLAYER_IS_NOT_ADMIN_SECTION_NAME,
+)
 from bot.functions.message import (
     MIN_AUTODELETE_TIME,
     answer,
     callback_data_to_dict,
     reply_message,
 )
+from general.functions.text import create_text_in_box
 from repository.mongo.functions.player import exists_player, user_is_admin
 from repository.mongo.models.player import PlayerModel
 
@@ -39,11 +44,14 @@ def need_signedup_player(callback):
                 "para utilizar esse comando.\n"
                 f"Crie a conta com o comando /{command}."
             )
+            section_name = NOT_FOUND_PLAYER_SECTION_NAME
+            text = create_text_in_box(text=text, section_name=section_name)
             await reply_message(
                 function_caller="@NEED_SIGNEDUP_PLAYER()",
                 text=text,
                 context=context,
                 update=update,
+                markdown=True,
                 allow_sending_without_reply=True,
                 need_response=False,
                 skip_retry=False,
@@ -77,18 +85,22 @@ def need_admin_player(callback):
                 "para utilizar esse comando.\n"
                 f"Crie a conta com o comando /{command}."
             )
+            section_name = NOT_FOUND_PLAYER_SECTION_NAME
         elif not is_admin:
             logger.info("\tNEGADO - ADMNISTRADOR NÃO POSSUI CONTA.")
             text = "Somente um Admnistrador do Grupo pode usar esse comando."
+            section_name = PLAYER_IS_NOT_ADMIN_SECTION_NAME
         else:
             logger.info("\tAUTORIZADO - ADMNISTRADOR POSSUI CONTA.")
             return await callback(update, context)
 
+        text = create_text_in_box(text=text, section_name=section_name)
         await reply_message(
             function_caller="@NEED_ADMIN_PLAYER()",
             text=text,
             context=context,
             update=update,
+            markdown=True,
             allow_sending_without_reply=True,
             need_response=False,
             skip_retry=False,
