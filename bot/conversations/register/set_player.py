@@ -42,7 +42,6 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
         player = update_player(args=formated_args, update=update)
-
         if player:  # UPDATE COM SUCESSO
             section_name = UPDATE_PLAYER_SECTION_NAME
         else:  # UPDATE SEM SUCESSO
