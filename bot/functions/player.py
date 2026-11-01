@@ -11,8 +11,8 @@ from teikoku.entity.register.player import Player
 def player_telegram_text(
     player: Player,
     user_id: int,
-    section_name: str = PLAYER_SECTION_NAME,
-    subsection_name: str = PLAYER_SUBSECTION_NAME,
+    section_name: str = None,
+    subsection_name: str = None,
     previous_text: str = None,
     next_text: str = None,
     player_not_found_msg: str = None,
@@ -25,12 +25,19 @@ def player_telegram_text(
             telegram_text = player_not_found_msg
         else:
             telegram_text = PLAYER_NOT_FOUND_ERROR
+        if not isinstance(section_name, str):
+            section_name = NOT_FOUND_PLAYER_SECTION_NAME
 
         telegram_text = telegram_text.format(id=user_id)
         telegram_text = create_text_in_box(
-            text=telegram_text, section_name=NOT_FOUND_PLAYER_SECTION_NAME
+            text=telegram_text, section_name=section_name
         )
     else:
+        if not isinstance(section_name, str):
+            section_name = PLAYER_SECTION_NAME
+        if not isinstance(subsection_name, str):
+            subsection_name = PLAYER_SUBSECTION_NAME
+
         telegram_text = create_telegram_text(
             obj=player,
             section_name=section_name,
