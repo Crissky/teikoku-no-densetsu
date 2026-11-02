@@ -11,8 +11,8 @@ from teikoku.entity.register.group import Group
 def group_telegram_text(
     group: Group,
     chat_id: int,
-    section_name: str = GROUP_SECTION_NAME,
-    subsection_name: str = GROUP_SUBSECTION_NAME,
+    section_name: str = None,
+    subsection_name: str = None,
     previous_text: str = None,
     next_text: str = None,
     group_not_found_msg: str = None,
@@ -25,12 +25,19 @@ def group_telegram_text(
             telegram_text = group_not_found_msg
         else:
             telegram_text = GROUP_NOT_FOUND_ERROR
+        if not isinstance(section_name, str):
+            section_name = NOT_FOUND_GROUP_SECTION_NAME
 
         telegram_text = telegram_text.format(id=chat_id)
         telegram_text = create_text_in_box(
-            text=telegram_text, section_name=NOT_FOUND_GROUP_SECTION_NAME
+            text=telegram_text, section_name=section_name
         )
     else:
+        if not isinstance(section_name, str):
+            section_name = GROUP_SECTION_NAME
+        if not isinstance(subsection_name, str):
+            subsection_name = GROUP_SUBSECTION_NAME
+
         telegram_text = create_telegram_text(
             obj=group,
             section_name=section_name,
