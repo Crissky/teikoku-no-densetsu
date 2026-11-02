@@ -239,3 +239,12 @@ class MongoBase(ABC):
             for attr in cls.UPDATABLE_ATTR_LIST
             if attr in hints
         }
+
+    @classmethod
+    def updatable_attr_text(cls) -> str:
+        updatable_attr_types = cls.updatable_attr_types()
+        text = ", ".join(
+            f"`{a}` ({t.__name__})" for a, t in updatable_attr_types.items()
+        )
+
+        return text
