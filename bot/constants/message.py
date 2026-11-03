@@ -7,9 +7,7 @@ from bot.constants.command import (
 )
 
 # GENERAL
-FAIL_UPDATE_NOT_ARGS_FORMAT = (
-    "⚠️ Este comando requer *argumentos* para funcionar.\n\n"
-    "*Como usar:*\n"
+HINT_HOW_UPDATE_ARGS_FORMAT = (
     "Informe o atributo e o novo valor separados por `=`.\n"
     "Exemplo: `atributo`=`valor`\n\n"
     "*Múltiplos atributos:*\n"
@@ -19,6 +17,11 @@ FAIL_UPDATE_NOT_ARGS_FORMAT = (
     "inválidos serão ignorados.\n\n"
     "*Atributos alteráveis*:\n"
     "{attrs}"
+)
+FAIL_UPDATE_NOT_ARGS_FORMAT = (
+    "⚠️ Este comando requer *argumentos* para funcionar.\n\n"
+    "*Como usar:*\n"
+    f"{HINT_HOW_UPDATE_ARGS_FORMAT}"
 )
 
 # PLAYER
