@@ -40,9 +40,11 @@ PLAYER_NOT_FOUND_ERROR = (
     "Não há nenhum player cadastrado com o ID *{id}*. "
     f"Use o comando /{SIGNUP_COMMAND} para se cadastrar."
 )
-NO_CHANGE_IN_PLAYER_MSG = (
+NO_CHANGE_IN_PLAYER_MSG_FORMAT = (
     "*Nenhuma alteração* foi feita no jogador. "
-    "Nenhum *atributo* ou *valor* válido foi informado."
+    "Nenhum *atributo* ou *valor* válido foi informado.\n\n"
+    "*Como usar:*\n"
+    f"{HINT_HOW_UPDATE_ARGS_FORMAT}"
 )
 
 # GROUP
