@@ -2,7 +2,7 @@ from bot.constants.command import SET_ATTR_PLAYER_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     FAIL_UPDATE_NOT_ARGS_FORMAT,
-    NO_CHANGE_IN_PLAYER_MSG,
+    NO_CHANGE_IN_PLAYER_MSG_FORMAT,
 )
 from bot.constants.section import (
     FAIL_UPDATE_PLAYER_SECTION_NAME,
@@ -42,7 +42,10 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if player:  # UPDATE COM SUCESSO
             section_name = UPDATE_PLAYER_SECTION_NAME
         else:  # UPDATE SEM SUCESSO
-            player_not_found_msg = f"{NO_CHANGE_IN_PLAYER_MSG}"
+            updatable_attr_text = Player.updatable_attr_text()
+            player_not_found_msg = NO_CHANGE_IN_PLAYER_MSG_FORMAT.format(
+                attrs=updatable_attr_text
+            )
 
     reply_text = player_telegram_text(
         player=player,
