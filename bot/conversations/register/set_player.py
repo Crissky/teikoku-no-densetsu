@@ -32,12 +32,9 @@ async def set_attr_player(update: Update, context: ContextTypes.DEFAULT_TYPE):
     player = None
     player_not_found_msg = None
     if not args:  # SEM ARGUMENTOS
-        updatable_attr_types = Player.updatable_attr_types()
+        updatable_attr_text = Player.updatable_attr_text()
         player_not_found_msg = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
-            attrs=", ".join(
-                f"`{a}` ({t.__name__})"
-                for a, t in updatable_attr_types.items()
-            )
+            attrs=updatable_attr_text
         )
     else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
