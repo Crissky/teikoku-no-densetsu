@@ -10,8 +10,9 @@ class Player(MongoBase):
     name: str
     username: Optional[str] = None  # @ do usuário
     silent: bool = False
+    allow_private_messages: bool = True
 
-    UPDATABLE_ATTR_LIST = ("silent",)
+    UPDATABLE_ATTR_LIST = ("silent", "allow_private_messages")
 
     def __post_init__(self):
         # USERNAME
