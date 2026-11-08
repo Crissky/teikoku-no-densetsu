@@ -23,7 +23,10 @@ from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
 from repository.mongo.functions.general import get_attribute_group_or_player
 from repository.mongo.functions.group import get_group_attribute_by_id
-from repository.mongo.functions.player import get_player_attribute_by_id
+from repository.mongo.functions.player import (
+    get_player_attribute_by_id,
+    player_allow_private_messages,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -57,6 +60,7 @@ async def call_telegram_message_function(
     need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
+    should_validate_private_messages_permission: bool = False,
     **kwargs,
 ) -> Union[Any, Message]:
     """Função que chama qualquer função de mensagem do telegram.
@@ -79,9 +83,28 @@ async def call_telegram_message_function(
     quantidade de horas igual ao valor passado.
     E se for um timedelta, a mensagem será excluída de acordo com o tempo
     passado no timedelta.
+
+    Se should_validate_private_messages_permission for True, a função irá
+    verificar se o jogador permite mensagens privadas, caso contrário,
+    retornará ConversationHandler.END
     """
 
     logger.info(f"{function_caller}->CALL_TELEGRAM_MESSAGE_FUNCTION()")
+    if should_validate_private_messages_permission is True:
+        chat = None
+        user_id = context._user_id
+        chat_id = kwargs.get("chat_id")
+        if chat_id:
+            chat = await context.bot.get_chat(chat_id=chat_id)
+        allow_private_messages = player_allow_private_messages(user_id=user_id)
+        if (
+            chat
+            and chat.type in CHAT_TYPE_PRIVATE
+            and allow_private_messages is False
+        ):
+            logger.warning(f"USER {user_id} IS BLOCKING PRIVATE MESSAGES")
+            return ConversationHandler.END
+
     job_call_telegram_kwargs = dict(
         function_caller=function_caller,
         function=function,
