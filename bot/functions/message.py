@@ -109,6 +109,7 @@ async def call_telegram_message_function(
         function_caller=function_caller,
         function=function,
         context=context,
+        check_private_message_permission=check_private_message_permission,
         **kwargs,
     )
     response = None
