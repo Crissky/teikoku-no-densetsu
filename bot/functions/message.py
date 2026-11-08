@@ -190,7 +190,6 @@ async def send_message_text(
     markdown: bool = False,
     silent: Optional[bool] = None,
     reply_markup: InlineKeyboardMarkup = REPLY_MARKUP_DEFAULT,
-    allow_sending_without_reply: bool = True,
     close_by_owner: bool = True,
     need_response: bool = False,
     skip_retry: bool = False,
