@@ -22,6 +22,7 @@ from repository.mongo.models.player import PlayerModel
 from repository.mongo.utils.field import QueryField
 from repository.mongo.utils.query import Query
 from teikoku.entity.register.player import Player
+from teikoku.enum.register import PlayerAttrEnum
 
 ADMIN_TYPES = (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
 PLAYER_ENTITY_TYPE = Player
@@ -154,3 +155,19 @@ async def user_is_admin(update: Update) -> bool:
     )
 
     return chat_member.status in ADMIN_TYPES
+
+
+def player_allow_private_messages(user_id: int) -> bool:
+    allow_private_messages_field = PlayerAttrEnum.ALLOW_PRIVATE_MESSAGES.value
+    allow_private_messages = get_player_attribute_by_id(
+        user_id=user_id, field=allow_private_messages_field
+    )
+
+    if isinstance(allow_private_messages, bool):
+        return allow_private_messages
+    else:
+        class_name = Player.__name__
+        raise TypeError(
+            f"O campo de {class_name} '{allow_private_messages_field}' "
+            f"deve ser do tipo 'bool', não '{type(allow_private_messages)}'."
+        )
