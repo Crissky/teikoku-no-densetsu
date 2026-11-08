@@ -60,7 +60,7 @@ async def call_telegram_message_function(
     need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
-    should_validate_private_messages_permission: bool = False,
+    check_private_message_permission: bool = False,
     **kwargs,
 ) -> Union[Any, Message]:
     """Função que chama qualquer função de mensagem do telegram.
@@ -84,13 +84,13 @@ async def call_telegram_message_function(
     E se for um timedelta, a mensagem será excluída de acordo com o tempo
     passado no timedelta.
 
-    Se should_validate_private_messages_permission for True, a função irá
+    Se check_private_message_permission for True, a função irá
     verificar se o jogador permite mensagens privadas, caso contrário,
     retornará ConversationHandler.END
     """
 
     logger.info(f"{function_caller}->CALL_TELEGRAM_MESSAGE_FUNCTION()")
-    if should_validate_private_messages_permission is True:
+    if check_private_message_permission is True:
         chat = None
         user_id = context._user_id
         chat_id = kwargs.get("chat_id")
