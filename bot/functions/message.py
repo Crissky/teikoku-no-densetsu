@@ -194,6 +194,7 @@ async def send_message_text(
     need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
+    check_private_message_permission: bool = False,
 ) -> Message:
     """Envia uma mensagem.
 
@@ -242,6 +243,7 @@ async def send_message_text(
         need_response=need_response,
         skip_retry=skip_retry,
         auto_delete_message=auto_delete_message,
+        check_private_message_permission=check_private_message_permission,
         **send_text_kwargs,
     )
 
@@ -346,6 +348,7 @@ async def reply_message(
     need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
+    check_private_message_permission: bool = False,
 ) -> Message:
     """Responde uma mensagem.
 
@@ -406,6 +409,7 @@ async def reply_message(
         need_response=need_response,
         skip_retry=skip_retry,
         auto_delete_message=auto_delete_message,
+        check_private_message_permission=check_private_message_permission,
         **reply_text_kwargs,
     )
 
@@ -427,6 +431,7 @@ async def send_message_image(
     need_response: bool = False,
     skip_retry: bool = False,
     auto_delete_message: Union[bool, int, timedelta] = True,
+    check_private_message_permission: bool = False,
 ) -> Message:
     """Envia uma mensagem com imagem.
 
@@ -476,6 +481,7 @@ async def send_message_image(
         need_response=need_response,
         skip_retry=skip_retry,
         auto_delete_message=auto_delete_message,
+        check_private_message_permission=check_private_message_permission,
         **send_photo_kwargs,
     )
 
