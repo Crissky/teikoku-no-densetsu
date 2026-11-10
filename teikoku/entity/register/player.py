@@ -42,6 +42,10 @@ class Player(MongoBase):
         text += f"*Nome de Usuário*: {self.username or ''}\n"
         text += f"*ID de Usuário*: {self.user_id}\n"
         text += f"*Modo Silencioso*: {self.translate(self.silent)}\n"
+        text += (
+            "*Mensagens Privadas*: "
+            f"{self.translate(self.allow_private_messages)}\n"
+        )
 
         return text
 
