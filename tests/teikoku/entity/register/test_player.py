@@ -74,16 +74,17 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(player, 123)
 
     def test_eq_with_numeric_str(self):
-        """Verifica se Player é igual a uma str numérica com o mesmo
+        """Verifica se Player é igual a uma str numérica com o mesmo user_id.
+        """
 
-        user_id."""
         player = self._make_player(user_id=123)
         self.assertEqual(player, "123")
 
     def test_eq_different_ids(self):
         """Verifica se dois Players com user_ids diferentes são considerados
+        diferentes.
+        """
 
-        diferentes."""
         u1 = self._make_player(user_id=123)
         u2 = self._make_player(user_id=456)
         self.assertNotEqual(u1, u2)
@@ -112,6 +113,26 @@ class TestPlayer(unittest.TestCase):
         with self.assertRaises(TypeError):
             self._make_player(silent="true")
 
+    def test_allow_private_messages_default_true(self):
+        """Verifica se allow_private_messages tem valor padrão True."""
+
+        player = self._make_player()
+        self.assertTrue(player.allow_private_messages)
+
+    def test_allow_private_messages_false(self):
+        """Verifica se allow_private_messages=False é aceito."""
+
+        player = self._make_player(allow_private_messages=False)
+        self.assertFalse(player.allow_private_messages)
+
+    def test_allow_private_messages_invalid_type_raises_type_error(self):
+        """Verifica se allow_private_messages de tipo inválido levanta
+        TypeError.
+        """
+
+        with self.assertRaises(TypeError):
+            self._make_player(allow_private_messages="true")
+
     def test_telegram_text_without_username(self):
         """Verifica se telegram_text é formatado corretamente sem username."""
 
@@ -119,6 +140,7 @@ class TestPlayer(unittest.TestCase):
         expected = (
             "*Nome*: Teste\n*Nome de Usuário*: \n"
             "*ID de Usuário*: 123\n*Modo Silencioso*: Não\n"
+            "*Mensagens Privadas*: Sim\n"
         )
         self.assertEqual(player.telegram_text, expected)
 
@@ -131,6 +153,7 @@ class TestPlayer(unittest.TestCase):
         expected = (
             "*Nome*: Teste\n*Nome de Usuário*: @jogador\n"
             "*ID de Usuário*: 123\n*Modo Silencioso*: Não\n"
+            "*Mensagens Privadas*: Sim\n"
         )
         self.assertEqual(player.telegram_text, expected)
 
@@ -141,6 +164,22 @@ class TestPlayer(unittest.TestCase):
         expected = (
             "*Nome*: Teste\n*Nome de Usuário*: \n"
             "*ID de Usuário*: 123\n*Modo Silencioso*: Sim\n"
+            "*Mensagens Privadas*: Sim\n"
+        )
+        self.assertEqual(player.telegram_text, expected)
+
+    def test_telegram_text_allow_private_messages_false(self):
+        """Verifica se telegram_text exibe 'Não' quando
+        allow_private_messages=False.
+        """
+
+        player = self._make_player(
+            user_id=123, name="Teste", allow_private_messages=False
+        )
+        expected = (
+            "*Nome*: Teste\n*Nome de Usuário*: \n"
+            "*ID de Usuário*: 123\n*Modo Silencioso*: Não\n"
+            "*Mensagens Privadas*: Não\n"
         )
         self.assertEqual(player.telegram_text, expected)
 
@@ -165,12 +204,21 @@ class TestPlayer(unittest.TestCase):
         self.assertIn("name", d)
         self.assertIn("username", d)
         self.assertIn("silent", d)
+        self.assertIn("allow_private_messages", d)
 
     def test_has_updatable_attr_silent(self):
         """Verifica se 'silent' está na lista de atributos atualizáveis."""
 
         player = self._make_player()
         self.assertTrue(player.has_updatable_attr("silent"))
+
+    def test_has_updatable_attr_allow_private_messages(self):
+        """Verifica se 'allow_private_messages' está na lista de atributos
+        atualizáveis.
+        """
+
+        player = self._make_player()
+        self.assertTrue(player.has_updatable_attr("allow_private_messages"))
 
     def test_has_updatable_attr_invalid(self):
         """Verifica se atributo não atualizável retorna False."""
