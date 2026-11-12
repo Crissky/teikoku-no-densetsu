@@ -11,7 +11,7 @@ from general.functions.text import create_text_in_box
 
 # @need_signedup_world
 @need_signedup_player
-async def put_dicty(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def put_dict(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update._effective_chat
     chat_id = chat.id
     args = context.args
