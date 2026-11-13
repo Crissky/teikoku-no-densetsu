@@ -14,10 +14,11 @@ from telegram import (
     ReplyParameters,
     Update,
 )
-from telegram.constants import ChatType, ParseMode
+from telegram.constants import ParseMode
 from telegram.error import BadRequest, RetryAfter, TimedOut
 from telegram.ext import ContextTypes, ConversationHandler
 
+from bot.constants.chat import CHAT_TYPE_GROUPS, CHAT_TYPE_PRIVATE
 from bot.constants.query import CALLBACK_COMMAND_CLOSE
 from bot.constants.job import BASE_JOB_KWARGS
 from general.enums.emojis import EmojiEnum
@@ -33,8 +34,6 @@ logger = logging.getLogger(__name__)
 
 # DATE & TIME ================================================================
 HOURS_DELETE_MESSAGE_FROM_CONTEXT = 1
-CHAT_TYPE_GROUPS = (ChatType.GROUP, ChatType.SUPERGROUP)
-CHAT_TYPE_PRIVATE = (ChatType.SENDER, ChatType.PRIVATE)
 MIN_AUTODELETE_TIME = timedelta(minutes=15)
 HALF_AUTODELETE_TIME = timedelta(minutes=30)
 

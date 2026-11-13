@@ -1,6 +1,7 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
+from bot.constants.chat import CHAT_TYPE_PRIVATE
 from bot.constants.command import SIGNUP_WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
@@ -16,7 +17,6 @@ from bot.constants.section import (
 from bot.decorators.group import only_group
 from bot.decorators.player import need_admin_player
 from bot.functions.message import (
-    CHAT_TYPE_PRIVATE,
     reply_message,
 )
 from general.functions.text import create_text_in_box, format_subsection
