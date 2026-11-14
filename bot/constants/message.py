@@ -62,9 +62,11 @@ GROUP_NOT_FOUND_ERROR = (
     "Não há nenhum grupo cadastrado com o ID *{id}*. "
     f"Use o comando /{SIGNUP_GROUP_COMMAND} no grupo que deseja cadastrar."
 )
-NO_CHANGE_IN_GROUP_MSG = (
+NO_CHANGE_IN_GROUP_MSG_FORMAT = (
     "*Nenhuma alteração* foi feita no grupo. "
-    "Nenhum *atributo* ou *valor* válido foi informado."
+    "Nenhum *atributo* ou *valor* válido foi informado.\n\n"
+    "*Como usar:*\n"
+    f"{HINT_HOW_UPDATE_ARGS_FORMAT}"
 )
 
 # WORLD

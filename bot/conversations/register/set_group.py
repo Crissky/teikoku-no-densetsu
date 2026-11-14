@@ -2,7 +2,7 @@ from bot.constants.command import SET_ATTR_GROUP_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     FAIL_UPDATE_NOT_ARGS_FORMAT,
-    NO_CHANGE_IN_GROUP_MSG,
+    NO_CHANGE_IN_GROUP_MSG_FORMAT,
 )
 from bot.constants.section import (
     FAIL_UPDATE_GROUP_SECTION_NAME,
@@ -12,6 +12,7 @@ from bot.constants.section import (
 from bot.decorators.group import only_group
 from bot.decorators.player import need_admin_player
 from bot.functions.arg import format_args
+from bot.functions.group import group_telegram_text
 from bot.functions.message import (
     MIN_AUTODELETE_TIME,
     reply_message,
@@ -35,8 +36,11 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensagem.
     """
 
+    chat_id = update.effective_chat.id
     args = context.args
     section_name = FAIL_UPDATE_GROUP_SECTION_NAME
+    group = None
+    group_not_found_msg = None
     if not args:  # SEM ARGUMENTOS
         updatable_attr_types = Group.updatable_attr_types()
         reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
@@ -48,16 +52,20 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
         group = update_group(args=formated_args, update=update)
-
         if group:  # UPDATE COM SUCESSO
             section_name = UPDATE_GROUP_SECTION_NAME
-            group_telegram_text = group.telegram_text
-            subsection = format_subsection(text=GROUP_SUBSECTION_NAME)
-            reply_text = f"{subsection}" f"{group_telegram_text}"
         else:  # UPDATE SEM SUCESSO
-            reply_text = f"{NO_CHANGE_IN_GROUP_MSG}"
+            updatable_attr_text = Group.updatable_attr_text()
+            group_not_found_msg = NO_CHANGE_IN_GROUP_MSG_FORMAT.format(
+                attrs=updatable_attr_text
+            )
 
-    reply_text = create_text_in_box(text=reply_text, section_name=section_name)
+    reply_text = group_telegram_text(
+        group=group,
+        chat_id=chat_id,
+        section_name=section_name,
+        group_not_found_msg=group_not_found_msg,
+    )
     await reply_message(
         function_caller="SET_ATTR_GROUP()",
         text=reply_text,
