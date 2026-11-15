@@ -6,7 +6,6 @@ from bot.constants.message import (
 )
 from bot.constants.section import (
     FAIL_UPDATE_GROUP_SECTION_NAME,
-    GROUP_SUBSECTION_NAME,
     UPDATE_GROUP_SECTION_NAME,
 )
 from bot.decorators.group import only_group
@@ -17,7 +16,6 @@ from bot.functions.message import (
     MIN_AUTODELETE_TIME,
     reply_message,
 )
-from general.functions.text import create_text_in_box, format_subsection
 from repository.mongo.functions.group import (
     update_group,
 )
@@ -42,12 +40,9 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     group = None
     group_not_found_msg = None
     if not args:  # SEM ARGUMENTOS
-        updatable_attr_types = Group.updatable_attr_types()
+        updatable_attr_text = Group.updatable_attr_text()
         reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
-            attrs=", ".join(
-                f"`{a}` ({t.__name__})"
-                for a, t in updatable_attr_types.items()
-            )
+            attrs=updatable_attr_text
         )
     else:  # UPDATE COM ARGUMENTOS
         formated_args = format_args(args)
