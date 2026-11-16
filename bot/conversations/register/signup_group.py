@@ -39,12 +39,12 @@ async def signup_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update._effective_chat
     chat_id = chat.id
     chat_name = chat.full_name or chat.title
-    group = Group(chat_id=chat_id, name=chat_name)
 
     if exists_group(chat_id=chat_id):
         section_name = FAIL_SIGNUP_GROUP_SECTION_NAME
         reply_text = GROUP_ALREADY_REGISTERED_ERROR.format(id=chat_id)
     else:
+        group = Group(chat_id=chat_id, name=chat_name)
         section_name = SIGNUP_GROUP_SECTION_NAME
         new_group = save_group(group=group)
         group_telegram_text = new_group.telegram_text
