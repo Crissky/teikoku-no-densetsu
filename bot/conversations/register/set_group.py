@@ -41,7 +41,7 @@ async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     group_not_found_msg = None
     if not args:  # SEM ARGUMENTOS
         updatable_attr_text = Group.updatable_attr_text()
-        reply_text = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
+        group_not_found_msg = FAIL_UPDATE_NOT_ARGS_FORMAT.format(
             attrs=updatable_attr_text
         )
     else:  # UPDATE COM ARGUMENTOS
