@@ -80,6 +80,11 @@ def update_entity(
             context=None,
         )
 
+    if entity is None:
+        raise ValueError(
+            "entity não foi informada e não foi possível obtê-la a partir da "
+            f'query: "{query!r}".'
+        )
     if not isinstance(entity, entity_type):
         raise TypeError(
             f"entity precisa ser do tipo {entity_type} ({type(entity)})."
