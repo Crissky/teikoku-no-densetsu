@@ -8,7 +8,7 @@ from bot.constants.section import (
     FAIL_UPDATE_GROUP_SECTION_NAME,
     UPDATE_GROUP_SECTION_NAME,
 )
-from bot.decorators.group import only_group
+from bot.decorators.group import need_signedup_group, only_group
 from bot.decorators.player import need_admin_player
 from bot.functions.arg import format_args
 from bot.functions.group import group_telegram_text
@@ -28,6 +28,7 @@ from teikoku.entity.register.group import Group
 
 
 @only_group
+@need_signedup_group
 @need_admin_player
 async def set_attr_group(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Define valores de atributos do group por meio de argumentos na
