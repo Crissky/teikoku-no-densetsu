@@ -14,7 +14,7 @@ from bot.constants.section import (
     WORLD_SECTION_NAME,
     WORLD_SUBSECTION_NAME,
 )
-from bot.decorators.group import only_group
+from bot.decorators.group import need_signedup_group, only_group
 from bot.decorators.player import need_admin_player
 from bot.functions.message import (
     reply_message,
@@ -25,6 +25,7 @@ from teikoku.entity.world.world import World
 
 
 @only_group
+@need_signedup_group
 @need_admin_player
 async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Cadastra Mundo"""
