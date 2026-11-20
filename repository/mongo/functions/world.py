@@ -22,6 +22,10 @@ from repository.mongo.utils.field import QueryField
 from repository.mongo.utils.query import Query
 from teikoku.entity.world.world import World
 
+
+logger = logging.getLogger(__name__)
+
+# CONSTANTS ==================================================================
 WORLD_ENTITY_TYPE = World
 WORLD_KEY_VALUE_TYPE = int
 WORLD_KEY_FIELD_ENUM = AltIdEnum.WORLD
@@ -29,7 +33,7 @@ WORLD_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.WORLD
 WORLD_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.WORLD
 
 MODEL = WorldModel()
-logger = logging.getLogger(__name__)
+# CONSTANTS ==================================================================
 
 
 def get_world(

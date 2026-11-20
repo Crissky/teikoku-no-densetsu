@@ -23,6 +23,10 @@ from repository.mongo.utils.field import QueryField
 from repository.mongo.utils.query import Query
 from teikoku.entity.register.group import Group
 
+
+logger = logging.getLogger(__name__)
+
+# CONSTANTS ==================================================================
 GROUP_TYPES = (ChatType.GROUP, ChatType.SUPERGROUP)
 GROUP_ENTITY_TYPE = Group
 GROUP_KEY_VALUE_TYPE = int
@@ -31,7 +35,7 @@ GROUP_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.GROUP
 GROUP_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.GROUP
 
 MODEL = GroupModel()
-logger = logging.getLogger(__name__)
+# CONSTANTS ==================================================================
 
 
 def get_group(

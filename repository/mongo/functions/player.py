@@ -24,6 +24,10 @@ from repository.mongo.utils.query import Query
 from teikoku.entity.register.player import Player
 from teikoku.enum.register import PlayerAttrEnum
 
+
+logger = logging.getLogger(__name__)
+
+# CONSTANTS ==================================================================
 ADMIN_TYPES = (ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.OWNER)
 PLAYER_ENTITY_TYPE = Player
 PLAYER_KEY_VALUE_TYPE = int
@@ -32,7 +36,7 @@ PLAYER_UPDATE_KEY_FIELD_ENUM = UpdateAltIdEnum.PLAYER
 PLAYER_CONTEXT_KEY_FIELD_ENUM = ContextAltIdEnum.PLAYER
 
 MODEL = PlayerModel()
-logger = logging.getLogger(__name__)
+# CONSTANTS ==================================================================
 
 
 def get_player(
