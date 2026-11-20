@@ -18,6 +18,7 @@ from repository.mongo.base import MongoBase
 from repository.mongo.models.model import Model
 from repository.mongo.utils.query import Query
 
+
 logger = logging.getLogger(__name__)
 
 
