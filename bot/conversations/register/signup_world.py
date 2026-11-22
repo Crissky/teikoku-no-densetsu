@@ -1,12 +1,10 @@
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, PrefixHandler
 
-from bot.constants.chat import CHAT_TYPE_PRIVATE
 from bot.constants.command import SIGNUP_WORLD_COMMANDS
 from bot.constants.filter import BASIC_COMMAND_FILTER, PREFIX_COMMANDS
 from bot.constants.message import (
     WORLD_ALREADY_REGISTERED_ERROR,
-    WORLD_PRIVATE_CHAT_ERROR,
     WORLD_SUCCESSFULLY_REGISTERED_FORMAT,
 )
 from bot.constants.section import (
@@ -33,7 +31,6 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat = update._effective_chat
     chat_id = chat.id
     chat_name = chat.full_name or chat.title
-    reply_text = ""
 
     world = get_world_by_chat_id(chat_id=chat_id)
     if world:
@@ -42,9 +39,6 @@ async def signup_world(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_text = WORLD_ALREADY_REGISTERED_ERROR.format(
             world_name=world_name
         )
-    if chat.type in CHAT_TYPE_PRIVATE:
-        section_name = FAIL_SIGNUP_WORLD_SECTION_NAME
-        reply_text = WORLD_PRIVATE_CHAT_ERROR
     else:
         world = World(name=chat_name, chat_id=chat_id)
         new_world = save_world(world=world)
