@@ -38,3 +38,33 @@ def get_obj(
 
     return data.get(key.name, {}).get(telegram_id)
 
+
+def put_user_obj(
+    context: ContextTypes.DEFAULT_TYPE,
+    key: ContextKeyEnum,
+    obj: Any,
+    user_id: Optional[int] = None,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.USER,
+):
+
+    if not isinstance(user_id, int):
+        user_id = obj.user_id
+
+    return put_obj(
+        context=context, key=key, telegram_id=user_id, data_type=data_type
+    )
+
+
+def get_user_obj(
+    context: ContextTypes.DEFAULT_TYPE,
+    key: ContextKeyEnum,
+    user_id: int,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.USER,
+) -> Any:
+    return get_obj(
+        context=context,
+        key=key,
+        telegram_id=user_id,
+        data_type=data_type,
+    )
+
