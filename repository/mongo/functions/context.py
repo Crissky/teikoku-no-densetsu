@@ -68,3 +68,32 @@ def get_user_obj(
         data_type=data_type,
     )
 
+
+def put_chat_obj(
+    context: ContextTypes.DEFAULT_TYPE,
+    key: ContextKeyEnum,
+    obj: Any,
+    chat_id: Optional[int] = None,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.CHAT,
+):
+
+    if not isinstance(chat_id, int):
+        chat_id = obj.chat_id
+
+    return put_obj(
+        context=context, key=key, telegram_id=chat_id, data_type=data_type
+    )
+
+
+def get_chat_obj(
+    context: ContextTypes.DEFAULT_TYPE,
+    key: ContextKeyEnum,
+    chat_id: int,
+    data_type: ContextDataTypeEnum = ContextDataTypeEnum.CHAT,
+) -> Any:
+    return get_obj(
+        context=context,
+        key=key,
+        telegram_id=chat_id,
+        data_type=data_type,
+    )
