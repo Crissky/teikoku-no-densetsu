@@ -54,9 +54,6 @@ class City(MongoBase):
             stat_modifier_list=stat_modifier_list,
         )
 
-        if self.size % 2 == 0:
-            raise ValueError(f"size deve ser ímpar ({self.size}).")
-
         super().__post_init__()
 
     def __eq__(self, value):
@@ -98,19 +95,19 @@ class City(MongoBase):
 
     @property
     def x1(self) -> int:
-        return self.coor.x - (self.size // 2)
+        return self.coor.x - self.size
 
     @property
     def y1(self) -> int:
-        return self.coor.y - (self.size // 2)
+        return self.coor.y - self.size
 
     @property
     def x2(self) -> int:
-        return self.coor.x + (self.size // 2)
+        return self.coor.x + self.size
 
     @property
     def y2(self) -> int:
-        return self.coor.y + (self.size // 2)
+        return self.coor.y + self.size
 
     @property
     def box(self) -> Tuple[int, int, int, int]:
