@@ -419,11 +419,14 @@ class World(MongoBase):
                 return (x, y)
 
     def is_buildable_terrain(self, x: int, y: int) -> bool:
-        """Verifica se é terra e não está ocupada por uma cidade."""
+        """Verifica se é um terreno construível e se ele não está ocupado
+        por uma cidade.
+        """
 
         terrain_info = self.terrain.get_terrain_info(x=x, y=y)
+        have_build = self.cities.get((x, y))
 
-        return terrain_info.is_buildable_terrain
+        return terrain_info.is_buildable_terrain and bool(have_build)
 
     @property
     def total_cities(self) -> int:
