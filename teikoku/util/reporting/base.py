@@ -7,6 +7,7 @@ from typing import (
     List,
     Literal,
     Optional,
+    Tuple,
     Union,
     get_args,
     get_origin,
@@ -169,7 +170,7 @@ class ReportingBase:
         return d
 
     def __str__(self):
-        return ", ".join(f"{a}={getattr(self, a)}" for a in self.kwargs)
+        return ", ".join(f"{k}={v}" for k, v in self.kwargs)
 
     def __repr__(self):
         text = str(self)
@@ -189,7 +190,7 @@ class ReportingBase:
 
     @property
     def report(self) -> dict:
-        return {a: getattr(self, a) for a in self.kwargs}
+        return {k: v for k, v in self.kwargs}
 
     @property
     def text(self) -> str:
@@ -204,8 +205,10 @@ class ReportingBase:
         return self.status.value
 
     @property
-    def kwargs(self) -> Iterator[str]:
-        return (f.name for f in fields(self) if f.init)
+    def kwargs(self) -> Iterator[Tuple[str, Any]]:
+        return (
+            (f.name, getattr(self, f.name)) for f in fields(self) if f.init
+        )
 
 
 if __name__ == "__main__":
