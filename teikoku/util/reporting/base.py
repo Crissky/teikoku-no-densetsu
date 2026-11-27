@@ -27,22 +27,13 @@ class ReportingBase:
         self._check_init_types()
 
     def _load_enums(self):
-        type_hints = get_type_hints(type(self))
-        for field in fields(self):
-            if not field.init:
-                continue
-
+        type_hints = get_type_hints(self)
+        field_iterator = (f for f in fields(self) if f.init)
+        for field in field_iterator:
             field_type = type_hints.get(field.name)
-            if (
-                isinstance(field_type, type)
-                and issubclass(field_type, Enum)
-                and isinstance(getattr(self, field.name), str)
-            ):
-                object.__setattr__(
-                    self,
-                    field.name,
-                    field_type(getattr(self, field.name)),
-                )
+            field_value = getattr(self, field.name)
+            if issubclass(field_type, Enum) and isinstance(field_value, str):
+                object.__setattr__(self, field.name, field_type(field_value))
 
     def _check_init_types(self):
         error_list = []
