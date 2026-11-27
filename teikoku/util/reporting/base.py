@@ -182,7 +182,10 @@ class ReportingBase:
             return None
 
     def has_attibute(self, attribute: str) -> bool:
-        return any(f.name == attribute for f in fields(self) if f.init)
+        for f in fields(self):
+            if f.init and f.name == attribute:
+                return True
+        return False
 
     @property
     def report(self) -> dict:
