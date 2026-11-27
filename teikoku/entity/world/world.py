@@ -40,6 +40,7 @@ class World(MongoBase):
     chat_id: int = DEFAULT_WORLD_CHAT_ID
     cities: Dict[Tuple[int, int], City] = field(default_factory=dict)
     units: Dict[Tuple[int, int], UnitBase] = field(default_factory=dict)
+    entities: Dict[str:MongoBase] = field(default_factory=dict)
 
     UPDATABLE_ATTR_LIST = ()
 
