@@ -23,7 +23,6 @@ class ReportingBase:
     status: ReportingStatusEnum
 
     def __post_init__(self):
-
         self._load_enums()
         self._check_init_types()
 
