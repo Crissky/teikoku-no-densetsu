@@ -40,7 +40,7 @@ class ReportingBase:
         init_fields = {f.name for f in fields(self) if f.init}
         hints = {
             k: v
-            for k, v in get_type_hints(type(self)).items()
+            for k, v in get_type_hints(self).items()
             if k in init_fields
         }
         for attr, expected_type in hints.items():
