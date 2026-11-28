@@ -1,17 +1,24 @@
 from teikoku.enum.generic import GenericEnum
 
 
-class CityStatsEnum(GenericEnum):
-    LEVEL = "nível"
-    HP = "hp"
-    ATTACK = "ataque"
-    DEFENSE = "defesa"
+class BaseStatsEnum(GenericEnum): ...
 
 
-class UnitStatsEnum(GenericEnum):
-    LEVEL = "nível"
+class BasicStatsEnum(GenericEnum):
+    LEVEL = "level"
+    STRENGTH = "strength"
+    DEXTERITY = "dexterity"
+    VITALITY = "vitality"
+    INTELLIGENCE = "intelligence"
+    SPIRIT = "spirit"
+    FAITH = "faith"
+
+
+class CombatStatsEnum(GenericEnum):
     HP = "hp"
-    STRENGTH = "força"
-    MIND = "mente"
-    DEFENSE = "defesa"
-    SPEED = "velocidade"
+    PHYSICAL_ATTACK = "physical_attack"
+    PHYSICAL_DEFENSE = "physical_defense"
+    MAGICAL_ATTACK = "magical_attack"
+    MAGICAL_DEFENSE = "magical_defense"
+    SPEED = "speed"
+    LUCK = "luck"
