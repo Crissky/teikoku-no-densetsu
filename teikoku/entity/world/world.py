@@ -30,6 +30,7 @@ from teikoku.enum.terrain import (
     TerrainTextEnum,
 )
 from teikoku.util.reporting.base import ReportingBase
+from teikoku.util.reporting.collision import ReportingCollision
 
 logger = logging.getLogger(__name__)
 
@@ -415,7 +416,7 @@ class World(MongoBase):
 
             if not self.is_buildable_terrain(x=x, y=y):
                 continue
-            if (x, y) not in self.cities.keys():
+            else:
                 return (x, y)
 
     def is_buildable_terrain(self, x: int, y: int) -> bool:
@@ -427,6 +428,23 @@ class World(MongoBase):
         have_build = self.cities.get((x, y))
 
         return terrain_info.is_buildable_terrain and bool(have_build)
+
+    def check_city_terrain_collision(self, city: City) -> ReportingCollision:
+        """Checa se a área que a cidade irá ocupar faz alguma colisão com um
+        terreno ou com alguma cidade.
+        """
+
+        reporting_collision = ReportingCollision()
+        x1, y1, x2, y2 = city.box
+        for x in range(x1, x2 + 1):
+            for y in range(y1, y2 + 1):
+                if not self.is_buildable_terrain(x=x, y=y):
+                    message = f"Colisão detectada: {city.name} em ({x}, {y})."
+                    logger.warning(message)
+                    reporting_collision.collision(x=x, y=y)
+                    break
+
+        return reporting_collision
 
     @property
     def total_cities(self) -> int:
