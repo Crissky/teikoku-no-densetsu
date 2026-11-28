@@ -59,7 +59,7 @@ class ReportingBase:
 
         if origin is None:
             if not isinstance(value, expected_type):
-                error = self._get_msg_error(attr, expected_type, value)
+                error = self._get_type_error_msg(attr, expected_type, value)
                 error_list.append(error)
 
         elif origin is Union:
@@ -72,11 +72,11 @@ class ReportingBase:
                 union_error_list.extend(el)
 
             if union_error_list:
-                error_list.append(self._get_msg_error(attr, args, value))
+                error_list.append(self._get_type_error_msg(attr, args, value))
 
         elif origin is list:
             if not isinstance(value, list):
-                error = self._get_msg_error(attr, expected_type, value)
+                error = self._get_type_error_msg(attr, expected_type, value)
                 error_list.append(error)
             else:
                 for i, v in enumerate(value):
@@ -86,7 +86,7 @@ class ReportingBase:
 
         elif origin is deque:
             if not isinstance(value, deque):
-                error = self._get_msg_error(attr, expected_type, value)
+                error = self._get_type_error_msg(attr, expected_type, value)
                 error_list.append(error)
             else:
                 for i, v in enumerate(value):
@@ -96,7 +96,7 @@ class ReportingBase:
 
         elif origin is tuple:
             if not isinstance(value, tuple):
-                error = self._get_msg_error(attr, expected_type, value)
+                error = self._get_type_error_msg(attr, expected_type, value)
                 error_list.append(error)
             elif len(args) != len(value):
                 error = (
@@ -112,7 +112,7 @@ class ReportingBase:
 
         elif origin is dict:
             if not isinstance(value, dict):
-                error = self._get_msg_error(attr, expected_type, value)
+                error = self._get_type_error_msg(attr, expected_type, value)
                 error_list.append(error)
             else:
                 key_type, value_type = args
@@ -138,7 +138,7 @@ class ReportingBase:
 
         return error_list
 
-    def _get_msg_error(
+    def _get_type_error_msg(
         self, attr: str, expected_type: type, value: Any
     ) -> str:
         return (
