@@ -6,22 +6,23 @@ from repository.mongo.base import MongoBase
 from teikoku.entity.city.city_stats import CityStats
 from teikoku.entity.register.player import Player
 from teikoku.entity.unit.stats_modifier import StatModifier
+from teikoku.entity.world.world_entity import WorldEntity
 from teikoku.util.coor import Coordinate
 
 
 @dataclass
-class City(MongoBase):
+class City(WorldEntity):
     name: str
     chat_id: int
     owner: Player
     x: InitVar[int]
     y: InitVar[int]
+    size: int
     level: InitVar[int]
     damaged: InitVar[int]
     hp: InitVar[int]
     attack: InitVar[int]
     defense: InitVar[int]
-    size: int
     stat_modifier_list: InitVar[List[StatModifier]] = field(default=None)
 
     UPDATABLE_ATTR_LIST = ()
